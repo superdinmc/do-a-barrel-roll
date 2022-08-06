@@ -4,8 +4,6 @@ import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.GameOptions;
-import net.minecraft.client.util.GlfwUtil;
-import nl.enjarai.doabarrelroll.ElytraMath;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -31,6 +29,6 @@ public abstract class MouseMixin {
             )
     )
     private void changeLookDirection(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY) {
-        DoABarrelRollClient.onMouse(player, cursorDeltaX, cursorDeltaY);
+        DoABarrelRollClient.updateMouse(player, cursorDeltaX, cursorDeltaY);
     }
 }

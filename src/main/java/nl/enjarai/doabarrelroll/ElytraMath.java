@@ -26,6 +26,15 @@ public class ElytraMath {
         double deltaX = -Math.atan2(facing.getX(), facing.getZ()) * DoABarrelRollClient.TODEG - player.getYaw();
 
         player.changeLookDirection(deltaX / 0.15, deltaY / 0.15);
+
+        // fix hand spasm when wrapping yaw value
+        if (player.getYaw() < -90 && player.renderYaw > 90) {
+            player.renderYaw -= 360;
+            player.lastRenderYaw -= 360;
+        } else if (player.getYaw() > 90 && player.renderYaw < -90) {
+            player.renderYaw += 360;
+            player.lastRenderYaw += 360;
+        }
     }
 
     public static Vec3d getAssumedLeft(float yaw) {
