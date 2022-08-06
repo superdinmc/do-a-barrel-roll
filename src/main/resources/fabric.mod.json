@@ -1,37 +1,35 @@
 {
 	"schemaVersion": 1,
-	"id": "cool_elytra",
+	"id": "do-a-barrel-roll",
 	"version": "${version}",
 	
-	"name": "Cool Elytra",
-	"description": "Rolls the camera while turning in flight",
+	"name": "Do a Barrel Roll",
+	"description": "Microsoft flight simulator for Minecraft elytras.",
 	"authors": [
+		"enjarai",
 		"Jorbonism",
 		"Motschen"
 	],
 	"contact": {
-		"homepage": "https://www.curseforge.com/minecraft/mc-mods/cool-elytra-roll",
-		"sources": "https://github.com/Jorbon/cool_elytra"
+		"homepage": "https://enjarai.nl",
+		"sources": "https://github.com/enjarai/do-a-barrel-roll"
 	},
 	
 	"license": "GPL-3.0",
-	"icon": "assets/cool_elytra/icon.png",
+	"icon": "assets/do-a-barrel-roll/icon.png",
 
 	"entrypoints": {
 		"client": [
-			"edu.jorbonism.cool_elytra.CoolElytraClient"
+			"nl.enjarai.doabarrelroll.DoABarrelRollClient"
 		]
 	},
 	
 	"environment": "client",
 	"mixins": [
-		"cool_elytra.mixins.json"
+		"do-a-barrel-roll.mixins.json"
 	],
 	
 	"depends": {
-		"fabricloader": "*",
-		"fabric": "*",
-		"minecraft": ">=1.19",
-		"midnightlib": ">=0.5.2"
+		"fabric": "*"
 	}
 }
