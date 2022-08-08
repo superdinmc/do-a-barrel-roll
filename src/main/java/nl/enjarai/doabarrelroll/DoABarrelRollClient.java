@@ -22,7 +22,7 @@ public class DoABarrelRollClient implements ClientModInitializer {
 	
 
 	@Override
-    public void onInitializeClient() {
+    public void onInitializeClient() { // TODO triple jump to activate???
     }
 	
 
