@@ -1,6 +1,6 @@
 # Do a Barrel Roll
 
-[](img/do-a-barrel-roll.gif)
+![](img/do-a-barrel-roll.gif)
 
 A lightweight, clientside mod that changes elytra flight to be more fun and (kind of) realistic.
 It unlocks the camera orientation, changes some controls around and adds smoothing, 
