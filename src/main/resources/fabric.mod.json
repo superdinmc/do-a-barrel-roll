@@ -30,6 +30,5 @@
 	],
 	
 	"depends": {
-		"fabric": "*"
 	}
 }

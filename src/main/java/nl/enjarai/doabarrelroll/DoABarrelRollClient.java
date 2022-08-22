@@ -34,8 +34,10 @@ public class DoABarrelRollClient implements ClientModInitializer {
 
 		// smoothly lerp left vector to the assumed upright left if not in flight
 		if (!player.isFallFlying()) {
-			landingLerp = MathHelper.lerp(MathHelper.clamp(delta, 0, 1), landingLerp, 1);
-			// make sure we don't get any funky behaviour
+			var lerp = MathHelper.lerp(MathHelper.clamp(delta, 0, 1), landingLerp, 1);
+
+			// a few roundings to make sure we don't get any funky behaviour
+			landingLerp = (double) Math.round(lerp * 100) / 100.0;
 			if (landingLerp > 0.9) landingLerp = 1;
 			
 			left = left.lerp(ElytraMath.getAssumedLeft(player.getYaw()), landingLerp);
