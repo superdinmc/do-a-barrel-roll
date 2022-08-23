@@ -1,16 +1,21 @@
 package nl.enjarai.doabarrelroll;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.GlfwUtil;
 import net.minecraft.client.util.SmoothUtil;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
+import nl.enjarai.doabarrelroll.compat.midnightcontrols.ControllerIntegration;
+import nl.enjarai.doabarrelroll.config.ModConfig;
 
 public class DoABarrelRollClient implements ClientModInitializer {
+	public static final String MODID = "do-a-barrel-roll";
 
 	public static final double TORAD = Math.PI / 180;
 	public static final double TODEG = 1 / TORAD;
@@ -23,7 +28,15 @@ public class DoABarrelRollClient implements ClientModInitializer {
 
 	@Override
     public void onInitializeClient() { // TODO triple jump to activate???
+		ModConfig.init();
+
+		// Load compat if Midnight Controls is installed
+		if (FabricLoader.getInstance().isModLoaded("midnightcontrols")) ControllerIntegration.init();
     }
+
+	public static Identifier id(String path) {
+		return new Identifier(MODID, path);
+	}
 	
 
 	public static void updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY) {
@@ -48,7 +61,7 @@ public class DoABarrelRollClient implements ClientModInitializer {
 
 		landingLerp = 0;
 
-		ElytraMath.changeElytraLook(player, cursorDeltaY, yawSmoother.smooth(0, delta), cursorDeltaX);
+		changeElytraLook(player, cursorDeltaY, yawSmoother.smooth(0, delta), cursorDeltaX);
 	}
 	
 	public static void onWorldRender(MinecraftClient client, float tickDelta, long limitTime, MatrixStack matrix) {
@@ -65,6 +78,8 @@ public class DoABarrelRollClient implements ClientModInitializer {
 
 			var yawDelta = 10f;
 			var yaw = 0;
+
+			// Strafe buttons
 			if (client.options.leftKey.isPressed()) {
 				yaw -= yawDelta;
 			}
@@ -72,7 +87,13 @@ public class DoABarrelRollClient implements ClientModInitializer {
 				yaw += yawDelta;
 			}
 
-			ElytraMath.changeElytraLook(client.player, 0, yawSmoother.smooth(yaw, delta), 0);
+			// Controller axes
+//			if (ControllerIntegration.ENABLED.get()) {
+//				yaw -= ControllerIntegration.YAW.ge * yawDelta;
+//				yaw += ControllerIntegration.getAxisValue(ControllerIntegration.AXIS_RIGHT_X) * yawDelta;
+//			}
+
+			changeElytraLook(client.player, 0, yawSmoother.smooth(yaw, delta), 0);
 
 		}
 
@@ -85,7 +106,15 @@ public class DoABarrelRollClient implements ClientModInitializer {
 
 		}
 	}
-	
+
+
+	public static void changeElytraLook(ClientPlayerEntity player, double pitch, double yaw, double roll) {
+		if (ModConfig.INSTANCE.switchRollAndYaw) {
+			ElytraMath.changeElytraLookDirectly(player, pitch, yaw, roll);
+		} else {
+			ElytraMath.changeElytraLookDirectly(player, pitch, roll, yaw);
+		}
+	}
 	
 	public static boolean isFallFlying() {
 		var player = MinecraftClient.getInstance().player;

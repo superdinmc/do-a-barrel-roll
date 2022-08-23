@@ -21,6 +21,9 @@
 	"entrypoints": {
 		"client": [
 			"nl.enjarai.doabarrelroll.DoABarrelRollClient"
+		],
+		"modmenu": [
+			"nl.enjarai.doabarrelroll.compat.modmenu.ModMenuIntegration"
 		]
 	},
 	

@@ -6,7 +6,7 @@ import net.minecraft.util.math.Vec3d;
 import static nl.enjarai.doabarrelroll.DoABarrelRollClient.TORAD;
 
 public class ElytraMath {
-    public static void changeElytraLook(ClientPlayerEntity player, double pitch, double yaw, double roll) {
+    public static void changeElytraLookDirectly(ClientPlayerEntity player, double pitch, double yaw, double roll) {
         Vec3d facing = player.getRotationVecClient();
         DoABarrelRollClient.left = DoABarrelRollClient.left.subtract(facing.multiply(DoABarrelRollClient.left.dotProduct(facing))).normalize();
 
