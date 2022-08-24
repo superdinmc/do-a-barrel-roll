@@ -2,11 +2,19 @@ package nl.enjarai.doabarrelroll;
 
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.math.Vec3d;
-
-import static nl.enjarai.doabarrelroll.DoABarrelRollClient.TORAD;
+import nl.enjarai.doabarrelroll.config.Sensitivity;
 
 public class ElytraMath {
-    public static void changeElytraLookDirectly(ClientPlayerEntity player, double pitch, double yaw, double roll) {
+
+    public static final double TORAD = Math.PI / 180;
+    public static final double TODEG = 1 / TORAD;
+
+    public static void changeElytraLookDirectly(ClientPlayerEntity player, double pitch, double yaw, double roll, Sensitivity sensitivity) {
+        // apply sensitivity
+        pitch *= sensitivity.pitch;
+        yaw *= sensitivity.yaw;
+        roll *= sensitivity.roll;
+
         Vec3d facing = player.getRotationVecClient();
         DoABarrelRollClient.left = DoABarrelRollClient.left.subtract(facing.multiply(DoABarrelRollClient.left.dotProduct(facing))).normalize();
 
@@ -22,8 +30,8 @@ public class ElytraMath {
         DoABarrelRollClient.left = rotateAxisAngle(DoABarrelRollClient.left, facing, 0.15 * roll * TORAD);
 
 
-        double deltaY = -Math.asin(facing.getY()) * DoABarrelRollClient.TODEG - player.getPitch();
-        double deltaX = -Math.atan2(facing.getX(), facing.getZ()) * DoABarrelRollClient.TODEG - player.getYaw();
+        double deltaY = -Math.asin(facing.getY()) * TODEG - player.getPitch();
+        double deltaX = -Math.atan2(facing.getX(), facing.getZ()) * TODEG - player.getYaw();
 
         player.changeLookDirection(deltaX / 0.15, deltaY / 0.15);
 

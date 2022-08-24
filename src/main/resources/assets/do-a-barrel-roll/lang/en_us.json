@@ -1,0 +1,14 @@
+{
+  "text.autoconfig.do-a-barrel-roll.title": "§lDo a Barrel Roll",
+  "text.autoconfig.do-a-barrel-roll.option.switchRollAndYaw": "Switch roll and yaw",
+  "text.autoconfig.do-a-barrel-roll.option.switchRollAndYaw.@Tooltip": "Switch the roll and yaw axis, not recommended but might make flying easier for some people.",
+  "text.autoconfig.do-a-barrel-roll.option.desktopSensitivity": "Mouse and keyboard sensitivity",
+  "text.autoconfig.do-a-barrel-roll.option.desktopSensitivity.pitch": "Pitch",
+  "text.autoconfig.do-a-barrel-roll.option.desktopSensitivity.yaw": "Yaw",
+  "text.autoconfig.do-a-barrel-roll.option.desktopSensitivity.roll": "Roll",
+  "text.autoconfig.do-a-barrel-roll.option.controllerSensitivity": "Controller sensitivity",
+  "text.autoconfig.do-a-barrel-roll.option.controllerSensitivity.@Tooltip": "Only applicable when MidnightControls is installed.",
+  "text.autoconfig.do-a-barrel-roll.option.controllerSensitivity.pitch": "Pitch",
+  "text.autoconfig.do-a-barrel-roll.option.controllerSensitivity.yaw": "Yaw",
+  "text.autoconfig.do-a-barrel-roll.option.controllerSensitivity.roll": "Roll"
+}

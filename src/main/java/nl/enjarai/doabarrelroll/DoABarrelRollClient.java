@@ -1,7 +1,6 @@
 package nl.enjarai.doabarrelroll;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.GlfwUtil;
@@ -11,17 +10,17 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
-import nl.enjarai.doabarrelroll.compat.midnightcontrols.ControllerIntegration;
 import nl.enjarai.doabarrelroll.config.ModConfig;
+import nl.enjarai.doabarrelroll.config.Sensitivity;
 
 public class DoABarrelRollClient implements ClientModInitializer {
 	public static final String MODID = "do-a-barrel-roll";
 
-	public static final double TORAD = Math.PI / 180;
-	public static final double TODEG = 1 / TORAD;
-	
+	public static final SmoothUtil pitchSmoother = new SmoothUtil();
 	public static final SmoothUtil yawSmoother = new SmoothUtil();
-	public static double lastTurnTime;
+	public static final SmoothUtil rollSmoother = new SmoothUtil();
+	private static double lastLookUpdate;
+	private static double lastLerpUpdate;
 	public static double landingLerp = 1;
 	public static Vec3d left;
 	
@@ -29,9 +28,6 @@ public class DoABarrelRollClient implements ClientModInitializer {
 	@Override
     public void onInitializeClient() { // TODO triple jump to activate???
 		ModConfig.init();
-
-		// Load compat if Midnight Controls is installed
-		if (FabricLoader.getInstance().isModLoaded("midnightcontrols")) ControllerIntegration.init();
     }
 
 	public static Identifier id(String path) {
@@ -42,41 +38,36 @@ public class DoABarrelRollClient implements ClientModInitializer {
 	public static void updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY) {
 		
 		double time = GlfwUtil.getTime();
-		double delta = time - lastTurnTime;
-		lastTurnTime = time;
+		double lerpDelta = time - lastLerpUpdate;
+		lastLerpUpdate = time;
 
 		// smoothly lerp left vector to the assumed upright left if not in flight
 		if (!player.isFallFlying()) {
-			var lerp = MathHelper.lerp(MathHelper.clamp(delta, 0, 1), landingLerp, 1);
+			landingLerp = MathHelper.lerp(MathHelper.clamp(lerpDelta * 2, 0, 1), landingLerp, 1);
 
-			// a few roundings to make sure we don't get any funky behaviour
-			landingLerp = (double) Math.round(lerp * 100) / 100.0;
+			// round the lerp off when done to hopefully avoid world flickering
 			if (landingLerp > 0.9) landingLerp = 1;
 			
-			left = left.lerp(ElytraMath.getAssumedLeft(player.getYaw()), landingLerp);
-			yawSmoother.clear();
+			clearSmoothers();
 			player.changeLookDirection(cursorDeltaX, cursorDeltaY);
+			left = left.lerp(ElytraMath.getAssumedLeft(player.getYaw()), landingLerp);
 			return;
 		}
 
 		landingLerp = 0;
 
-		changeElytraLook(player, cursorDeltaY, yawSmoother.smooth(0, delta), cursorDeltaX);
+		changeElytraLook(cursorDeltaY, 0, cursorDeltaX, ModConfig.INSTANCE.desktopSensitivity);
 	}
 	
 	public static void onWorldRender(MinecraftClient client, float tickDelta, long limitTime, MatrixStack matrix) {
 
 		if (client.player == null || !client.player.isFallFlying()) {
 
-			yawSmoother.clear();
+			clearSmoothers();
 
 		} else {
 
-			double time = GlfwUtil.getTime();
-			double delta = time - lastTurnTime;
-			lastTurnTime = time;
-
-			var yawDelta = 10f;
+			var yawDelta = 25f;
 			var yaw = 0;
 
 			// Strafe buttons
@@ -87,19 +78,13 @@ public class DoABarrelRollClient implements ClientModInitializer {
 				yaw += yawDelta;
 			}
 
-			// Controller axes
-//			if (ControllerIntegration.ENABLED.get()) {
-//				yaw -= ControllerIntegration.YAW.ge * yawDelta;
-//				yaw += ControllerIntegration.getAxisValue(ControllerIntegration.AXIS_RIGHT_X) * yawDelta;
-//			}
-
-			changeElytraLook(client.player, 0, yawSmoother.smooth(yaw, delta), 0);
+			changeElytraLook(0, yaw, 0, ModConfig.INSTANCE.desktopSensitivity);
 
 		}
 
 		if (landingLerp < 1) {
 
-			double angle = -Math.acos(left.dotProduct(ElytraMath.getAssumedLeft(client.player.getYaw()))) * TODEG;
+			double angle = -Math.acos(left.dotProduct(ElytraMath.getAssumedLeft(client.player.getYaw()))) * ElytraMath.TODEG;
 			if (left.getY() < 0) angle *= -1;
 
 			matrix.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion((float) angle));
@@ -108,20 +93,36 @@ public class DoABarrelRollClient implements ClientModInitializer {
 	}
 
 
-	public static void changeElytraLook(ClientPlayerEntity player, double pitch, double yaw, double roll) {
+	private static void clearSmoothers() {
+		pitchSmoother.clear();
+		yawSmoother.clear();
+		rollSmoother.clear();
+	}
+
+	public static void changeElytraLook(double pitch, double yaw, double roll, Sensitivity sensitivity) {
+		var player = MinecraftClient.getInstance().player;
+		if (player == null) return;
+
+		// calculate time since last update
+		double time = GlfwUtil.getTime();
+		double delta = time - lastLookUpdate;
+		lastLookUpdate = time;
+
+		// smooth the look changes
+		pitch = pitchSmoother.smooth(pitch, sensitivity.pitch * delta);
+		yaw = yawSmoother.smooth(yaw, sensitivity.yaw * delta);
+		roll = rollSmoother.smooth(roll, sensitivity.roll * delta);
+
+		// apply the look changes
 		if (ModConfig.INSTANCE.switchRollAndYaw) {
-			ElytraMath.changeElytraLookDirectly(player, pitch, yaw, roll);
+			ElytraMath.changeElytraLookDirectly(player, pitch, roll, yaw, sensitivity);
 		} else {
-			ElytraMath.changeElytraLookDirectly(player, pitch, roll, yaw);
+			ElytraMath.changeElytraLookDirectly(player, pitch, yaw, roll, sensitivity);
 		}
 	}
 	
 	public static boolean isFallFlying() {
 		var player = MinecraftClient.getInstance().player;
 		return player != null && player.isFallFlying();
-	}
-
-	public static boolean shouldSmooth() {
-		return isFallFlying();
 	}
 }
