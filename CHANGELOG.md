@@ -1,1 +1,3 @@
-First release.
+- Added the ability to switch the yaw and roll axes.
+- Added sensitivity settings.
+- Added controller compat via MidnightControls.
