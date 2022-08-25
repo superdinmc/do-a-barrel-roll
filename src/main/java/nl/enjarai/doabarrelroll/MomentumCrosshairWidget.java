@@ -2,6 +2,7 @@ package nl.enjarai.doabarrelroll;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec2f;
@@ -31,7 +32,8 @@ public class MomentumCrosshairWidget {
                 bufferBuilder.vertex(matrix, (float) x + 1, (float) y + 1, 0.0F).color(color).next();
                 bufferBuilder.vertex(matrix, (float) x + 1, (float) y, 0.0F).color(color).next();
                 bufferBuilder.vertex(matrix, (float) x, (float) y, 0.0F).color(color).next();
-                BufferRenderer.drawWithShader(bufferBuilder.end());
+                bufferBuilder.end();
+                BufferRenderer.draw(bufferBuilder);
 
             });
             RenderSystem.enableTexture();
