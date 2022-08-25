@@ -1,2 +1,1 @@
-- Fixed camera drifting while game is paused (#5)
-- Added momentum based camera movement option
+- Fixed wrong version dependency, causing failure to start on 1.19.1 and 1.19.2.
