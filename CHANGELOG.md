@@ -1,1 +1,1 @@
-- Fixed wrong version dependency, causing failure to start on 1.19.1 and 1.19.2.
+- Add global toggle config option.
