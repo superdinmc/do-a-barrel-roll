@@ -37,7 +37,7 @@ public class DoABarrelRollClient implements ClientModInitializer {
 	}
 	
 
-	public static void updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY) {
+	public static boolean updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY) {
 		
 		double time = GlfwUtil.getTime();
 		double lerpDelta = time - lastLerpUpdate;
@@ -52,10 +52,9 @@ public class DoABarrelRollClient implements ClientModInitializer {
 			if (landingLerp > 0.9) landingLerp = 1;
 			
 			clearValues();
-			player.changeLookDirection(cursorDeltaX, cursorDeltaY);
 			left = left.lerp(ElytraMath.getAssumedLeft(player.getYaw()), landingLerp);
 
-			return;
+			return true;
 		}
 
 
@@ -82,6 +81,8 @@ public class DoABarrelRollClient implements ClientModInitializer {
 			mouseTurnVec = Vec2f.ZERO;
 			changeElytraLook(cursorDeltaY, 0, cursorDeltaX, ModConfig.INSTANCE.desktopSensitivity);
 		}
+
+		return false;
 	}
 	
 	public static void onWorldRender(MinecraftClient client, float tickDelta, long limitTime, MatrixStack matrix) {
