@@ -1,1 +1,1 @@
-- Add global toggle config option.
+- Fixed incompatibility with Icarus using Mixin Extras
