@@ -1,1 +1,6 @@
-- Fixed incompatibility with Icarus using Mixin Extras
+- Added third person support, your playermodel will now roll correctly
+- Added banking, adding to yaw slightly while rolling
+- Rewrote the system that applies rotation, making it more consistent
+- Added an option to invert pitch
+- Fixed yaw being more sensitive at higher framerates
+- Fixed an issue with sensitivity settings not being saved correctly

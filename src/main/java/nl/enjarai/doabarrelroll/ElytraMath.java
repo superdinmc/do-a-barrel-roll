@@ -2,18 +2,18 @@ package nl.enjarai.doabarrelroll;
 
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.math.Vec3d;
-import nl.enjarai.doabarrelroll.config.Sensitivity;
+import nl.enjarai.doabarrelroll.config.RotationInstant;
 
 public class ElytraMath {
 
     public static final double TORAD = Math.PI / 180;
     public static final double TODEG = 1 / TORAD;
 
-    public static void changeElytraLookDirectly(ClientPlayerEntity player, double pitch, double yaw, double roll, Sensitivity sensitivity) {
-        // apply sensitivity
-        pitch *= sensitivity.pitch;
-        yaw *= sensitivity.yaw;
-        roll *= sensitivity.roll;
+    public static void changeElytraLookDirectly(ClientPlayerEntity player, RotationInstant rotation) {
+
+        var pitch = rotation.getPitch();
+        var yaw = rotation.getYaw();
+        var roll = rotation.getRoll();
 
         Vec3d facing = player.getRotationVecClient();
         DoABarrelRollClient.left = DoABarrelRollClient.left.subtract(facing.multiply(DoABarrelRollClient.left.dotProduct(facing))).normalize();
@@ -76,5 +76,11 @@ public class ElytraMath {
         y += (tmp1 - tmp2) * v.getZ();
 
         return new Vec3d(x, y, z);
+    }
+
+    public static double getRoll(float yaw, Vec3d left) {
+        double angle = -Math.acos(left.dotProduct(getAssumedLeft(yaw))) * TODEG;
+        if (left.getY() < 0) angle *= -1;
+        return angle;
     }
 }
