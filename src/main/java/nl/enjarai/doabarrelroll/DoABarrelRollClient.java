@@ -12,10 +12,12 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 import nl.enjarai.doabarrelroll.config.ModConfig;
+import nl.enjarai.doabarrelroll.config.RotationInstant;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
 
 public class DoABarrelRollClient implements ClientModInitializer {
 	public static final String MODID = "do-a-barrel-roll";
+	public static final Sensitivity ROTATION_SMOOTHNESS = new Sensitivity(1, 0.4, 1);
 
 	public static final SmoothUtil pitchSmoother = new SmoothUtil();
 	public static final SmoothUtil yawSmoother = new SmoothUtil();
@@ -25,7 +27,7 @@ public class DoABarrelRollClient implements ClientModInitializer {
 	public static double landingLerp = 1;
 	public static Vec3d left;
 	public static Vec2f mouseTurnVec = Vec2f.ZERO;
-	
+
 
 	@Override
     public void onInitializeClient() { // TODO triple jump to activate???
@@ -100,18 +102,9 @@ public class DoABarrelRollClient implements ClientModInitializer {
 
 			} else {
 
-				var yawDelta = 25f;
-				var yaw = 0;
+				// update the camera rotation every frame to keep it smooth
+				changeElytraLook(0, 0, 0, ModConfig.INSTANCE.desktopSensitivity);
 
-				// Strafe buttons
-				if (client.options.leftKey.isPressed()) {
-					yaw -= yawDelta;
-				}
-				if (client.options.rightKey.isPressed()) {
-					yaw += yawDelta;
-				}
-
-				changeElytraLook(0, yaw, 0, ModConfig.INSTANCE.desktopSensitivity);
 			}
 		}
 
@@ -167,17 +160,50 @@ public class DoABarrelRollClient implements ClientModInitializer {
 		var player = MinecraftClient.getInstance().player;
 		if (player == null) return;
 
-		// smooth the look changes
-		pitch = pitchSmoother.smooth(pitch, sensitivity.pitch * delta);
-		yaw = yawSmoother.smooth(yaw, sensitivity.yaw * delta);
-		roll = rollSmoother.smooth(roll, sensitivity.roll * delta);
+		var rotDelta = new RotationInstant(pitch, yaw, roll, delta);
 
-		// apply the look changes
-		if (ModConfig.INSTANCE.switchRollAndYaw) {
-			ElytraMath.changeElytraLookDirectly(player, pitch, roll, yaw, sensitivity);
-		} else {
-			ElytraMath.changeElytraLookDirectly(player, pitch, yaw, roll, sensitivity);
+		ElytraMath.changeElytraLookDirectly(player, rotDelta
+				.useModifier(DoABarrelRollClient::strafeButtons)
+				.applySensitivity(sensitivity)
+				.applyConfig(ModConfig.INSTANCE)
+				.useModifier(DoABarrelRollClient::banking)
+				.smooth(pitchSmoother, yawSmoother, rollSmoother, ROTATION_SMOOTHNESS)
+		);
+	}
+
+	public static RotationInstant strafeButtons(RotationInstant rotationInstant) {
+		var client = MinecraftClient.getInstance();
+
+		var yawDelta = 1800 * rotationInstant.getRenderDelta();
+		var yaw = 0;
+
+		if (client.options.leftKey.isPressed()) {
+			yaw -= yawDelta;
 		}
+		if (client.options.rightKey.isPressed()) {
+			yaw += yawDelta;
+		}
+
+		return rotationInstant.add(0, yaw, 0);
+	}
+
+	public static RotationInstant banking(RotationInstant rotationInstant) {
+		if (!ModConfig.INSTANCE.enableBanking) return rotationInstant;
+
+		var client = MinecraftClient.getInstance();
+		var player = client.player;
+		if (player == null) return rotationInstant;
+
+		var delta = rotationInstant.getRenderDelta();
+		var currentRoll = ElytraMath.getRoll(player.getYaw(), left) * ElytraMath.TORAD;
+		var yawMod = Math.sin(currentRoll) * 10 * ModConfig.INSTANCE.bankingStrength * delta;
+
+		// check if we accidentally got NaN, for some reason this happens sometimes
+		if (Double.isNaN(yawMod)) {
+			yawMod = 0;
+		}
+
+		return rotationInstant.add(0, yawMod, 0);
 	}
 	
 	public static boolean isFallFlying() {
