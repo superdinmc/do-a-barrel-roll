@@ -130,6 +130,7 @@ public class DoABarrelRollClient implements ClientModInitializer {
 		yawSmoother.clear();
 		rollSmoother.clear();
 		mouseTurnVec = Vec2f.ZERO;
+		lastLookUpdate = GlfwUtil.getTime();
 	}
 
 	/**
@@ -166,8 +167,8 @@ public class DoABarrelRollClient implements ClientModInitializer {
 				.useModifier(DoABarrelRollClient::strafeButtons)
 				.applySensitivity(sensitivity)
 				.applyConfig(ModConfig.INSTANCE)
-				.useModifier(DoABarrelRollClient::banking)
 				.smooth(pitchSmoother, yawSmoother, rollSmoother, ROTATION_SMOOTHNESS)
+				.useModifier(DoABarrelRollClient::banking)
 		);
 	}
 
@@ -196,15 +197,36 @@ public class DoABarrelRollClient implements ClientModInitializer {
 
 		var delta = rotationInstant.getRenderDelta();
 		var currentRoll = ElytraMath.getRoll(player.getYaw(), left) * ElytraMath.TORAD;
-		var yawMod = Math.sin(currentRoll) * 10 * ModConfig.INSTANCE.bankingStrength * delta;
+		var strength = 10 * ModConfig.INSTANCE.bankingStrength;
+
+		var dX = Math.sin(currentRoll) * strength;
+		var dY = -strength + Math.cos(currentRoll) * strength;
 
 		// check if we accidentally got NaN, for some reason this happens sometimes
-		if (Double.isNaN(yawMod)) {
-			yawMod = 0;
-		}
+		if (Double.isNaN(dX)) dX = 0;
+		if (Double.isNaN(dY)) dY = 0;
 
-		return rotationInstant.add(0, yawMod, 0);
+		return rotationInstant.addAbsolute(dX * delta, dY * delta, currentRoll);
 	}
+
+//	public static RotationInstant yawBanking(RotationInstant rotationInstant) {
+//		if (!ModConfig.INSTANCE.enableBanking) return rotationInstant;
+//
+//		var client = MinecraftClient.getInstance();
+//		var player = client.player;
+//		if (player == null) return rotationInstant;
+//
+//		var delta = rotationInstant.getRenderDelta();
+//		var currentRoll = ElytraMath.getRoll(player.getYaw(), left) * ElytraMath.TORAD;
+//		var yawMod = Math.sin(currentRoll) * 10 * ModConfig.INSTANCE.bankingStrength * delta;
+//
+//		// check if we accidentally got NaN, for some reason this happens sometimes
+//		if (Double.isNaN(yawMod)) {
+//			yawMod = 0;
+//		}
+//
+//		return rotationInstant.add(0, yawMod, 0);
+//	}
 	
 	public static boolean isFallFlying() {
 		var player = MinecraftClient.getInstance().player;
