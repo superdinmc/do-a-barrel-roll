@@ -4,6 +4,8 @@ import net.minecraft.client.util.SmoothUtil;
 
 import java.util.function.Function;
 
+import static nl.enjarai.doabarrelroll.ElytraMath.TORAD;
+
 public class RotationInstant {
     private final double pitch;
     private final double yaw;
@@ -35,6 +37,13 @@ public class RotationInstant {
 
     public RotationInstant add(double pitch, double yaw, double roll) {
         return new RotationInstant(this.pitch + pitch, this.yaw + yaw, this.roll + roll, this.renderDelta);
+    }
+
+    // Add absolute upright rotation to this rolled rotation, taking roll into account.
+    public RotationInstant addAbsolute(double x, double y, double currentRoll) {
+        double cos = Math.cos(currentRoll);
+        double sin = Math.sin(currentRoll);
+        return new RotationInstant(this.pitch - y * cos - x * sin, this.yaw - y * sin + x * cos, this.roll, this.renderDelta);
     }
 
     public RotationInstant smooth(SmoothUtil pitchSmoother, SmoothUtil yawSmoother, SmoothUtil rollSmoother, Sensitivity smoothness) {
