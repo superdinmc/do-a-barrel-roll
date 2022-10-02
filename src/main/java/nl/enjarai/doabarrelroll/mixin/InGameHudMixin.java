@@ -20,7 +20,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
             method = "renderCrosshair(Lnet/minecraft/client/util/math/MatrixStack;)V",
             at = @At(value = "HEAD")
     )
-    private void renderCrosshairHead(MatrixStack matrices, CallbackInfo ci) {
+    private void doABarrelRoll$renderCrosshairHead(MatrixStack matrices, CallbackInfo ci) {
         matrices.push();
         DoABarrelRollClient.onRenderCrosshair(matrices, scaledWidth, scaledHeight);
     }
@@ -29,7 +29,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
             method = "renderCrosshair(Lnet/minecraft/client/util/math/MatrixStack;)V",
             at = @At(value = "RETURN")
     )
-    private void renderCrosshairReturn(MatrixStack matrices, CallbackInfo ci) {
+    private void doABarrelRoll$renderCrosshairReturn(MatrixStack matrices, CallbackInfo ci) {
         matrices.pop();
     }
 }

@@ -17,7 +17,7 @@ public abstract class GameRendererMixin {
 	@Final @Shadow private MinecraftClient client;
 	
 	@Inject(at = @At("HEAD"), method = "renderWorld")
-	public void renderWorld(float tickDelta, long limitTime, MatrixStack matrix, CallbackInfo ci) {
+	public void doABarrelRoll$renderWorld(float tickDelta, long limitTime, MatrixStack matrix, CallbackInfo ci) {
 		DoABarrelRollClient.onWorldRender(client, tickDelta, limitTime, matrix);
 	}
 }

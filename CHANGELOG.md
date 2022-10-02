@@ -1,1 +1,2 @@
-- Significant improvements to the banking physics
+- Hold W to go faster
+- Hopefully fixed the world disappearing sometimes

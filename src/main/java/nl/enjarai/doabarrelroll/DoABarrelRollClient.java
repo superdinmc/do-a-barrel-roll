@@ -27,6 +27,7 @@ public class DoABarrelRollClient implements ClientModInitializer {
 	public static double landingLerp = 1;
 	public static Vec3d left;
 	public static Vec2f mouseTurnVec = Vec2f.ZERO;
+	public static double throttle = 0;
 
 
 	@Override
@@ -111,7 +112,7 @@ public class DoABarrelRollClient implements ClientModInitializer {
 		if (client.player != null && landingLerp < 1) {
 
 			// calculate the camera angle and apply it
-			double angle = -Math.acos(left.dotProduct(ElytraMath.getAssumedLeft(client.player.getYaw()))) * ElytraMath.TODEG;
+			double angle = -Math.acos(MathHelper.clamp(left.dotProduct(ElytraMath.getAssumedLeft(client.player.getYaw())), -1, 1)) * ElytraMath.TODEG;
 			if (left.getY() < 0) angle *= -1;
 			matrix.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion((float) angle));
 
@@ -131,6 +132,7 @@ public class DoABarrelRollClient implements ClientModInitializer {
 		rollSmoother.clear();
 		mouseTurnVec = Vec2f.ZERO;
 		lastLookUpdate = GlfwUtil.getTime();
+		throttle = 0;
 	}
 
 	/**
@@ -164,6 +166,7 @@ public class DoABarrelRollClient implements ClientModInitializer {
 		var rotDelta = new RotationInstant(pitch, yaw, roll, delta);
 
 		ElytraMath.changeElytraLookDirectly(player, rotDelta
+				.useModifier(DoABarrelRollClient::manageThrottle)
 				.useModifier(DoABarrelRollClient::strafeButtons)
 				.applySensitivity(sensitivity)
 				.applyConfig(ModConfig.INSTANCE)
@@ -209,24 +212,23 @@ public class DoABarrelRollClient implements ClientModInitializer {
 		return rotationInstant.addAbsolute(dX * delta, dY * delta, currentRoll);
 	}
 
-//	public static RotationInstant yawBanking(RotationInstant rotationInstant) {
-//		if (!ModConfig.INSTANCE.enableBanking) return rotationInstant;
-//
-//		var client = MinecraftClient.getInstance();
-//		var player = client.player;
-//		if (player == null) return rotationInstant;
-//
-//		var delta = rotationInstant.getRenderDelta();
-//		var currentRoll = ElytraMath.getRoll(player.getYaw(), left) * ElytraMath.TORAD;
-//		var yawMod = Math.sin(currentRoll) * 10 * ModConfig.INSTANCE.bankingStrength * delta;
-//
-//		// check if we accidentally got NaN, for some reason this happens sometimes
-//		if (Double.isNaN(yawMod)) {
-//			yawMod = 0;
-//		}
-//
-//		return rotationInstant.add(0, yawMod, 0);
-//	}
+	public static RotationInstant manageThrottle(RotationInstant rotationInstant) {
+		var client = MinecraftClient.getInstance();
+
+		var delta = rotationInstant.getRenderDelta();
+
+		if (client.options.forwardKey.isPressed()) {
+			throttle += 0.1 * delta;
+		} else if (client.options.backKey.isPressed()) {
+			throttle -= 0.1 * delta;
+		} else {
+			throttle -= throttle * 0.95 * delta;
+		}
+
+		throttle = MathHelper.clamp(throttle, 0, ModConfig.INSTANCE.maxThrust);
+
+		return rotationInstant;
+	}
 	
 	public static boolean isFallFlying() {
 		var player = MinecraftClient.getInstance().player;
