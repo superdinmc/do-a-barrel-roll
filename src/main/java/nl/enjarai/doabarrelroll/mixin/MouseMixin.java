@@ -18,7 +18,7 @@ public abstract class MouseMixin {
                     target = "Lnet/minecraft/client/network/ClientPlayerEntity;changeLookDirection(DD)V"
             )
     )
-    private boolean changeLookDirection(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY) {
+    private boolean doABarrelRoll$changeLookDirection(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY) {
         return DoABarrelRollClient.updateMouse(player, cursorDeltaX, cursorDeltaY);
     }
 }

@@ -35,6 +35,12 @@ public class ModConfig implements ConfigData, ConfiguresRotation {
 
     public float bankingStrength = 20;
 
+    @ConfigEntry.Gui.Tooltip(count = 4)
+    public boolean enableThrust = false;
+
+    @ConfigEntry.Gui.Tooltip
+    public float maxThrust = 1;
+
     @ConfigEntry.Gui.CollapsibleObject
     public Sensitivity desktopSensitivity = new Sensitivity();
 

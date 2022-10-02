@@ -23,7 +23,7 @@ public abstract class PlayerEntityRendererMixin {
             method = "setupTransforms(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/client/util/math/MatrixStack;FFF)V",
             at = @At("HEAD")
     )
-    private void capturePlayer(AbstractClientPlayerEntity abstractClientPlayerEntity, MatrixStack matrixStack, float f, float g, float h, CallbackInfo ci) {
+    private void doABarrelRoll$capturePlayer(AbstractClientPlayerEntity abstractClientPlayerEntity, MatrixStack matrixStack, float f, float g, float h, CallbackInfo ci) {
         player = abstractClientPlayerEntity;
     }
 
@@ -36,7 +36,7 @@ public abstract class PlayerEntityRendererMixin {
             ),
             index = 0
     )
-    private Quaternion modifyRoll(Quaternion original) {
+    private Quaternion doABarrelRoll$modifyRoll(Quaternion original) {
         if (!(player instanceof ClientPlayerEntity)) return original;
 
         var roll = ElytraMath.getRoll(player.getYaw(), DoABarrelRollClient.left);

@@ -1,6 +1,7 @@
 package nl.enjarai.doabarrelroll;
 
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import nl.enjarai.doabarrelroll.config.RotationInstant;
 
@@ -79,7 +80,7 @@ public class ElytraMath {
     }
 
     public static double getRoll(float yaw, Vec3d left) {
-        double angle = -Math.acos(left.dotProduct(getAssumedLeft(yaw))) * TODEG;
+        double angle = -Math.acos(MathHelper.clamp(left.dotProduct(getAssumedLeft(yaw)), -1, 1)) * TODEG;
         if (left.getY() < 0) angle *= -1;
         return angle;
     }
