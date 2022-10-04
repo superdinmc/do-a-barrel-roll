@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Mixin config plugin for compat, only applies mixins if specific mod is present.
+ * Mixin config plugin for compat, only applies mixins if specific mod is
+ * present.
  */
 public interface CompatMixinPlugin extends IMixinConfigPlugin {
     Set<String> getRequiredMods();
@@ -26,8 +27,11 @@ public interface CompatMixinPlugin extends IMixinConfigPlugin {
 
     @Override
     default boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        return getRequiredMods().stream()
+        var allmatches = getRequiredMods().stream()
                 .allMatch((modId) -> FabricLoader.getInstance().isModLoaded(modId));
+        if (allmatches)
+            System.out.println("Applying mixin " + mixinClassName + " for " + targetClassName + ": " + allmatches);
+        return allmatches;
     }
 
     @Override

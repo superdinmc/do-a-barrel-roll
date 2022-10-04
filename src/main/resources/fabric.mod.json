@@ -32,7 +32,8 @@
 	
 	"environment": "client",
 	"mixins": [
-		"do-a-barrel-roll.mixins.json"
+		"do-a-barrel-roll.mixins.json",
+        "do-a-barrel-roll.compat.lambdacontrols.mixins.json"
 	],
 
 	"depends": {
