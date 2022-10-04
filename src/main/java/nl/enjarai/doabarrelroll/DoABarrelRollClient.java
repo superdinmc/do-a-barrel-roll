@@ -198,7 +198,7 @@ public class DoABarrelRollClient implements ClientModInitializer {
 
 		var delta = rotationInstant.getRenderDelta();
 		var currentRoll = ElytraMath.getRoll(player.getYaw(), left) * ElytraMath.TORAD;
-		var strength = 10 * ModConfig.INSTANCE.bankingStrength;
+		var strength = 10 * Math.cos(player.getPitch() * ElytraMath.TORAD) * ModConfig.INSTANCE.bankingStrength;
 
 		var dX = Math.sin(currentRoll) * strength;
 		var dY = -strength + Math.cos(currentRoll) * strength;
