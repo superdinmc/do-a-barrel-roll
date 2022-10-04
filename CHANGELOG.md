@@ -1,2 +1,2 @@
 - Fixed some funky camera behaviour when looking straight up or down
-- Backport to 1.17.1
+- Backport to 1.17.1 (Thanks @doinkythederp!)
