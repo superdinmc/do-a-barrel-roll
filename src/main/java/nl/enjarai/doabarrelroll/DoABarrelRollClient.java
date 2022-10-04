@@ -171,7 +171,7 @@ public class DoABarrelRollClient implements ClientModInitializer {
 				.applySensitivity(sensitivity)
 				.applyConfig(ModConfig.INSTANCE)
 				.smooth(pitchSmoother, yawSmoother, rollSmoother, ROTATION_SMOOTHNESS)
-				.useModifier(DoABarrelRollClient::banking)
+				.useModifier(DoABarrelRollClient::banking, () -> ModConfig.INSTANCE.enableBanking)
 		);
 	}
 
@@ -192,8 +192,6 @@ public class DoABarrelRollClient implements ClientModInitializer {
 	}
 
 	public static RotationInstant banking(RotationInstant rotationInstant) {
-		if (!ModConfig.INSTANCE.enableBanking) return rotationInstant;
-
 		var client = MinecraftClient.getInstance();
 		var player = client.player;
 		if (player == null) return rotationInstant;
