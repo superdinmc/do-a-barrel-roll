@@ -171,7 +171,7 @@ public class DoABarrelRollClient implements ClientModInitializer {
 				.applySensitivity(sensitivity)
 				.applyConfig(ModConfig.INSTANCE)
 				.smooth(pitchSmoother, yawSmoother, rollSmoother, ROTATION_SMOOTHNESS)
-				.useModifier(DoABarrelRollClient::banking)
+				.useModifier(DoABarrelRollClient::banking, () -> ModConfig.INSTANCE.enableBanking)
 		);
 	}
 
@@ -192,15 +192,13 @@ public class DoABarrelRollClient implements ClientModInitializer {
 	}
 
 	public static RotationInstant banking(RotationInstant rotationInstant) {
-		if (!ModConfig.INSTANCE.enableBanking) return rotationInstant;
-
 		var client = MinecraftClient.getInstance();
 		var player = client.player;
 		if (player == null) return rotationInstant;
 
 		var delta = rotationInstant.getRenderDelta();
 		var currentRoll = ElytraMath.getRoll(player.getYaw(), left) * ElytraMath.TORAD;
-		var strength = 10 * ModConfig.INSTANCE.bankingStrength;
+		var strength = 10 * Math.cos(player.getPitch() * ElytraMath.TORAD) * ModConfig.INSTANCE.bankingStrength;
 
 		var dX = Math.sin(currentRoll) * strength;
 		var dY = -strength + Math.cos(currentRoll) * strength;

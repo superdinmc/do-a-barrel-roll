@@ -2,6 +2,7 @@ package nl.enjarai.doabarrelroll.config;
 
 import net.minecraft.client.util.SmoothUtil;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 import static nl.enjarai.doabarrelroll.ElytraMath.TORAD;
@@ -68,7 +69,11 @@ public class RotationInstant {
         return config.configureRotation(this);
     }
 
+    public RotationInstant useModifier(Function<RotationInstant, RotationInstant> modifier, BooleanSupplier condition) {
+        return condition.getAsBoolean() ? modifier.apply(this) : this;
+    }
+
     public RotationInstant useModifier(Function<RotationInstant, RotationInstant> modifier) {
-        return modifier.apply(this);
+        return useModifier(modifier, () -> true);
     }
 }

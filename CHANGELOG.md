@@ -1,2 +1,2 @@
-- Hold W to go faster
-- Hopefully fixed the world disappearing sometimes
+- Fixed some funky camera behaviour when looking straight up or down
+- Backport to 1.17.1
