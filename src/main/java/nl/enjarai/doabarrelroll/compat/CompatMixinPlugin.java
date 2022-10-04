@@ -27,11 +27,8 @@ public interface CompatMixinPlugin extends IMixinConfigPlugin {
 
     @Override
     default boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        var allmatches = getRequiredMods().stream()
+        return getRequiredMods().stream()
                 .allMatch((modId) -> FabricLoader.getInstance().isModLoaded(modId));
-        if (allmatches)
-            System.out.println("Applying mixin " + mixinClassName + " for " + targetClassName + ": " + allmatches);
-        return allmatches;
     }
 
     @Override
