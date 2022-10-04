@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Mixin config plugin for compat, only applies mixins if specific mod is present.
+ * Mixin config plugin for compat, only applies mixins if specific mod is
+ * present.
  */
 public interface CompatMixinPlugin extends IMixinConfigPlugin {
     Set<String> getRequiredMods();

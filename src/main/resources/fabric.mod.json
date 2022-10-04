@@ -33,12 +33,12 @@
 	"environment": "client",
 	"mixins": [
 		"do-a-barrel-roll.mixins.json",
-		"do-a-barrel-roll.compat.midnightcontrols.mixins.json"
+        "do-a-barrel-roll.compat.lambdacontrols.mixins.json"
 	],
 
 	"depends": {
-		"cloth-config": "*",
-		"minecraft": "1.18.x"
+		"cloth-config2": "*",
+		"minecraft": "1.17.x"
 	},
 
 	"custom": {

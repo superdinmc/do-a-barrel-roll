@@ -181,10 +181,10 @@ public class DoABarrelRollClient implements ClientModInitializer {
 		var yawDelta = 1800 * rotationInstant.getRenderDelta();
 		var yaw = 0;
 
-		if (client.options.leftKey.isPressed()) {
+		if (client.options.keyLeft.isPressed()) {
 			yaw -= yawDelta;
 		}
-		if (client.options.rightKey.isPressed()) {
+		if (client.options.keyRight.isPressed()) {
 			yaw += yawDelta;
 		}
 
@@ -217,9 +217,9 @@ public class DoABarrelRollClient implements ClientModInitializer {
 
 		var delta = rotationInstant.getRenderDelta();
 
-		if (client.options.forwardKey.isPressed()) {
+		if (client.options.keyForward.isPressed()) {
 			throttle += 0.1 * delta;
-		} else if (client.options.backKey.isPressed()) {
+		} else if (client.options.keyBack.isPressed()) {
 			throttle -= 0.1 * delta;
 		} else {
 			throttle -= throttle * 0.95 * delta;
