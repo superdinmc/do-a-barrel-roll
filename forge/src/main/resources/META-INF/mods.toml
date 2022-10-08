@@ -1,20 +1,19 @@
 modLoader = "javafml"
 loaderVersion = "[40,)"
 #issueTrackerURL = ""
-license = "ARR"
-issueTrackerURL = "https://github.com/MehVahdJukaar/Moonlight/issues" #optional
+license = "GPL-3.0"
+issueTrackerURL = "https://github.com/enjarai/do-a-barrel-roll/issues" #optional
 
 [[mods]]
 modId = "do-a-barrel-roll"
 version = "${version}"
-displayName = "Moonlight Library"
-authors = "MehVahdJukaar"
-modUrl = "https://www.curseforge.com/minecraft/mc-mods/selene" #optional
-updateJSONURL = "https://raw.githubusercontent.com/MehVahdJukaar/Moonlight/master/forge/update.json"
+displayName = "Do A Barrel Roll"
+authors = "enjarai"
+modUrl = "https://github.com/enjarai/do-a-barrel-roll" #optional
 
-logoFile="icon.png" #optional
+logoFile="assets/do-a-barrel-roll/icon.png"
 description = '''
-A small library with many cool unique features, from dynamic asset generation to dynamic villager schedules and multi loader utilities
+"Microsoft flight simulator for Minecraft elytras.
 '''
 #logoFile = ""
 
@@ -28,13 +27,7 @@ side = "BOTH"
 [[dependencies.do-a-barrel-roll]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.19.1,)"
+versionRange = "[1.19,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.do-a-barrel-roll]]
-modId = "configured"
-mandatory = false
-versionRange = "[2.0.0-1.19.2,)"
-ordering = "NONE"
-side = "BOTH"

@@ -26,7 +26,7 @@
           "nl.enjarai.doabarrelroll.compat.modmenu.ModMenuIntegration"
 		],
 		"preLaunch": [
-			"nl.enjarai.doabarrelroll.DoABarrelRollPreLaunch"
+			"nl.enjarai.doabarrelroll.DoABarrelRollClient"
 		]
 	},
 	
