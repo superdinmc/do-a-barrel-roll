@@ -2,18 +2,39 @@ package nl.enjarai.doabarrelroll.config;
 
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import nl.enjarai.doabarrelroll.DoABarrelRollClient;
+import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
+import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigSpec;
+import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigType;
 
-public class ModConfig  {
+import java.util.function.Supplier;
+
+public class ModConfig {
+
+    public static ConfigSpec SPEC;
+    private static Supplier<Boolean> ENABLED;
+    private static Supplier<Boolean> SWITCH_ROLL_AND_YAW;
+
+    public static void init() {
+        ConfigBuilder builder = ConfigBuilder.create(DoABarrelRollClient.id("client"), ConfigType.CLIENT);
+
+        ENABLED = builder.comment("Turn On and Off the mod").define("mod_enabled", true);
+        SWITCH_ROLL_AND_YAW = builder.comment("Turn On and Off the mod").define("switch_roll_and_yaw", false);
+
+        builder.push("some_category");
+
+        builder.pop();
 
 
-    @ExpectPlatform
-    public static boolean getModEnabled() {
-        throw new AssertionError();
+        SPEC = builder.buildAndRegister();
     }
 
-    @ExpectPlatform
+    public static boolean getModEnabled() {
+        return ENABLED.get();
+    }
+
     public static boolean getSwitchRollAndYaw() {
-        throw new AssertionError();
+        return SWITCH_ROLL_AND_YAW.get();
     } //= false;
 
     @ExpectPlatform
