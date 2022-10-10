@@ -1,14 +1,14 @@
 package nl.enjarai.doabarrelroll.mixin;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.client.ClientRecipeBook;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.stats.StatsCounter;
-import net.minecraft.world.entity.player.ProfilePublicKey;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.recipebook.ClientRecipeBook;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.network.encryption.PlayerPublicKey;
+import net.minecraft.stat.StatHandler;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.ElytraMath;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,18 +17,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(LocalPlayer.class)
-public abstract class ClientPlayerEntityMixin extends AbstractClientPlayer {
+@Mixin(ClientPlayerEntity.class)
+public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
 
-	@Shadow public abstract float getViewYRot(float tickDelta);
+	@Shadow public abstract float getYaw(float tickDelta);
 
-	public ClientPlayerEntityMixin(ClientLevel world, GameProfile profile, ProfilePublicKey publicKey) { super(world, profile, publicKey); }
+	public ClientPlayerEntityMixin(ClientWorld world, GameProfile profile, PlayerPublicKey publicKey) { super(world, profile, publicKey); }
 
 	@Inject(
 			method = "<init>",
 			at = @At("RETURN")
 	)
-	public void doABarrelRoll$init(Minecraft client, ClientLevel world, ClientPacketListener networkHandler, StatsCounter stats, ClientRecipeBook recipeBook, boolean lastSneaking, boolean lastSprinting, CallbackInfo ci) {
-		DoABarrelRollClient.left = ElytraMath.getAssumedLeft(getYRot());
+	public void doABarrelRoll$init(MinecraftClient client, ClientWorld world, ClientPlayNetworkHandler networkHandler, StatHandler stats, ClientRecipeBook recipeBook, boolean lastSneaking, boolean lastSprinting, CallbackInfo ci) {
+		DoABarrelRollClient.left = ElytraMath.getAssumedLeft(getYaw());
 	}
 }

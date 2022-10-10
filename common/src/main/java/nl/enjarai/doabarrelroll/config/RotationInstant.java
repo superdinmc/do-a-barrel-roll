@@ -2,7 +2,7 @@ package nl.enjarai.doabarrelroll.config;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
-import net.minecraft.util.SmoothDouble;
+import net.minecraft.client.util.SmoothUtil;
 
 import static nl.enjarai.doabarrelroll.ElytraMath.TORAD;
 
@@ -46,11 +46,11 @@ public class RotationInstant {
         return new RotationInstant(this.pitch - y * cos - x * sin, this.yaw - y * sin + x * cos, this.roll, this.renderDelta);
     }
 
-    public RotationInstant smooth(SmoothDouble pitchSmoother, SmoothDouble yawSmoother, SmoothDouble rollSmoother, Sensitivity smoothness) {
+    public RotationInstant smooth(SmoothUtil pitchSmoother, SmoothUtil yawSmoother, SmoothUtil rollSmoother, Sensitivity smoothness) {
         return new RotationInstant(
-                pitchSmoother.getNewDeltaValue(pitch, smoothness.pitch * renderDelta),
-                yawSmoother.getNewDeltaValue(yaw, smoothness.yaw * renderDelta),
-                rollSmoother.getNewDeltaValue(roll, smoothness.roll * renderDelta),
+                pitchSmoother.smooth(pitch, smoothness.pitch * renderDelta),
+                yawSmoother.smooth(yaw, smoothness.yaw * renderDelta),
+                rollSmoother.smooth(roll, smoothness.roll * renderDelta),
                 renderDelta
         );
     }

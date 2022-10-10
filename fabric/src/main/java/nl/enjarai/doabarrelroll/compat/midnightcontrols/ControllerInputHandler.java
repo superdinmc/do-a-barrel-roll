@@ -1,7 +1,7 @@
 package nl.enjarai.doabarrelroll.compat.midnightcontrols;
 
 import eu.midnightdust.midnightcontrols.client.MidnightControlsConfig;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.ElytraMath;
 import nl.enjarai.doabarrelroll.config.ModConfig;
@@ -11,7 +11,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class ControllerInputHandler {
 
-    public static boolean onControllerInput(Minecraft client, int axis, float value, int state) {
+    public static boolean onControllerInput(MinecraftClient client, int axis, float value, int state) {
 
         if (DoABarrelRollClient.isFallFlying()) {
 
@@ -41,9 +41,9 @@ public class ControllerInputHandler {
         return false;
     }
 
-    public static void afterLookUpdate(Minecraft client) {
+    public static void afterLookUpdate(MinecraftClient client) {
         if (client.player != null && DoABarrelRollClient.landingLerp >= 1) {
-            DoABarrelRollClient.left = ElytraMath.getAssumedLeft(client.player.getYRot());
+            DoABarrelRollClient.left = ElytraMath.getAssumedLeft(client.player.getYaw());
         }
     }
 }

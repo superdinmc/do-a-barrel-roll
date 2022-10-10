@@ -1,6 +1,7 @@
 package nl.enjarai.doabarrelroll.moonlightconfigs.fabric.values;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
 

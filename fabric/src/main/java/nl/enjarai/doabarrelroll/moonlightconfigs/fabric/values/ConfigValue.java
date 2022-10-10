@@ -1,11 +1,11 @@
 package nl.enjarai.doabarrelroll.moonlightconfigs.fabric.values;
 
-import net.minecraft.network.chat.Component;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.ConfigEntry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.Supplier;
+import net.minecraft.text.Text;
 
 public abstract class ConfigValue<T> extends ConfigEntry implements Supplier<T> {
 
@@ -44,14 +44,14 @@ public abstract class ConfigValue<T> extends ConfigEntry implements Supplier<T> 
         this.translationKey = translationKey;
     }
 
-    public Component getTranslation() {
-        return Component.translatable(translationKey);
+    public Text getTranslation() {
+        return Text.translatable(translationKey);
     }
 
     @Nullable
-    public Component getDescription() {
+    public Text getDescription() {
         if (this.descriptionKey == null) return null;
-        return Component.translatable(descriptionKey);
+        return Text.translatable(descriptionKey);
     }
 
 

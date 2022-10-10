@@ -3,16 +3,16 @@ package nl.enjarai.doabarrelroll.moonlightconfigs.forge;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import com.electronwill.nightconfig.toml.TomlFormat;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -33,7 +33,7 @@ public class ConfigSpecWrapper extends ConfigSpec {
 
     private final ModConfig modConfig;
 
-    public ConfigSpecWrapper(ResourceLocation name, ForgeConfigSpec spec, ConfigType type, boolean synced, @javax.annotation.Nullable Runnable onChange) {
+    public ConfigSpecWrapper(Identifier name, ForgeConfigSpec spec, ConfigType type, boolean synced, @javax.annotation.Nullable Runnable onChange) {
         super(name, FMLPaths.CONFIGDIR.get(), type, synced, onChange);
         this.spec = spec;
 
@@ -100,11 +100,11 @@ public class ConfigSpecWrapper extends ConfigSpec {
     @Nullable
     @Override
     @OnlyIn(Dist.CLIENT)
-    public Screen makeScreen(Screen parent, @Nullable ResourceLocation background) {
+    public Screen makeScreen(Screen parent, @Nullable Identifier background) {
         var container = ModList.get().getModContainerById(this.getModId());
         if (container.isPresent()) {
             var factory = container.get().getCustomExtension(ConfigScreenHandler.ConfigScreenFactory.class);
-            if (factory.isPresent()) return factory.get().screenFunction().apply(Minecraft.getInstance(), parent);
+            if (factory.isPresent()) return factory.get().screenFunction().apply(MinecraftClient.getInstance(), parent);
         }
         return null;
     }

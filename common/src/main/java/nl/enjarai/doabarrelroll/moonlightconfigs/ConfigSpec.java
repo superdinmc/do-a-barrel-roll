@@ -2,9 +2,8 @@ package nl.enjarai.doabarrelroll.moonlightconfigs;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.resources.ResourceLocation;
-
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.Identifier;
 import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -39,11 +38,11 @@ public abstract class ConfigSpec {
     @Nullable
     private final Runnable changeCallback;
 
-    public ConfigSpec(ResourceLocation name, Path configDirectory, ConfigType type) {
+    public ConfigSpec(Identifier name, Path configDirectory, ConfigType type) {
         this(name, configDirectory, type, false, null);
     }
 
-    public ConfigSpec(ResourceLocation name, Path configDirectory, ConfigType type, boolean synced, @Nullable Runnable changeCallback) {
+    public ConfigSpec(Identifier name, Path configDirectory, ConfigType type, boolean synced, @Nullable Runnable changeCallback) {
         this.fileName = name.getNamespace() + "-" + name.getPath() + ".json";
         this.modId = name.getNamespace();
         this.filePath = configDirectory.resolve(fileName);
@@ -94,7 +93,7 @@ public abstract class ConfigSpec {
 
     @Nullable
     @Environment(EnvType.CLIENT)
-    public abstract Screen makeScreen(Screen parent, @Nullable ResourceLocation background);
+    public abstract Screen makeScreen(Screen parent, @Nullable Identifier background);
 
     //serverside method
     public abstract boolean hasConfigScreen();

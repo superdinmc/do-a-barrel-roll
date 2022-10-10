@@ -1,6 +1,7 @@
 package nl.enjarai.doabarrelroll.moonlightconfigs.yacl;
 
 import dev.isxander.yacl.api.*;
+import dev.isxander.yacl.api.ConfigCategory.Builder;
 import dev.isxander.yacl.gui.controllers.ColorController;
 import dev.isxander.yacl.gui.controllers.EnumController;
 import dev.isxander.yacl.gui.controllers.LabelController;
@@ -8,9 +9,6 @@ import dev.isxander.yacl.gui.controllers.TickBoxController;
 import dev.isxander.yacl.gui.controllers.slider.DoubleSliderController;
 import dev.isxander.yacl.gui.controllers.slider.IntegerSliderController;
 import dev.isxander.yacl.gui.controllers.string.StringController;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.ConfigEntry;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.ConfigSubCategory;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.FabricConfigSpec;
@@ -18,6 +16,9 @@ import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.values.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 public class YACLCompat {
 
@@ -25,7 +26,7 @@ public class YACLCompat {
         return makeScreen(parent, spec, null);
     }
 
-    public static Screen makeScreen(Screen parent, FabricConfigSpec spec, @Nullable ResourceLocation background) {
+    public static Screen makeScreen(Screen parent, FabricConfigSpec spec, @Nullable Identifier background) {
 
         spec.loadFromFile();
 
@@ -39,13 +40,13 @@ public class YACLCompat {
             //skips stray config values
             if (!(en instanceof ConfigSubCategory c)) continue;
             var mainCat = ConfigCategory.createBuilder()
-                    .name(Component.translatable(c.getName()));
+                    .name(Text.translatable(c.getName()));
 
 
             for (var entry : c.getEntries()) {
                 if (entry instanceof ConfigSubCategory subCat) {
                     var subBuilder = OptionGroup.createBuilder()
-                            .name(Component.translatable(subCat.getName()))
+                            .name(Text.translatable(subCat.getName()))
                             .collapsed(true);
 
                     addEntriesRecursive(mainCat, subBuilder, subCat);
@@ -68,8 +69,8 @@ public class YACLCompat {
             if (entry instanceof ConfigSubCategory cc) {
                 //not nested subcat not supported. merging
                 var scb = OptionGroup.createBuilder()
-                        .name(Component.translatable(entry.getName()))
-                        .tooltip(Component.literal("Unsupported"));
+                        .name(Text.translatable(entry.getName()))
+                        .tooltip(Text.literal("Unsupported"));
                 // optional
                 addEntriesRecursive(builder, subCategoryBuilder, cc);
                 //subCategoryBuilder.group(scb.build());
@@ -122,9 +123,9 @@ public class YACLCompat {
         } else if (entry instanceof EnumConfigValue<?> ec) {
             return addEnum(ec);
         } else if (entry instanceof ListStringConfigValue<?> lc) {
-            var e = Option.createBuilder(Component.class)
+            var e = Option.createBuilder(Text.class)
                     .name(lc.getTranslation())
-                    .binding(Binding.immutable(Component.literal("String Lists are not supported")))
+                    .binding(Binding.immutable(Text.literal("String Lists are not supported")))
                     .controller(LabelController::new);
             var description = lc.getDescription();
             if (description != null) e.tooltip(description);// Shown when the user hover over this option
