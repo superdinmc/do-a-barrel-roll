@@ -14,11 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
 
-	@Shadow @Final private MinecraftClient minecraft;
+	@Shadow @Final private MinecraftClient client;
 
-	//Use render onRenderWorld event for forge?
-	@Inject(at = @At("HEAD"), method = "renderLevel")
+	@Inject(at = @At("HEAD"), method = "renderWorld")
 	public void doABarrelRoll$renderWorld(float tickDelta, long limitTime, MatrixStack matrix, CallbackInfo ci) {
-		DoABarrelRollClient.onWorldRender(minecraft, tickDelta, matrix);
+		DoABarrelRollClient.onWorldRender(client, tickDelta, matrix);
 	}
 }

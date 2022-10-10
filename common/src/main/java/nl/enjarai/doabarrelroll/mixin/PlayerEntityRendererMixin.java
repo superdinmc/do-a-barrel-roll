@@ -20,7 +20,7 @@ public abstract class PlayerEntityRendererMixin {
     private AbstractClientPlayerEntity player;
 
     @Inject(
-            method = "setupRotations(Lnet/minecraft/client/player/AbstractClientPlayer;Lcom/mojang/blaze3d/vertex/PoseStack;FFF)V",
+            method = "setupTransforms(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/client/util/math/MatrixStack;FFF)V",
             at = @At("HEAD")
     )
     private void doABarrelRoll$capturePlayer(AbstractClientPlayerEntity abstractClientPlayerEntity, MatrixStack matrixStack, float f, float g, float h, CallbackInfo ci) {
@@ -28,10 +28,10 @@ public abstract class PlayerEntityRendererMixin {
     }
 
     @ModifyArg(
-            method = "setupRotations(Lnet/minecraft/client/player/AbstractClientPlayer;Lcom/mojang/blaze3d/vertex/PoseStack;FFF)V",
+            method = "setupTransforms(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/client/util/math/MatrixStack;FFF)V",
             at = @At(
                     value = "INVOKE",
-                    target = "mulPose",
+                    target = "Lnet/minecraft/client/util/math/MatrixStack;multiply(Lnet/minecraft/util/math/Quaternion;)V",
                     ordinal = 1
             ),
             index = 0

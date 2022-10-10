@@ -13,18 +13,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin extends DrawableHelper {
 
-    @Shadow private int screenWidth;
+    @Shadow private int scaledWidth;
 
-    @Shadow private int screenHeight;
+    @Shadow private int scaledHeight;
 
-    //use renderCrossHairEvent for forge?
     @Inject(
             method = "renderCrosshair",
             at = @At(value = "HEAD")
     )
     private void doABarrelRoll$renderCrosshairHead(MatrixStack matrices, CallbackInfo ci) {
         matrices.push();
-        DoABarrelRollClient.onRenderCrosshair(matrices, screenWidth, screenHeight);
+        DoABarrelRollClient.onRenderCrosshair(matrices, scaledWidth, scaledHeight);
     }
 
     @Inject(

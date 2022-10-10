@@ -26,7 +26,7 @@ public abstract class LivingEntityMixin extends Entity {
             method = "travel",
             at = @At(
                     value = "INVOKE",
-                    target = "setDeltaMovement",
+                    target = "Lnet/minecraft/entity/LivingEntity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V",
                     ordinal = 6
             )
     )
