@@ -1,0 +1,33 @@
+modLoader = "javafml"
+loaderVersion = "[40,)"
+#issueTrackerURL = ""
+license = "GPL-3.0"
+issueTrackerURL = "https://github.com/enjarai/do-a-barrel-roll/issues" #optional
+
+[[mods]]
+modId = "do-a-barrel-roll"
+version = "${version}"
+displayName = "Do A Barrel Roll"
+authors = "enjarai"
+modUrl = "https://github.com/enjarai/do-a-barrel-roll" #optional
+
+logoFile="assets/do-a-barrel-roll/icon.png"
+description = '''
+"Microsoft flight simulator for Minecraft elytras.
+'''
+#logoFile = ""
+
+[[dependencies.do-a-barrel-roll]]
+modId = "forge"
+mandatory = true
+versionRange = "[42.1.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.do-a-barrel-roll]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.19,)"
+ordering = "NONE"
+side = "BOTH"
+
