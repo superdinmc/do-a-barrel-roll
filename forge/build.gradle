@@ -15,7 +15,7 @@ loom {
         convertAccessWideners = true
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
 
-        mixinConfig  "do-a-barrel-roll-common.mixins.json"
+        mixinConfig  "do-a-barrel-roll.forge.mixins.json"
         mixinConfig  "do-a-barrel-roll.mixins.json"
     }
 }

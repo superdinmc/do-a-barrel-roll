@@ -31,7 +31,7 @@ public abstract class LivingEntityMixin extends Entity {
             )
     )
     private Vec3d doABarrelRoll$wrapElytraVelocity(Vec3d original) {
-        if (!(((LivingEntity) (Object) this) instanceof ClientPlayerEntity) || !ModConfig.INSTANCE.enableThrust) return original;
+        if (!(((LivingEntity) (Object) this) instanceof ClientPlayerEntity) || !ModConfig.INSTANCE.getEnableThrust()) return original;
 
         Vec3d rotation = getRotationVector();
         Vec3d velocity = getVelocity();

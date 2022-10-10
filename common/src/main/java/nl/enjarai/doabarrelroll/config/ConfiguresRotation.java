@@ -1,5 +1,6 @@
 package nl.enjarai.doabarrelroll.config;
 
+@FunctionalInterface
 public interface ConfiguresRotation {
-    RotationInstant configureRotation(RotationInstant rotationInstant);
+    RotationInstant apply(RotationInstant rotationInstant);
 }

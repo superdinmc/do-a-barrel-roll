@@ -6,9 +6,7 @@
 	"name": "Do a Barrel Roll",
 	"description": "Microsoft flight simulator for Minecraft elytras.",
 	"authors": [
-		"enjarai",
-		"Jorbonism",
-		"Motschen"
+		"enjarai"
 	],
 	"contact": {
 		"homepage": "https://enjarai.nl",
@@ -20,13 +18,13 @@
 
 	"entrypoints": {
 		"client": [
-			"nl.enjarai.doabarrelroll.DoABarrelRollClient"
+			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
 		],
 		"modmenu": [
           "nl.enjarai.doabarrelroll.compat.modmenu.ModMenuIntegration"
 		],
 		"preLaunch": [
-			"nl.enjarai.doabarrelroll.DoABarrelRollClient"
+			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
 		]
 	},
 	

@@ -1,10 +1,8 @@
 package nl.enjarai.doabarrelroll.config;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.Function;
-import net.minecraft.client.util.SmoothUtil;
 
-import static nl.enjarai.doabarrelroll.ElytraMath.TORAD;
+import net.minecraft.client.util.SmoothUtil;
 
 public class RotationInstant {
     private final double pitch;
@@ -64,15 +62,11 @@ public class RotationInstant {
         );
     }
 
-    public RotationInstant applyConfig(ConfiguresRotation config) {
-        return config.configureRotation(this);
-    }
-
-    public RotationInstant useModifier(Function<RotationInstant, RotationInstant> modifier, BooleanSupplier condition) {
+    public RotationInstant useModifier(ConfiguresRotation modifier, BooleanSupplier condition) {
         return condition.getAsBoolean() ? modifier.apply(this) : this;
     }
 
-    public RotationInstant useModifier(Function<RotationInstant, RotationInstant> modifier) {
+    public RotationInstant useModifier(ConfiguresRotation modifier) {
         return useModifier(modifier, () -> true);
     }
 }

@@ -1,7 +1,5 @@
 package nl.enjarai.doabarrelroll;
 
-import D;
-import I;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.GlfwUtil;
@@ -61,7 +59,7 @@ public class DoABarrelRollClient {
         // reset the landing animation when flying
         landingLerp = 0;
 
-        if (ModConfig.INSTANCE.momentumBasedMouse) {
+        if (ModConfig.INSTANCE.getMomentumBasedMouse()) {
 
             // add the mouse movement to the current vector and normalize if needed
             var turnVec = mouseTurnVec.add(new Vec2f((float) cursorDeltaX, (float) cursorDeltaY).multiply(1f / 300));
@@ -73,13 +71,13 @@ public class DoABarrelRollClient {
             // enlarge the vector and apply it to the camera
             var delta = getDelta();
             var readyTurnVec = mouseTurnVec.multiply(1200 * (float) delta);
-            changeElytraLook(readyTurnVec.y, 0, readyTurnVec.x, ModConfig.INSTANCE.desktopSensitivity, delta);
+            changeElytraLook(readyTurnVec.y, 0, readyTurnVec.x, ModConfig.INSTANCE.getDesktopSensitivity(), delta);
 
         } else {
 
             // if we are not using a momentum based mouse, we can reset it and apply the values directly
             mouseTurnVec = Vec2f.ZERO;
-            changeElytraLook(cursorDeltaY, 0, cursorDeltaX, ModConfig.INSTANCE.desktopSensitivity);
+            changeElytraLook(cursorDeltaY, 0, cursorDeltaX, ModConfig.INSTANCE.getDesktopSensitivity());
         }
 
         return false;
@@ -101,7 +99,7 @@ public class DoABarrelRollClient {
             } else {
 
                 // update the camera rotation every frame to keep it smooth
-                changeElytraLook(0, 0, 0, ModConfig.INSTANCE.desktopSensitivity);
+                changeElytraLook(0, 0, 0, ModConfig.INSTANCE.getDesktopSensitivity());
 
             }
         }
@@ -117,7 +115,10 @@ public class DoABarrelRollClient {
     }
 
     public static void onRenderCrosshair(MatrixStack matrices, int scaledWidth, int scaledHeight) {
-        if (!isFallFlying() || !ModConfig.INSTANCE.momentumBasedMouse || !ModConfig.INSTANCE.showMomentumWidget) return;
+        if (!isFallFlying()
+                || !ModConfig.INSTANCE.getMomentumBasedMouse()
+                || !ModConfig.INSTANCE.getShowMomentumWidget()
+        ) return;
 
         MomentumCrosshairWidget.render(matrices, scaledWidth, scaledHeight, mouseTurnVec);
     }
@@ -166,9 +167,9 @@ public class DoABarrelRollClient {
                 .useModifier(DoABarrelRollClient::manageThrottle)
                 .useModifier(DoABarrelRollClient::strafeButtons)
                 .applySensitivity(sensitivity)
-                .applyConfig(ModConfig.INSTANCE)
+                .useModifier(ModConfig.INSTANCE::configureRotation)
                 .smooth(pitchSmoother, yawSmoother, rollSmoother, ROTATION_SMOOTHNESS)
-                .useModifier(DoABarrelRollClient::banking, () -> ModConfig.INSTANCE.enableBanking)
+                .useModifier(DoABarrelRollClient::banking, () -> ModConfig.INSTANCE.getEnableBanking())
         );
     }
 
@@ -195,7 +196,7 @@ public class DoABarrelRollClient {
 
         var delta = rotationInstant.getRenderDelta();
         var currentRoll = ElytraMath.getRoll(player.getYaw(), left) * ElytraMath.TORAD;
-        var strength = 10 * Math.cos(player.getPitch() * ElytraMath.TORAD) * ModConfig.getBankingStrength();
+        var strength = 10 * Math.cos(player.getPitch() * ElytraMath.TORAD) * ModConfig.INSTANCE.getBankingStrength();
 
         var dX = Math.sin(currentRoll) * strength;
         var dY = -strength + Math.cos(currentRoll) * strength;
@@ -220,13 +221,13 @@ public class DoABarrelRollClient {
             throttle -= throttle * 0.95 * delta;
         }
 
-        throttle = MathHelper.clamp(throttle, 0, ModConfig.getMaxThrust());
+        throttle = MathHelper.clamp(throttle, 0, ModConfig.INSTANCE.getMaxThrust());
 
         return rotationInstant;
     }
 
     public static boolean isFallFlying() {
         var player = MinecraftClient.getInstance().player;
-        return player != null && player.isFallFlying() && ModConfig.INSTANCE.modEnabled;
+        return player != null && player.isFallFlying() && ModConfig.INSTANCE.getModEnabled();
     }
 }

@@ -1,7 +1,6 @@
 package nl.enjarai.doabarrelroll.config;
 
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigSpec;
@@ -11,17 +10,76 @@ import java.util.function.Supplier;
 
 public class ModConfig {
 
-    public static ConfigSpec SPEC;
-    private static Supplier<Boolean> ENABLED;
-    private static Supplier<Boolean> SWITCH_ROLL_AND_YAW;
+    public static ModConfig INSTANCE;
 
     public static void init() {
+        INSTANCE = new ModConfig();
+    }
+
+
+    public ConfigSpec SPEC;
+    private final Supplier<Boolean> MOD_ENABLED;
+
+
+    private final Supplier<Boolean> SWITCH_ROLL_AND_YAW;
+    private final Supplier<Boolean> MOMENTUM_BASED_MOUSE;
+    private final Supplier<Boolean> SHOW_MOMENTUM_WIDGET;
+    private final Supplier<Boolean> INVERT_PITCH;
+
+    private final Supplier<Boolean> ENABLE_BANKING;
+    private final Supplier<Double> BANKING_STRENGTH;
+
+    private final Supplier<Boolean> ENABLE_THRUST;
+    private final Supplier<Double> MAX_THRUST;
+
+    private final Supplier<Double> DESKTOP_SENSITIVITY_PITCH;
+    private final Supplier<Double> DESKTOP_SENSITIVITY_YAW;
+    private final Supplier<Double> DESKTOP_SENSITIVITY_ROLL;
+
+    private final Supplier<Double> CONTROLLER_SENSITIVITY_PITCH;
+    private final Supplier<Double> CONTROLLER_SENSITIVITY_YAW;
+    private final Supplier<Double> CONTROLLER_SENSITIVITY_ROLL;
+
+
+    private ModConfig() {
         ConfigBuilder builder = ConfigBuilder.create(DoABarrelRollClient.id("client"), ConfigType.CLIENT);
 
-        ENABLED = builder.comment("Turn On and Off the mod").define("mod_enabled", true);
-        SWITCH_ROLL_AND_YAW = builder.comment("Turn On and Off the mod").define("switch_roll_and_yaw", false);
+        builder.push("general");
+            MOD_ENABLED = builder.define("mod_enabled", true);
 
-        builder.push("some_category");
+            builder.push("controls");
+                SWITCH_ROLL_AND_YAW = builder.define("switch_roll_and_yaw", false);
+                INVERT_PITCH = builder.define("invert_pitch", false);
+                MOMENTUM_BASED_MOUSE = builder.define("momentum_based_mouse", false);
+                SHOW_MOMENTUM_WIDGET = builder.define("show_momentum_widget", true);
+            builder.pop();
+
+            builder.push("banking");
+                ENABLE_BANKING = builder.define("enable_banking", true);
+                BANKING_STRENGTH = builder.define("banking_strength", 20.0, 0.0, 100.0);
+            builder.pop();
+
+            builder.push("thrust");
+                ENABLE_THRUST = builder.define("enable_thrust", false);
+                MAX_THRUST = builder.define("max_thrust", 1.0, 0.0, 5.0);
+            builder.pop();
+
+        builder.pop();
+
+
+        builder.push("sensitivity");
+
+            builder.push("desktop");
+                DESKTOP_SENSITIVITY_PITCH = builder.define("pitch", 1.0, 0.0, 2.0);
+                DESKTOP_SENSITIVITY_YAW = builder.define("yaw", 0.4, 0.0, 2.0);
+                DESKTOP_SENSITIVITY_ROLL = builder.define("roll", 1.0, 0.0, 2.0);
+            builder.pop();
+
+            builder.push("controller");
+                CONTROLLER_SENSITIVITY_PITCH = builder.define("pitch", 1.0, 0.0, 2.0);
+                CONTROLLER_SENSITIVITY_YAW = builder.define("yaw", 0.4, 0.0, 2.0);
+                CONTROLLER_SENSITIVITY_ROLL = builder.define("roll", 1.0, 0.0, 2.0);
+            builder.pop();
 
         builder.pop();
 
@@ -29,61 +87,61 @@ public class ModConfig {
         SPEC = builder.buildAndRegister();
     }
 
-    public static boolean getModEnabled() {
-        return ENABLED.get();
+
+    public boolean getModEnabled() {
+        return MOD_ENABLED.get();
     }
 
-    public static boolean getSwitchRollAndYaw() {
+    public boolean getSwitchRollAndYaw() {
         return SWITCH_ROLL_AND_YAW.get();
     } //= false;
 
-    @ExpectPlatform
-    public static boolean getMomentumBasedMouse() {
-        throw new AssertionError();
-    }// = false;
-
-    @ExpectPlatform
-    public static boolean getShowMomentumWidget() {
-        throw new AssertionError();
-    } //= true;
-
-    @ExpectPlatform
-    public static boolean getInvertPitch() {
-        throw new AssertionError();
+    public boolean getMomentumBasedMouse() {
+        return MOMENTUM_BASED_MOUSE.get();
     } //= false;
 
-    @ExpectPlatform
-    public static boolean getEnableBanking() {
-        throw new AssertionError();
+    public boolean getShowMomentumWidget() {
+        return SHOW_MOMENTUM_WIDGET.get();
+    } //= true;
+
+    public boolean getInvertPitch() {
+        return INVERT_PITCH.get();
+    } //= false;
+
+    public boolean getEnableBanking() {
+        return ENABLE_BANKING.get();
     }// = true;
 
-    @ExpectPlatform
-    public static float getBankingStrength() {
-        throw new AssertionError();
+    public double getBankingStrength() {
+        return BANKING_STRENGTH.get();
     }// = 20;
 
-    @ExpectPlatform
-    public static boolean getEnableThrust() {
-        throw new AssertionError();
+    public boolean getEnableThrust() {
+        return ENABLE_THRUST.get();
     }
 
-    @ExpectPlatform
-    public static float getMaxThrust() {
-        throw new AssertionError();
+    public double getMaxThrust() {
+        return MAX_THRUST.get();
     }
 
-    @ExpectPlatform
-    public static Sensitivity getDesktopSensitivity() {
-        throw new AssertionError();
+    public Sensitivity getDesktopSensitivity() {
+        return new Sensitivity(
+                DESKTOP_SENSITIVITY_PITCH.get(),
+                DESKTOP_SENSITIVITY_YAW.get(),
+                DESKTOP_SENSITIVITY_ROLL.get()
+        );
     }
 
-    @ExpectPlatform
-    public static Sensitivity getControllerSensitivity() {
-        throw new AssertionError();
+    public Sensitivity getControllerSensitivity() {
+        return new Sensitivity(
+                CONTROLLER_SENSITIVITY_PITCH.get(),
+                CONTROLLER_SENSITIVITY_YAW.get(),
+                CONTROLLER_SENSITIVITY_ROLL.get()
+        );
     }
 
 
-    public static RotationInstant configureRotation(RotationInstant rotationInstant) {
+    public RotationInstant configureRotation(RotationInstant rotationInstant) {
         var pitch = rotationInstant.getPitch();
         var yaw = rotationInstant.getYaw();
         var roll = rotationInstant.getRoll();
