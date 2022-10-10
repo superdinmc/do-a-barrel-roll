@@ -1,15 +1,17 @@
 package nl.enjarai.doabarrelroll;
 
-import com.mojang.blaze3d.Blaze3D;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.util.SmoothDouble;
-import net.minecraft.world.phys.Vec2;
-import net.minecraft.world.phys.Vec3;
+import D;
+import I;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.util.GlfwUtil;
+import net.minecraft.client.util.SmoothUtil;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3f;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.RotationInstant;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
@@ -18,39 +20,39 @@ public class DoABarrelRollClient {
     public static final String MODID = "do-a-barrel-roll";
     public static final Sensitivity ROTATION_SMOOTHNESS = new Sensitivity(1, 0.4, 1);
 
-    public static final SmoothDouble pitchSmoother = new SmoothDouble();
-    public static final SmoothDouble yawSmoother = new SmoothDouble();
-    public static final SmoothDouble rollSmoother = new SmoothDouble();
+    public static final SmoothUtil pitchSmoother = new SmoothUtil();
+    public static final SmoothUtil yawSmoother = new SmoothUtil();
+    public static final SmoothUtil rollSmoother = new SmoothUtil();
     private static double lastLookUpdate;
     private static double lastLerpUpdate;
     public static double landingLerp = 1;
-    public static Vec3 left;
-    public static Vec2 mouseTurnVec = Vec2.ZERO;
+    public static Vec3d left;
+    public static Vec2f mouseTurnVec = Vec2f.ZERO;
     public static double throttle = 0;
 
     // TODO triple jump to activate???
 
-    public static ResourceLocation id(String path) {
-        return new ResourceLocation(MODID, path);
+    public static Identifier id(String path) {
+        return new Identifier(MODID, path);
     }
 
 
-    public static boolean updateMouse(LocalPlayer player, double cursorDeltaX, double cursorDeltaY) {
+    public static boolean updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY) {
 
-        double time = Blaze3D.getTime();
+        double time = GlfwUtil.getTime();
         double lerpDelta = time - lastLerpUpdate;
         lastLerpUpdate = time;
 
         // smoothly lerp left vector to the assumed upright left if not in flight
         if (!isFallFlying()) {
 
-            landingLerp = Mth.lerp(Mth.clamp(lerpDelta * 2, 0, 1), landingLerp, 1);
+            landingLerp = MathHelper.lerp(MathHelper.clamp(lerpDelta * 2, 0, 1), landingLerp, 1);
 
             // round the lerp off when done to hopefully avoid world flickering
             if (landingLerp > 0.9) landingLerp = 1;
 
             clearValues();
-            left = left.lerp(ElytraMath.getAssumedLeft(player.getYRot()), landingLerp);
+            left = left.lerp(ElytraMath.getAssumedLeft(player.getYaw()), landingLerp);
 
             return true;
         }
@@ -62,28 +64,28 @@ public class DoABarrelRollClient {
         if (ModConfig.INSTANCE.momentumBasedMouse) {
 
             // add the mouse movement to the current vector and normalize if needed
-            var turnVec = mouseTurnVec.add(new Vec2((float) cursorDeltaX, (float) cursorDeltaY).scale(1f / 300));
+            var turnVec = mouseTurnVec.add(new Vec2f((float) cursorDeltaX, (float) cursorDeltaY).multiply(1f / 300));
             if (turnVec.lengthSquared() > 1) {
-                turnVec = turnVec.normalized();
+                turnVec = turnVec.normalize();
             }
             mouseTurnVec = turnVec;
 
             // enlarge the vector and apply it to the camera
             var delta = getDelta();
-            var readyTurnVec = mouseTurnVec.scale(1200 * (float) delta);
+            var readyTurnVec = mouseTurnVec.multiply(1200 * (float) delta);
             changeElytraLook(readyTurnVec.y, 0, readyTurnVec.x, ModConfig.INSTANCE.desktopSensitivity, delta);
 
         } else {
 
             // if we are not using a momentum based mouse, we can reset it and apply the values directly
-            mouseTurnVec = Vec2.ZERO;
+            mouseTurnVec = Vec2f.ZERO;
             changeElytraLook(cursorDeltaY, 0, cursorDeltaX, ModConfig.INSTANCE.desktopSensitivity);
         }
 
         return false;
     }
 
-    public static void onWorldRender(Minecraft client, float tickDelta, PoseStack matrix) {
+    public static void onWorldRender(MinecraftClient client, float tickDelta, MatrixStack matrix) {
 
         if (!isFallFlying()) {
 
@@ -94,7 +96,7 @@ public class DoABarrelRollClient {
             if (client.isPaused()) {
 
                 // keep updating the last look update time when paused to prevent large jumps after unpausing
-                lastLookUpdate = Blaze3D.getTime();
+                lastLookUpdate = GlfwUtil.getTime();
 
             } else {
 
@@ -107,14 +109,14 @@ public class DoABarrelRollClient {
         if (client.player != null && landingLerp < 1) {
 
             // calculate the camera angle and apply it
-            double angle = -Math.acos(Mth.clamp(left.dot(ElytraMath.getAssumedLeft(client.player.getYRot())), -1, 1)) * ElytraMath.TODEG;
-            if (left.y() < 0) angle *= -1;
-            matrix.mulPose(Vector3f.ZP.rotationDegrees((float) angle));
+            double angle = -Math.acos(MathHelper.clamp(left.dotProduct(ElytraMath.getAssumedLeft(client.player.getYaw())), -1, 1)) * ElytraMath.TODEG;
+            if (left.getY() < 0) angle *= -1;
+            matrix.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion((float) angle));
 
         }
     }
 
-    public static void onRenderCrosshair(PoseStack matrices, int scaledWidth, int scaledHeight) {
+    public static void onRenderCrosshair(MatrixStack matrices, int scaledWidth, int scaledHeight) {
         if (!isFallFlying() || !ModConfig.INSTANCE.momentumBasedMouse || !ModConfig.INSTANCE.showMomentumWidget) return;
 
         MomentumCrosshairWidget.render(matrices, scaledWidth, scaledHeight, mouseTurnVec);
@@ -122,11 +124,11 @@ public class DoABarrelRollClient {
 
 
     private static void clearValues() {
-        pitchSmoother.reset();
-        yawSmoother.reset();
-        rollSmoother.reset();
-        mouseTurnVec = Vec2.ZERO;
-        lastLookUpdate = Blaze3D.getTime();
+        pitchSmoother.clear();
+        yawSmoother.clear();
+        rollSmoother.clear();
+        mouseTurnVec = Vec2f.ZERO;
+        lastLookUpdate = GlfwUtil.getTime();
         throttle = 0;
     }
 
@@ -141,7 +143,7 @@ public class DoABarrelRollClient {
      * </p>
      */
     private static double getDelta() {
-        double time = Blaze3D.getTime();
+        double time = GlfwUtil.getTime();
         double delta = time - lastLookUpdate;
         lastLookUpdate = time;
         return delta;
@@ -155,7 +157,7 @@ public class DoABarrelRollClient {
     }
 
     public static void changeElytraLook(double pitch, double yaw, double roll, Sensitivity sensitivity, double delta) {
-        var player = Minecraft.getInstance().player;
+        var player = MinecraftClient.getInstance().player;
         if (player == null) return;
 
         var rotDelta = new RotationInstant(pitch, yaw, roll, delta);
@@ -171,15 +173,15 @@ public class DoABarrelRollClient {
     }
 
     public static RotationInstant strafeButtons(RotationInstant rotationInstant) {
-        var client = Minecraft.getInstance();
+        var client = MinecraftClient.getInstance();
 
         var yawDelta = 1800 * rotationInstant.getRenderDelta();
         var yaw = 0;
 
-        if (client.options.keyLeft.isDown()) {
+        if (client.options.leftKey.isPressed()) {
             yaw -= yawDelta;
         }
-        if (client.options.keyRight.isDown()) {
+        if (client.options.rightKey.isPressed()) {
             yaw += yawDelta;
         }
 
@@ -187,13 +189,13 @@ public class DoABarrelRollClient {
     }
 
     public static RotationInstant banking(RotationInstant rotationInstant) {
-        var client = Minecraft.getInstance();
+        var client = MinecraftClient.getInstance();
         var player = client.player;
         if (player == null) return rotationInstant;
 
         var delta = rotationInstant.getRenderDelta();
-        var currentRoll = ElytraMath.getRoll(player.getYRot(), left) * ElytraMath.TORAD;
-        var strength = 10 * Math.cos(player.getXRot() * ElytraMath.TORAD) * ModConfig.getBankingStrength();
+        var currentRoll = ElytraMath.getRoll(player.getYaw(), left) * ElytraMath.TORAD;
+        var strength = 10 * Math.cos(player.getPitch() * ElytraMath.TORAD) * ModConfig.getBankingStrength();
 
         var dX = Math.sin(currentRoll) * strength;
         var dY = -strength + Math.cos(currentRoll) * strength;
@@ -206,25 +208,25 @@ public class DoABarrelRollClient {
     }
 
     public static RotationInstant manageThrottle(RotationInstant rotationInstant) {
-        var client = Minecraft.getInstance();
+        var client = MinecraftClient.getInstance();
 
         var delta = rotationInstant.getRenderDelta();
 
-        if (client.options.keyUp.isDown()) {
+        if (client.options.forwardKey.isPressed()) {
             throttle += 0.1 * delta;
-        } else if (client.options.keyDown.isDown()) {
+        } else if (client.options.backKey.isPressed()) {
             throttle -= 0.1 * delta;
         } else {
             throttle -= throttle * 0.95 * delta;
         }
 
-        throttle = Mth.clamp(throttle, 0, ModConfig.getMaxThrust());
+        throttle = MathHelper.clamp(throttle, 0, ModConfig.getMaxThrust());
 
         return rotationInstant;
     }
 
     public static boolean isFallFlying() {
-        var player = Minecraft.getInstance().player;
+        var player = MinecraftClient.getInstance().player;
         return player != null && player.isFallFlying() && ModConfig.INSTANCE.modEnabled;
     }
 }

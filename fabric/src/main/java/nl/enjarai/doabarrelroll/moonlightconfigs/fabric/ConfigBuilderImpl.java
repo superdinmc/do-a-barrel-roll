@@ -1,6 +1,5 @@
 package nl.enjarai.doabarrelroll.moonlightconfigs.fabric;
 
-import net.minecraft.resources.ResourceLocation;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigType;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.values.*;
@@ -10,13 +9,14 @@ import java.util.List;
 import java.util.Stack;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import net.minecraft.util.Identifier;
 
 /**
  * Author: MehVhadJukaar
  */
 public class ConfigBuilderImpl extends ConfigBuilder {
 
-    public static ConfigBuilder create(ResourceLocation name, ConfigType type) {
+    public static ConfigBuilder create(Identifier name, ConfigType type) {
         return new ConfigBuilderImpl(name, type);
     }
 
@@ -24,7 +24,7 @@ public class ConfigBuilderImpl extends ConfigBuilder {
 
     private final Stack<ConfigSubCategory> categoryStack = new Stack<>();
 
-    public ConfigBuilderImpl(ResourceLocation name, ConfigType type) {
+    public ConfigBuilderImpl(Identifier name, ConfigType type) {
         super(name, type);
         categoryStack.push(mainCategory);
     }

@@ -1,8 +1,6 @@
 package nl.enjarai.doabarrelroll.moonlightconfigs;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,6 +9,8 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 /**
  * Author: MehVahdJukaar. These come from Moonlgith Lib and are used here in a simpler manner
@@ -27,14 +27,14 @@ public abstract class ConfigBuilder {
     protected Runnable changeCallback;
 
     @ExpectPlatform
-    public static ConfigBuilder create(ResourceLocation name, ConfigType type) {
+    public static ConfigBuilder create(Identifier name, ConfigType type) {
         throw new AssertionError();
     }
 
-    private final ResourceLocation name;
+    private final Identifier name;
     protected final ConfigType type;
 
-    public ConfigBuilder(ResourceLocation name, ConfigType type) {
+    public ConfigBuilder(Identifier name, ConfigType type) {
         this.name = name;
         this.type = type;
         //Consumer<AfterLanguageLoadEvent> consumer = e -> {
@@ -51,7 +51,7 @@ public abstract class ConfigBuilder {
 
     public abstract ConfigSpec build();
 
-    public ResourceLocation getName() {
+    public Identifier getName() {
         return name;
     }
 
@@ -84,15 +84,15 @@ public abstract class ConfigBuilder {
 
     public abstract <V extends Enum<V>> Supplier<V> define(String name, V defaultValue);
 
-    @Deprecated(forRemoval = true)
+    @Deprecated
     public abstract <T> Supplier<List<? extends T>> defineForgeList(String path, List<? extends T> defaultValue, Predicate<Object> elementValidator);
 
-    public Component description(String name) {
-        return Component.translatable(translationKey(name));
+    public Text description(String name) {
+        return Text.translatable(translationKey(name));
     }
 
-    public Component tooltip(String name) {
-        return Component.translatable(tooltipKey(name));
+    public Text tooltip(String name) {
+        return Text.translatable(tooltipKey(name));
     }
 
     public String tooltipKey(String name) {

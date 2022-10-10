@@ -4,10 +4,17 @@ import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.gui.entries.EnumListEntry;
+import me.shedaniel.clothconfig2.impl.builders.BooleanToggleBuilder;
+import me.shedaniel.clothconfig2.impl.builders.ColorFieldBuilder;
+import me.shedaniel.clothconfig2.impl.builders.DoubleFieldBuilder;
+import me.shedaniel.clothconfig2.impl.builders.EnumSelectorBuilder;
+import me.shedaniel.clothconfig2.impl.builders.IntFieldBuilder;
+import me.shedaniel.clothconfig2.impl.builders.StringFieldBuilder;
+import me.shedaniel.clothconfig2.impl.builders.StringListBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.ConfigEntry;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.ConfigSubCategory;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.FabricConfigSpec;
@@ -24,7 +31,7 @@ public class ClothConfigCompat {
     }
 
     @ApiStatus.Internal
-    public static Screen makeScreen(Screen parent, FabricConfigSpec spec, @Nullable ResourceLocation background) {
+    public static Screen makeScreen(Screen parent, FabricConfigSpec spec, @Nullable Identifier background) {
         spec.loadFromFile();
 
         ConfigBuilder builder = ConfigBuilder.create();
@@ -39,10 +46,10 @@ public class ClothConfigCompat {
         for (var en : spec.getMainEntry().getEntries()) {
             //skips stray config values
             if (!(en instanceof ConfigSubCategory c)) continue;
-            ConfigCategory mainCat = builder.getOrCreateCategory(Component.translatable(nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder.getReadableName(c.getName())));
+            ConfigCategory mainCat = builder.getOrCreateCategory(Text.translatable(nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder.getReadableName(c.getName())));
             for (var entry : c.getEntries()) {
                 if (entry instanceof ConfigSubCategory subCat) {
-                    var subBuilder = builder.entryBuilder().startSubCategory(Component.translatable(subCat.getName()));
+                    var subBuilder = builder.entryBuilder().startSubCategory(Text.translatable(subCat.getName()));
                     addEntriesRecursive(builder, subBuilder, subCat);
 
                     mainCat.addEntry(subBuilder.build());
@@ -59,7 +66,7 @@ public class ClothConfigCompat {
 
         for (var entry : c.getEntries()) {
             if (entry instanceof ConfigSubCategory cc) {
-                var scb = builder.entryBuilder().startSubCategory(Component.translatable(entry.getName()));
+                var scb = builder.entryBuilder().startSubCategory(Text.translatable(entry.getName()));
                 addEntriesRecursive(builder, scb, cc);
                 subCategoryBuilder.add(scb.build());
             } else subCategoryBuilder.add(buildEntry(builder, entry));

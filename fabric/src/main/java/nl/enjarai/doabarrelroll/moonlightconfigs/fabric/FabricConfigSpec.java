@@ -7,9 +7,9 @@ import com.google.gson.JsonObject;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import nl.enjarai.doabarrelroll.moonlightconfigs.cloth_config.ClothConfigCompat;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigSpec;
@@ -23,11 +23,11 @@ public class FabricConfigSpec extends ConfigSpec {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    private final ResourceLocation res;
+    private final Identifier res;
     private final ConfigSubCategory mainEntry;
     private final File file;
 
-    public FabricConfigSpec(ResourceLocation name, ConfigSubCategory mainEntry, ConfigType type, boolean synced, Runnable changeCallback) {
+    public FabricConfigSpec(Identifier name, ConfigSubCategory mainEntry, ConfigType type, boolean synced, Runnable changeCallback) {
         super(name, FabricLoader.getInstance().getConfigDir(), type, synced, changeCallback);
         this.file = this.getFullPath().toFile();
         this.mainEntry = mainEntry;
@@ -77,20 +77,21 @@ public class FabricConfigSpec extends ConfigSpec {
         this.onRefresh();
     }
 
-    public Component getName() {
-        return Component.literal(ConfigBuilder.getReadableName(this.res.getPath() + "_configs"));
+    public Text getName() {
+        return Text.literal(ConfigBuilder.getReadableName(this.res.getPath() + "_configs"));
     }
 
     private static final boolean YACL = FabricLoader.getInstance().isModLoaded("yet-another-config-lib");
-    private static final boolean clothConfig = FabricLoader.getInstance().isModLoaded("cloth_config");
+    private static final boolean clothConfig = FabricLoader.getInstance().isModLoaded("cloth_config")
+            || FabricLoader.getInstance().isModLoaded("cloth_config2");
 
     @Override
     @Environment(EnvType.CLIENT)
-    public Screen makeScreen(Screen parent, ResourceLocation background) {
-        if (clothConfig) {
-            return ClothConfigCompat.makeScreen(parent, this, background);
-        } else if (YACL) {
+    public Screen makeScreen(Screen parent, Identifier background) {
+        if (YACL) {
             return YACLCompat.makeScreen(parent, this, background);
+        } else if (clothConfig) {
+            return ClothConfigCompat.makeScreen(parent, this, background);
         }
         return null;
     }

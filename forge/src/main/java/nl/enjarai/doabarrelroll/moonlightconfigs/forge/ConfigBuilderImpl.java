@@ -1,7 +1,8 @@
 package nl.enjarai.doabarrelroll.moonlightconfigs.forge;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigType;
 
@@ -11,7 +12,7 @@ import java.util.function.Supplier;
 
 public class ConfigBuilderImpl extends ConfigBuilder {
 
-    public static ConfigBuilder create(ResourceLocation name, ConfigType type) {
+    public static ConfigBuilder create(Identifier name, ConfigType type) {
         return new ConfigBuilderImpl(name, type);
     }
 
@@ -19,7 +20,7 @@ public class ConfigBuilderImpl extends ConfigBuilder {
 
     private String cat = null;
 
-    public ConfigBuilderImpl(ResourceLocation name, ConfigType type) {
+    public ConfigBuilderImpl(Identifier name, ConfigType type) {
         super(name, type);
         this.builder = new ForgeConfigSpec.Builder();
     }
