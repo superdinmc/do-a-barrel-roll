@@ -86,7 +86,13 @@ allprojects {
             url 'https://maven.gegy.dev'
         }
         maven { url = "https://aperlambda.github.io/maven" }
-        maven { url = "https://api.modrinth.com/maven" }
+        maven {
+            name = "Modrinth"
+            url = "https://api.modrinth.com/maven"
+            content {
+                includeGroup "maven.modrinth"
+            }
+        }
 
         // Cloth Config.
         maven { url "https://maven.shedaniel.me/" }
