@@ -7,5 +7,5 @@ jobs:
   build_1_19:
     uses: enjarai/do-a-barrel-roll/.github/workflows/build.yml@main
     with:
-      branch: main-architectury-dev
+      branch: main
       java_version: 17
