@@ -1,0 +1,11 @@
+name: Build Release V2
+
+on: [pull_request, push, workflow_call]
+
+jobs:
+
+  build_1_19:
+    uses: jsmacros/jsmacros/.github/workflows/build.yml@main-architectury-dev
+    with:
+      branch: main-architectury-dev
+      java_version: 17
