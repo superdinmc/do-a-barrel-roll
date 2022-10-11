@@ -1,2 +1,3 @@
-- Fixed some funky camera behaviour when looking straight up or down
-- Backport to 1.17.1 (Thanks @doinkythederp!)
+- Ported the mod to Architectury, making it fully compatible with both Fabric and Forge. (Thanks for the help @MehVahdJukaar!)
+- Removed the hard dependency on Cloth Config, making it optional with YACL and Configured available as alternatives.
+- Fixed the camera not moving to an upright position when landing with chat or inventory open.
