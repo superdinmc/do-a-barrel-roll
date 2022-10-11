@@ -1,101 +1,124 @@
 plugins {
-	id 'fabric-loom' version '0.12-SNAPSHOT'
-	id 'maven-publish'
+    id "base"
+
+    id "architectury-plugin" version "3.4-SNAPSHOT"
+    id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
-
-archivesBaseName = project.archives_base_name
-version = "${project.mod_version}+${project.minecraft_version}"
-group = project.maven_group
-
-repositories {
-	mavenLocal()
-
-	// Mod Menu.
-	maven { url 'https://maven.terraformersmc.com' }
-
-	// MidnightControls.
-	maven {
-		name 'Gegy'
-		url 'https://maven.gegy.dev'
-	}
-	maven { url = "https://aperlambda.github.io/maven" }
-	maven { url = "https://api.modrinth.com/maven" }
-
-	// Cloth Config.
-	maven { url "https://maven.shedaniel.me/" }
-	maven { url "https://maven.terraformersmc.com/releases/" }
-
-	// Jitpack for Mixin Extras.
-	maven { url 'https://jitpack.io' }
+architectury {
+    minecraft = rootProject.minecraft_version
 }
 
-dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+subprojects {
+    apply plugin: "dev.architectury.loom"
 
-	// Mixin Extras for extra compatibility.
-	include(implementation("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}"))
-	annotationProcessor("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
+    dependencies {
+        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+        // The following line declares the mojmap mappings, you may use other mappings as well
 
-	// Mod Menu integration. Currently unused.
-	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+        // The following line declares the yarn mappings you may select this one as well.
+        mappings "net.fabricmc:yarn:${rootProject.yarn_version}:v2"
 
-	// Cloth Config for easy config menu.
-	modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
-		exclude group: "net.fabricmc.fabric-api"
-	}
+        // Mixin Extras for extra compatibility.
+        implementation("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
 
-	// Controller Support
-	modImplementation "dev.lambdaurora:spruceui:${project.spruceui_version}"
-	modImplementation "maven.modrinth:midnightlib:${project.midnightlib_version}"
-	modImplementation "maven.modrinth:midnightcontrols:${project.midnightcontrols_version}"
-	api('org.aperlambda:lambdajcommon:1.8.1') {
-		exclude group: 'com.google.code.gson'
-		exclude group: 'com.google.guava'
-	}
+        annotationProcessor("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
+    }
 }
 
-processResources {
-	inputs.property "version", project.version
+tasks {
+    // Register a custom "collect jars" task that copies the Fabric and Forge mod jars
+    // into the root project's build/libs. This makes it easier to find them
+    // for testing and releasing.
+    def collectJars = tasks.register("collectJars", Copy) {copy ->
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
+        subprojects.forEach {
+            def task = it.tasks.getByName("remapJar")
+
+            dependsOn(task)
+
+            copy.from task
+            copy.into buildDir.path + "/libs"
+        }
+    }
+
+    // Set up assemble to depend on the collectJars task, so it gets run on gradlew build.
+    assemble {
+        dependsOn(collectJars)
+    }
 }
 
-tasks.withType(JavaCompile).configureEach {
-	it.options.encoding = "UTF-8"
-	it.options.release = 17
+allprojects {
+    apply plugin: "java"
+    apply plugin: "architectury-plugin"
+    apply plugin: "maven-publish"
+
+    archivesBaseName = rootProject.mod_id
+    version = "${rootProject.mod_version}+${rootProject.minecraft_version}"
+    group = rootProject.maven_group
+
+    repositories {
+
+        flatDir {
+            dirs 'mods'
+        }
+
+        mavenLocal()
+
+        // Add repositories to retrieve artifacts from in here.
+        // You should only use this when depending on other mods because
+        // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+        // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+        // for more information about repositories.
+        maven {
+            url = "https://www.cursemaven.com"
+            allowInsecureProtocol = true
+        }
+
+        // Mod Menu.
+        maven { url 'https://maven.terraformersmc.com' }
+
+        // MidnightControls.
+        maven {
+            name 'Gegy'
+            url 'https://maven.gegy.dev'
+        }
+        maven { url = "https://aperlambda.github.io/maven" }
+        maven {
+            name = "Modrinth"
+            url = "https://api.modrinth.com/maven"
+            content {
+                includeGroup "maven.modrinth"
+            }
+        }
+
+        // Cloth Config.
+        maven { url "https://maven.shedaniel.me/" }
+        maven { url "https://maven.terraformersmc.com/releases/" }
+
+        // Jitpack for Mixin Extras.
+        maven { url 'https://jitpack.io' }
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+        options.release = 17
+    }
+
+    java {
+        withSourcesJar()
+    }
 }
 
-java {
-	withSourcesJar()
-}
-
-jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
-	}
-}
-
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			artifact(remapJar) {
-				builtBy remapJar
-			}
-			artifact(sourcesJar) {
-				builtBy remapSourcesJar
-			}
-		}
-	}
-
-	repositories {
-		
-	}
+subprojects {
+    tasks {
+        if (!path.startsWith(":common")) {
+            tasks.getByName("remapJar") {
+                dependsOn("shadowJar")
+                // The project name will be "fabric" or "forge", so this will become the classifier/suffix
+                // for the jar. For example: do-a-barrel-roll-2.0.0+1.19.2-fabric.jar
+                archiveClassifier.set(project.name)
+            }
+        }
+    }
 }
