@@ -82,8 +82,9 @@ public class FabricConfigSpec extends ConfigSpec {
     }
 
     private static final boolean YACL = FabricLoader.getInstance().isModLoaded("yet-another-config-lib");
-    private static final boolean clothConfig = FabricLoader.getInstance().isModLoaded("cloth_config")
-            || FabricLoader.getInstance().isModLoaded("cloth_config2");
+    private static final boolean clothConfig = FabricLoader.getInstance().getAllMods().stream().anyMatch(container -> container
+            .getMetadata()
+            .getId().startsWith("cloth-config"));
 
     @Override
     @Environment(EnvType.CLIENT)

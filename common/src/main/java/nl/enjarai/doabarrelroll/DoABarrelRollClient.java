@@ -37,24 +37,7 @@ public class DoABarrelRollClient {
 
     public static boolean updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY) {
 
-        double time = GlfwUtil.getTime();
-        double lerpDelta = time - lastLerpUpdate;
-        lastLerpUpdate = time;
-
-        // smoothly lerp left vector to the assumed upright left if not in flight
-        if (!isFallFlying()) {
-
-            landingLerp = MathHelper.lerp(MathHelper.clamp(lerpDelta * 2, 0, 1), landingLerp, 1);
-
-            // round the lerp off when done to hopefully avoid world flickering
-            if (landingLerp > 0.9) landingLerp = 1;
-
-            clearValues();
-            left = left.lerp(ElytraMath.getAssumedLeft(player.getYaw()), landingLerp);
-
-            return true;
-        }
-
+        if (!isFallFlying()) return true;
 
         // reset the landing animation when flying
         landingLerp = 0;
@@ -85,9 +68,22 @@ public class DoABarrelRollClient {
 
     public static void onWorldRender(MinecraftClient client, float tickDelta, MatrixStack matrix) {
 
+        double time = GlfwUtil.getTime();
+        double lerpDelta = time - lastLerpUpdate;
+        lastLerpUpdate = time;
+
         if (!isFallFlying()) {
 
+            landingLerp = MathHelper.lerp(MathHelper.clamp(lerpDelta * 2, 0, 1), landingLerp, 1);
+
+            // round the lerp off when done to hopefully avoid world flickering
+            if (landingLerp > 0.9) landingLerp = 1;
+
             clearValues();
+
+            if (client.player != null) {
+                left = left.lerp(ElytraMath.getAssumedLeft(client.player.getYaw()), landingLerp);
+            }
 
         } else {
 

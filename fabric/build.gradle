@@ -49,6 +49,7 @@ dependencies {
         exclude group: 'com.google.guava'
     }
 
+    include("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
 }
 
 

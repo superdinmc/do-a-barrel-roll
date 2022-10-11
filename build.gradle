@@ -1,4 +1,6 @@
 plugins {
+    id "base"
+
     id "architectury-plugin" version "3.4-SNAPSHOT"
     id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
 }
@@ -19,9 +21,30 @@ subprojects {
 
         // Mixin Extras for extra compatibility.
         implementation("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
-        include("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
 
         annotationProcessor("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
+    }
+}
+
+tasks {
+    // Register a custom "collect jars" task that copies the Fabric and Forge mod jars
+    // into the root project's build/libs. This makes it easier to find them
+    // for testing and releasing.
+    def collectJars = tasks.register("collectJars", Copy) {copy ->
+
+        subprojects.forEach {
+            def task = it.tasks.getByName("remapJar")
+
+            dependsOn(task)
+
+            copy.from task
+            copy.into buildDir.path + "/libs"
+        }
+    }
+
+    // Set up assemble to depend on the collectJars task, so it gets run on gradlew build.
+    assemble {
+        dependsOn(collectJars)
     }
 }
 
@@ -80,5 +103,18 @@ allprojects {
 
     java {
         withSourcesJar()
+    }
+}
+
+subprojects {
+    tasks {
+        if (!path.startsWith(":common")) {
+            tasks.getByName("remapJar") {
+                dependsOn("shadowJar")
+                // The project name will be "fabric" or "forge", so this will become the classifier/suffix
+                // for the jar. For example: do-a-barrel-roll-2.0.0+1.19.2-fabric.jar
+                archiveClassifier.set(project.name)
+            }
+        }
     }
 }

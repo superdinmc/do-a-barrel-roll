@@ -49,7 +49,7 @@ public class ClothConfigCompat {
             ConfigCategory mainCat = builder.getOrCreateCategory(c.getTranslation());
             for (var entry : c.getEntries()) {
                 if (entry instanceof ConfigSubCategory subCat) {
-                    var subBuilder = builder.entryBuilder().startSubCategory(c.getTranslation());
+                    var subBuilder = builder.entryBuilder().startSubCategory(entry.getTranslation());
                     addEntriesRecursive(builder, subBuilder, subCat);
 
                     mainCat.addEntry(subBuilder.build());
