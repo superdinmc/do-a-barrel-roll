@@ -1,9 +1,9 @@
 package nl.enjarai.doabarrelroll.compat.midnightcontrols;
 
-import eu.midnightdust.midnightcontrols.client.MidnightControlsConfig;
 import net.minecraft.client.MinecraftClient;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.ElytraMath;
+import nl.enjarai.doabarrelroll.compat.midnightcontrols.mixin.MidnightControlsConfigAccessor;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -17,16 +17,16 @@ public class ControllerInputHandler {
 
             // some math to process the raw input
             var powValue = Math.pow(value, 2.0d);
-            var rotationAmount = MidnightControlsConfig.rotationSpeed * powValue * 1.5d;
+            var rotationAmount = MidnightControlsConfigAccessor.getRotationSpeed() * powValue * 1.5d;
             var rotationDelta = state == 1 ? rotationAmount : -rotationAmount;
 
             // calculate the smoothing and apply the rotation
             if (axis == GLFW_GAMEPAD_AXIS_RIGHT_X) {
-                DoABarrelRollClient.changeElytraLook(0, 0, rotationDelta * MidnightControlsConfig.getRightXAxisSign(),
+                DoABarrelRollClient.changeElytraLook(0, 0, rotationDelta * MidnightControlsConfigAccessor.callGetRightXAxisSign(),
                         ModConfig.INSTANCE.getControllerSensitivity());
 
             } else if (axis == GLFW_GAMEPAD_AXIS_RIGHT_Y) {
-                DoABarrelRollClient.changeElytraLook(rotationDelta * MidnightControlsConfig.getRightYAxisSign(), 0, 0,
+                DoABarrelRollClient.changeElytraLook(rotationDelta * MidnightControlsConfigAccessor.callGetRightYAxisSign(), 0, 0,
                         ModConfig.INSTANCE.getControllerSensitivity());
 
             } else if (axis == GLFW_GAMEPAD_AXIS_LEFT_X) {

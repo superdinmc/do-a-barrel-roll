@@ -1,4 +1,4 @@
-name: Build Release V2
+name: Build All
 
 on: [pull_request, push, workflow_call]
 

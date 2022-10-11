@@ -40,15 +40,6 @@ dependencies {
         exclude group: "net.fabricmc.fabric-api"
     }
 
-    // Controller Support
-    modImplementation "dev.lambdaurora:spruceui:${project.spruceui_version}"
-    modImplementation "maven.modrinth:midnightlib:${project.midnightlib_version}"
-    modImplementation "maven.modrinth:midnightcontrols:${project.midnightcontrols_version}"
-    api('org.aperlambda:lambdajcommon:1.8.1') {
-        exclude group: 'com.google.code.gson'
-        exclude group: 'com.google.guava'
-    }
-
     include("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
 }
 
@@ -122,11 +113,4 @@ publishing {
 repositories {
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/releases" }
-    maven {
-        name = "Modrinth"
-        url = "https://api.modrinth.com/maven"
-        content {
-            includeGroup "maven.modrinth"
-        }
-    }
 }
