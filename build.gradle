@@ -18,7 +18,9 @@ subprojects {
         mappings "net.fabricmc:yarn:${rootProject.yarn_version}:v2"
 
         // Mixin Extras for extra compatibility.
-        include(implementation("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}"))
+        implementation("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
+        include("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
+
         annotationProcessor("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
     }
 }
@@ -29,7 +31,7 @@ allprojects {
     apply plugin: "maven-publish"
 
     archivesBaseName = rootProject.mod_id
-    version = rootProject.mod_version
+    version = "${rootProject.mod_version}+${rootProject.minecraft_version}"
     group = rootProject.maven_group
 
     repositories {

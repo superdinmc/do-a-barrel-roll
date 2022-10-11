@@ -9,7 +9,7 @@ public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunc
 
     @Override
     public void onInitializeClient() {
-        ModConfig.init();
+        ModConfig.touch();
     }
 
     @Override

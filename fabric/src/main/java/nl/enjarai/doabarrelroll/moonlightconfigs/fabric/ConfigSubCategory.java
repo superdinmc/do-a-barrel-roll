@@ -41,6 +41,4 @@ public class ConfigSubCategory extends ConfigEntry {
         entries.forEach(l -> l.saveToJson(category));
         object.add(this.name, category);
     }
-
-
 }

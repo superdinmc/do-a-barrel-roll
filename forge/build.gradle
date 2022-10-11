@@ -26,6 +26,7 @@ configurations {
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentForge.extendsFrom common
+    shade
 }
 
 dependencies {
@@ -36,6 +37,9 @@ dependencies {
 
     modImplementation ("curse.maven:configured-457570:4011355")
 
+    implementation(shadowCommon("com.github.LlamaLad7:MixinExtras:${rootProject.mixin_extras_version}"))
+    annotationProcessor("com.github.LlamaLad7:MixinExtras:${rootProject.mixin_extras_version}")
+    forgeRuntimeLibrary("com.github.LlamaLad7:MixinExtras:${rootProject.mixin_extras_version}")
 }
 
 processResources {
@@ -44,7 +48,6 @@ processResources {
 
     filesMatching("META-INF/mods.toml") {
         expand "version": project.version
-        expand "mod_name": project.getArchivesBaseName()
     }
 }
 
@@ -54,6 +57,8 @@ shadowJar {
 
     configurations = [project.configurations.shadowCommon]
     classifier "dev-shadow"
+
+    relocate 'com.llamalad7.mixinextras', "nl.enjarai.doabarrelroll.mixinextras" // ensure repackaged packages have unique names
 }
 
 remapJar {

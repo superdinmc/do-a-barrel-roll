@@ -46,10 +46,10 @@ public class ClothConfigCompat {
         for (var en : spec.getMainEntry().getEntries()) {
             //skips stray config values
             if (!(en instanceof ConfigSubCategory c)) continue;
-            ConfigCategory mainCat = builder.getOrCreateCategory(Text.translatable(nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder.getReadableName(c.getName())));
+            ConfigCategory mainCat = builder.getOrCreateCategory(c.getTranslation());
             for (var entry : c.getEntries()) {
                 if (entry instanceof ConfigSubCategory subCat) {
-                    var subBuilder = builder.entryBuilder().startSubCategory(Text.translatable(subCat.getName()));
+                    var subBuilder = builder.entryBuilder().startSubCategory(c.getTranslation());
                     addEntriesRecursive(builder, subBuilder, subCat);
 
                     mainCat.addEntry(subBuilder.build());
@@ -66,7 +66,7 @@ public class ClothConfigCompat {
 
         for (var entry : c.getEntries()) {
             if (entry instanceof ConfigSubCategory cc) {
-                var scb = builder.entryBuilder().startSubCategory(Text.translatable(entry.getName()));
+                var scb = builder.entryBuilder().startSubCategory(entry.getTranslation());
                 addEntriesRecursive(builder, scb, cc);
                 subCategoryBuilder.add(scb.build());
             } else subCategoryBuilder.add(buildEntry(builder, entry));

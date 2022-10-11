@@ -15,7 +15,7 @@ import nl.enjarai.doabarrelroll.config.RotationInstant;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
 
 public class DoABarrelRollClient {
-    public static final String MODID = "do-a-barrel-roll";
+    public static final String MODID = "do_a_barrel_roll";
     public static final Sensitivity ROTATION_SMOOTHNESS = new Sensitivity(1, 0.4, 1);
 
     public static final SmoothUtil pitchSmoother = new SmoothUtil();

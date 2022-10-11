@@ -40,14 +40,14 @@ public class YACLCompat {
             //skips stray config values
             if (!(en instanceof ConfigSubCategory c)) continue;
             var mainCat = ConfigCategory.createBuilder()
-                    .name(Text.translatable(c.getName()));
+                    .name(c.getTranslation());
 
 
             for (var entry : c.getEntries()) {
                 if (entry instanceof ConfigSubCategory subCat) {
                     var subBuilder = OptionGroup.createBuilder()
-                            .name(Text.translatable(subCat.getName()))
-                            .collapsed(true);
+                            .name(subCat.getTranslation())
+                            .collapsed(false);
 
                     addEntriesRecursive(mainCat, subBuilder, subCat);
 
@@ -69,7 +69,7 @@ public class YACLCompat {
             if (entry instanceof ConfigSubCategory cc) {
                 //not nested subcat not supported. merging
                 var scb = OptionGroup.createBuilder()
-                        .name(Text.translatable(entry.getName()))
+                        .name(cc.getTranslation())
                         .tooltip(Text.literal("Unsupported"));
                 // optional
                 addEntriesRecursive(builder, subCategoryBuilder, cc);

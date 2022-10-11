@@ -9,8 +9,7 @@ import nl.enjarai.doabarrelroll.config.ModConfig;
 public class DoABarrelRollForgeClient {
 
     public DoABarrelRollForgeClient() {
-        ModConfig.init();
-
+        ModConfig.touch();
         MinecraftForge.EVENT_BUS.register(ModEvents.class);
     }
 }

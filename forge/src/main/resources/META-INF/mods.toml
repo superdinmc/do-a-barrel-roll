@@ -4,13 +4,13 @@ license = "GPL-3.0"
 issueTrackerURL = "https://github.com/enjarai/do-a-barrel-roll/issues" #optional
 
 [[mods]]
-modId = "doabarrelroll"
+modId = "do_a_barrel_roll"
 version = "${version}"
 displayName = "Do A Barrel Roll"
 authors = "enjarai"
 modUrl = "https://github.com/enjarai/do-a-barrel-roll" #optional
 
-logoFile="assets/do-a-barrel-roll/icon.png"
+logoFile="icon.png"
 description = '''
 Microsoft flight simulator for Minecraft elytras.
 '''

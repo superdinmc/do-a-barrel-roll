@@ -1,6 +1,6 @@
 {
 	"schemaVersion": 1,
-	"id": "do-a-barrel-roll",
+	"id": "do_a_barrel_roll",
 	"version": "${version}",
 	
 	"name": "Do a Barrel Roll",
@@ -14,7 +14,7 @@
 	},
 	
 	"license": "GPL-3.0",
-	"icon": "assets/do-a-barrel-roll/icon.png",
+	"icon": "assets/do_a_barrel_roll/icon.png",
 
 	"entrypoints": {
 		"client": [

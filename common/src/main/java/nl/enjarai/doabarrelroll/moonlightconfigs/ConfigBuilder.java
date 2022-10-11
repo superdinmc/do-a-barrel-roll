@@ -23,6 +23,7 @@ public abstract class ConfigBuilder {
     protected final Map<String, String> comments = new HashMap<>();
     private String currentComment;
     private String currentKey;
+    protected boolean currentlyDescription;
     protected boolean synced;
     protected Runnable changeCallback;
 
@@ -103,6 +104,10 @@ public abstract class ConfigBuilder {
         return "config." + this.name.getNamespace() + "." + currentCategory() + "." + name;
     }
 
+    public String categoryTranslationKey(String name) {
+        return "config." + this.name.getNamespace() + "." + name;
+    }
+
 
     /**
      * Try not to use this. Just here to make porting easier
@@ -115,6 +120,11 @@ public abstract class ConfigBuilder {
             this.currentComment = null;
             this.currentKey = null;
         }
+        return this;
+    }
+
+    public ConfigBuilder withDescription() {
+        currentlyDescription = true;
         return this;
     }
 

@@ -45,8 +45,9 @@ public class ConfigBuilderImpl extends ConfigBuilder {
     }
 
     @Override
-    public ConfigBuilderImpl push(String translation) {
-        var cat = new ConfigSubCategory(translation);
+    public ConfigBuilderImpl push(String name) {
+        var cat = new ConfigSubCategory(name);
+        cat.setTranslationKey(categoryTranslationKey(name));
         categoryStack.peek().addEntry(cat);
         categoryStack.push(cat);
         return this;
@@ -62,9 +63,10 @@ public class ConfigBuilderImpl extends ConfigBuilder {
     private void doAddConfig(String name, ConfigValue<?> config) {
         config.setTranslationKey(this.translationKey(name));
         maybeAddTranslationString(name);
-        var tooltipKey = this.tooltipKey(name);
-        if (this.comments.containsKey(tooltipKey)) {
+        if (currentlyDescription) {
+            var tooltipKey = this.tooltipKey(name);
             config.setDescriptionKey(tooltipKey);
+            currentlyDescription = false;
         }
 
         this.categoryStack.peek().addEntry(config);

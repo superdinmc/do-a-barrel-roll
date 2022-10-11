@@ -11,7 +11,6 @@ public abstract class ConfigValue<T> extends ConfigEntry implements Supplier<T> 
 
     protected final T defaultValue;
     protected T value;
-    private String translationKey;
     private String descriptionKey;
 
     public ConfigValue(String name, T defaultValue) {
@@ -38,14 +37,6 @@ public abstract class ConfigValue<T> extends ConfigEntry implements Supplier<T> 
 
     public void setDescriptionKey(String descriptionKey) {
         this.descriptionKey = descriptionKey;
-    }
-
-    public void setTranslationKey(String translationKey) {
-        this.translationKey = translationKey;
-    }
-
-    public Text getTranslation() {
-        return Text.translatable(translationKey);
     }
 
     @Nullable

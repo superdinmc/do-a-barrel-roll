@@ -112,6 +112,4 @@ public class FabricConfigSpec extends ConfigSpec {
         }
         this.onRefresh();
     }
-
-
 }

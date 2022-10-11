@@ -1,21 +1,22 @@
 package nl.enjarai.doabarrelroll.config;
 
 
+import dev.architectury.injectables.targets.ArchitecturyTarget;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigSpec;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigType;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class ModConfig {
 
-    public static ModConfig INSTANCE;
+    public static ModConfig INSTANCE = new ModConfig();
 
-    public static void init() {
-        INSTANCE = new ModConfig();
+    public static void touch() {
+        // touch the grass
     }
-
 
     public ConfigSpec SPEC;
     private final Supplier<Boolean> MOD_ENABLED;
@@ -48,20 +49,20 @@ public class ModConfig {
             MOD_ENABLED = builder.define("mod_enabled", true);
 
             builder.push("controls");
-                SWITCH_ROLL_AND_YAW = builder.define("switch_roll_and_yaw", false);
+                SWITCH_ROLL_AND_YAW = builder.withDescription().define("switch_roll_and_yaw", false);
                 INVERT_PITCH = builder.define("invert_pitch", false);
-                MOMENTUM_BASED_MOUSE = builder.define("momentum_based_mouse", false);
-                SHOW_MOMENTUM_WIDGET = builder.define("show_momentum_widget", true);
+                MOMENTUM_BASED_MOUSE = builder.withDescription().define("momentum_based_mouse", false);
+                SHOW_MOMENTUM_WIDGET = builder.withDescription().define("show_momentum_widget", true);
             builder.pop();
 
             builder.push("banking");
-                ENABLE_BANKING = builder.define("enable_banking", true);
+                ENABLE_BANKING = builder.withDescription().define("enable_banking", true);
                 BANKING_STRENGTH = builder.define("banking_strength", 20.0, 0.0, 100.0);
             builder.pop();
 
             builder.push("thrust");
-                ENABLE_THRUST = builder.define("enable_thrust", false);
-                MAX_THRUST = builder.define("max_thrust", 1.0, 0.0, 5.0);
+                ENABLE_THRUST = builder.withDescription().define("enable_thrust", false);
+                MAX_THRUST = builder.withDescription().define("max_thrust", 1.0, 0.0, 5.0);
             builder.pop();
 
         builder.pop();
@@ -75,11 +76,19 @@ public class ModConfig {
                 DESKTOP_SENSITIVITY_ROLL = builder.define("roll", 1.0, 0.0, 2.0);
             builder.pop();
 
-            builder.push("controller");
-                CONTROLLER_SENSITIVITY_PITCH = builder.define("pitch", 1.0, 0.0, 2.0);
-                CONTROLLER_SENSITIVITY_YAW = builder.define("yaw", 0.4, 0.0, 2.0);
-                CONTROLLER_SENSITIVITY_ROLL = builder.define("roll", 1.0, 0.0, 2.0);
-            builder.pop();
+            if (!Objects.equals(ArchitecturyTarget.getCurrentTarget(), "forge")) {
+
+                builder.push("controller");
+                    CONTROLLER_SENSITIVITY_PITCH = builder.withDescription().define("pitch", 1.0, 0.0, 2.0);
+                    CONTROLLER_SENSITIVITY_YAW = builder.withDescription().define("yaw", 0.4, 0.0, 2.0);
+                    CONTROLLER_SENSITIVITY_ROLL = builder.withDescription().define("roll", 1.0, 0.0, 2.0);
+                builder.pop();
+
+            } else {
+                CONTROLLER_SENSITIVITY_PITCH = () -> 1.0;
+                CONTROLLER_SENSITIVITY_YAW = () -> 0.4;
+                CONTROLLER_SENSITIVITY_ROLL = () -> 1.0;
+            }
 
         builder.pop();
 
