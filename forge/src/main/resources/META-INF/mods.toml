@@ -13,6 +13,8 @@ modUrl = "https://github.com/enjarai/do-a-barrel-roll" #optional
 logoFile="icon.png"
 description = '''
 Microsoft flight simulator for Minecraft elytras.
+
+Big thanks to MehVahdJukaar (https://github.com/MehVahdJukaar) for their help with the Forge port.
 '''
 
 [[dependencies.do-a-barrel-roll]]

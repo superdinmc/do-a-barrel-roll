@@ -35,3 +35,5 @@ so in most cases it shouldn't trigger anticheat.
 However, doing things like loop de loops looks to the server like rapid camera movement
 and may get you flagged.
 **Use at your own risk.**
+
+Big thanks to [MehVahdJukaar](https://github.com/MehVahdJukaar) for their help with the Forge port.
