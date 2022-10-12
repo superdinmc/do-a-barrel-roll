@@ -17,7 +17,7 @@ jobs:
           is_append_body: true
 
   build:
-    uses: enjarai/do-a-barrel-roll/.github/workflows/build_all.yml@main
+    uses: ./.github/workflows/build_all.yml
 
   deploy_1_19:
     uses: enjarai/do-a-barrel-roll/.github/workflows/publish.yml@main
