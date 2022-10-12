@@ -32,7 +32,7 @@ jobs:
       java_vers: 17
       GITHUB_REF: ${{ github.ref }}
     secrets:
-      CF_API_KEY: ${{ secrets.CURSEFORGE_TOKEN }}
+      CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
       MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
     needs:
       - build
@@ -46,7 +46,7 @@ jobs:
       java_vers: 17
       GITHUB_REF: ${{ github.ref }}
     secrets:
-      CF_API_KEY: ${{ secrets.CURSEFORGE_TOKEN }}
+      CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
       MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
     needs:
       - build
