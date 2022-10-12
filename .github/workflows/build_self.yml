@@ -1,0 +1,10 @@
+name: Build Self
+
+on: [pull_request, push]
+
+jobs:
+  build:
+    uses: 'enjarai/do-a-barrel-roll/.github/workflows/build.yml@${{ github.head_ref || github.ref_name }}'
+    with:
+      branch: ${{ github.head_ref || github.ref_name }}
+      java_version: 17

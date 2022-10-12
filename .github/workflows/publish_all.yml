@@ -1,10 +1,21 @@
-name: Build Release
+name: Publish All
 
 on:
   release:
     types: [ created ]
 
 jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update GitHub Release
+        uses: tubone24/update_release@v1.3.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          body_path: CHANGELOG.md
+          is_append_body: true
+
   build:
     uses: enjarai/do-a-barrel-roll/.github/workflows/build_all.yml@main
 
