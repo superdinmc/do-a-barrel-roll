@@ -16,7 +16,7 @@ on:
         required: true
         type: string
     secrets:
-      CF_API_KEY:
+      CURSEFORGE_TOKEN:
         required: true
       MODRINTH_TOKEN:
         required: true
@@ -25,6 +25,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.branch }}
       - name: Download Artifacts
         uses: actions/download-artifact@v2
         with:
@@ -82,7 +86,9 @@ jobs:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           #          dependencies: ""
           curseforge-id: 663658
-          curseforge-token: ${{ secrets.CF_API_KEY }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
           name: ${{ steps.forge_release.outputs.result }}
           version: ${{ steps.version_num.outputs.result }}-forge
@@ -109,7 +115,9 @@ jobs:
           dependencies: |
             fabric-api | depends | *
           curseforge-id: 663658
-          curseforge-token: ${{ secrets.CF_API_KEY }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
           name: ${{ steps.fabric_release.outputs.result }}
           version: ${{ steps.version_num.outputs.result }}-fabric
