@@ -58,7 +58,9 @@ shadowJar {
     configurations = [project.configurations.shadowCommon]
     classifier "dev-shadow"
 
-    relocate 'com.llamalad7.mixinextras', "nl.enjarai.doabarrelroll.mixinextras" // ensure repackaged packages have unique names
+    exclude "META-INF/**"
+    // ensure repackaged packages have unique names
+    relocate 'com.llamalad7.mixinextras', "nl.enjarai.doabarrelroll.mixinextras"
 }
 
 remapJar {
