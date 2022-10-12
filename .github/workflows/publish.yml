@@ -80,7 +80,7 @@ jobs:
 
       - name: Run Publish Forge
         if: ${{ steps.forge_release.outputs.result != 'false' }}
-        uses: Kir-Antipov/mc-publish@v2.1
+        uses: Kir-Antipov/mc-publish@v3.2
         with:
           modrinth-id: 6FtRfnLg
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
@@ -108,7 +108,7 @@ jobs:
 
       - name: Run Publish Fabric
         if: ${{ steps.fabric_release.outputs.result != 'false' }}
-        uses: Kir-Antipov/mc-publish@v2.1
+        uses: Kir-Antipov/mc-publish@v3.2
         with:
           modrinth-id: 6FtRfnLg
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
