@@ -1,5 +1,6 @@
 package nl.enjarai.doabarrelroll.moonlightconfigs.fabric.values;
 
+import net.minecraft.text.TranslatableText;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.ConfigEntry;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,7 +43,7 @@ public abstract class ConfigValue<T> extends ConfigEntry implements Supplier<T> 
     @Nullable
     public Text getDescription() {
         if (this.descriptionKey == null) return null;
-        return Text.translatable(descriptionKey);
+        return new TranslatableText(descriptionKey);
     }
 
 

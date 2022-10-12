@@ -2,6 +2,7 @@ package nl.enjarai.doabarrelroll.moonlightconfigs.fabric;
 
 import com.google.gson.JsonObject;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 public abstract class ConfigEntry{
 
@@ -25,6 +26,6 @@ public abstract class ConfigEntry{
     }
 
     public Text getTranslation() {
-        return Text.translatable(translationKey);
+        return new TranslatableText(translationKey);
     }
 }

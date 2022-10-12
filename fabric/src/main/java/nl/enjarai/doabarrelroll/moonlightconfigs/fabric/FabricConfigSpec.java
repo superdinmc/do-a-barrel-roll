@@ -8,6 +8,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import nl.enjarai.doabarrelroll.moonlightconfigs.cloth_config.ClothConfigCompat;
@@ -78,7 +79,7 @@ public class FabricConfigSpec extends ConfigSpec {
     }
 
     public Text getName() {
-        return Text.literal(ConfigBuilder.getReadableName(this.res.getPath() + "_configs"));
+        return new LiteralText(ConfigBuilder.getReadableName(this.res.getPath() + "_configs"));
     }
 
     private static final boolean YACL = FabricLoader.getInstance().isModLoaded("yet-another-config-lib");

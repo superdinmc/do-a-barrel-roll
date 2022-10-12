@@ -35,7 +35,7 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
-    modImplementation ("curse.maven:configured-457570:4011355")
+    modImplementation ("curse.maven:configured-457570:4010624")
 
     implementation(shadowCommon("com.github.LlamaLad7:MixinExtras:${rootProject.mixin_extras_version}"))
     annotationProcessor("com.github.LlamaLad7:MixinExtras:${rootProject.mixin_extras_version}")

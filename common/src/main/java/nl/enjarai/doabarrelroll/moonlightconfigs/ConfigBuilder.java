@@ -1,6 +1,7 @@
 package nl.enjarai.doabarrelroll.moonlightconfigs;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.text.TranslatableText;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -89,11 +90,11 @@ public abstract class ConfigBuilder {
     public abstract <T> Supplier<List<? extends T>> defineForgeList(String path, List<? extends T> defaultValue, Predicate<Object> elementValidator);
 
     public Text description(String name) {
-        return Text.translatable(translationKey(name));
+        return new TranslatableText(translationKey(name));
     }
 
     public Text tooltip(String name) {
-        return Text.translatable(tooltipKey(name));
+        return new TranslatableText(tooltipKey(name));
     }
 
     public String tooltipKey(String name) {
