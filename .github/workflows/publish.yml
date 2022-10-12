@@ -42,13 +42,6 @@ jobs:
           script: |
             const fs = require("fs")
             return fs.readdirSync("./").filter(e => !e.endsWith("dev.jar") && !e.endsWith("sources.jar") && !e.endsWith("shadow.jar") && e.endsWith(".jar") && e.includes("fabric"))[0] || false;
-      - name: Upload Fabric to Git Release
-        if: ${{ steps.fabric_release.outputs.result != 'false' }}
-        uses: JasonEtco/upload-to-release@master
-        with:
-          args: ./${{ steps.fabric_release.outputs.result }} application/jar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check For Forge Jar
         uses: actions/github-script@v5
@@ -58,25 +51,25 @@ jobs:
           script: |
             const fs = require("fs")
             return fs.readdirSync("./").filter(e => !e.endsWith("dev.jar") && !e.endsWith("sources.jar") && !e.endsWith("shadow.jar") && e.endsWith(".jar") && e.includes("forge"))[0] || false;
-      - name: Upload Forge to Git Release
-        if: ${{ steps.forge_release.outputs.result != 'false' }}
-        uses: JasonEtco/upload-to-release@master
-        with:
-          args: ./${{ steps.forge_release.outputs.result }} application/jar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract Version Number
+      - name: Extract Mod Version
         uses: actions/github-script@v5
-        id: version_num
+        id: mod_version
         env:
-          GV: '${{ inputs.game_vers }}'
           REF: '${{ inputs.GITHUB_REF }}'
         with:
           result-encoding: string
           script: |
-            return `${process.env.REF.replace(/\/?refs\/tags\//, '')}+${process.env.GV.split(/\s/)[0]}`
-            
+            return process.env.REF.replace(/\/?refs\/tags\//, '')
+      - name: Extract Game Version
+        uses: actions/github-script@v5
+        id: game_version
+        env:
+          GV: '${{ inputs.game_vers }}'
+        with:
+          result-encoding: string
+          script: |
+            return process.env.GV.split(/\s/)[0]
 
       - name: Run Publish Forge
         if: ${{ steps.forge_release.outputs.result != 'false' }}
@@ -90,8 +83,8 @@ jobs:
 
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-          name: ${{ steps.forge_release.outputs.result }}
-          version: ${{ steps.version_num.outputs.result }}-forge
+          name: '${{ steps.mod_version.outputs.result }} for Forge ${{ steps.game_version.outputs.result }}'
+          version: '${{ steps.mod_version.outputs.result }}+${{ steps.game_version.outputs.result }}-forge'
 
           files: ./${{ steps.forge_release.outputs.result }}
           version-type: release
@@ -119,8 +112,8 @@ jobs:
 
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-          name: ${{ steps.fabric_release.outputs.result }}
-          version: ${{ steps.version_num.outputs.result }}-fabric
+          name: '${{ steps.mod_version.outputs.result }} for Fabric ${{ steps.game_version.outputs.result }}'
+          version: '${{ steps.mod_version.outputs.result }}+${{ steps.game_version.outputs.result }}-fabric'
 
           files: ./${{ steps.fabric_release.outputs.result }}
           version-type: release
