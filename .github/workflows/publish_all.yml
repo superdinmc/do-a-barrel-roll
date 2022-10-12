@@ -8,6 +8,8 @@ jobs:
   changelog:
     runs-on: ubuntu-latest
     steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
       - name: Update GitHub Release
         uses: tubone24/update_release@v1.3.1
         env:
