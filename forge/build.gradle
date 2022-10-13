@@ -58,7 +58,7 @@ shadowJar {
     configurations = [project.configurations.shadowCommon]
     classifier "dev-shadow"
 
-    exclude "META-INF/**"
+//    exclude "META-INF/**"
     // ensure repackaged packages have unique names
     relocate 'com.llamalad7.mixinextras', "nl.enjarai.doabarrelroll.mixinextras"
 }
