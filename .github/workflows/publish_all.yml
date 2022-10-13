@@ -1,0 +1,52 @@
+name: Publish All
+
+on:
+  release:
+    types: [ created ]
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+      - name: Update GitHub Release
+        uses: tubone24/update_release@v1.3.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          body_path: CHANGELOG.md
+          is_append_body: true
+
+  build:
+    uses: ./.github/workflows/build_all.yml
+
+  deploy_1_19:
+    uses: enjarai/do-a-barrel-roll/.github/workflows/publish.yml@main
+    with:
+      branch: main
+      game_vers: |
+        1.19
+        1.19.1
+        1.19.2
+      java_vers: 17
+      GITHUB_REF: ${{ github.ref }}
+    secrets:
+      CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+      MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+    needs:
+      - build
+      - deploy_1_18
+
+  deploy_1_18:
+    uses: enjarai/do-a-barrel-roll/.github/workflows/publish.yml@1.18.2
+    with:
+      branch: 1.18.2
+      game_vers: 1.18.2
+      java_vers: 17
+      GITHUB_REF: ${{ github.ref }}
+    secrets:
+      CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+      MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+    needs:
+      - build

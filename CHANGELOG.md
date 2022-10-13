@@ -1,2 +1,1 @@
-- Fixed some funky camera behaviour when looking straight up or down
-- Backport to 1.17.1 (Thanks @doinkythederp!)
+- Undid a change in 2.0.1 which broke the entire mod... oops.
