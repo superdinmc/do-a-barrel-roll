@@ -38,7 +38,6 @@
 	],
 
 	"depends": {
-		"cloth-config2": "*",
 		"minecraft": "1.17.x"
 	},
 
