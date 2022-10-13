@@ -1,4 +1,4 @@
-package nl.enjarai.doabarrelroll.compat.midnightcontrols.mixin;
+package nl.enjarai.doabarrelroll.compat.lambdacontrols.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;

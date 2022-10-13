@@ -9,6 +9,7 @@ import dev.isxander.yacl.gui.controllers.TickBoxController;
 import dev.isxander.yacl.gui.controllers.slider.DoubleSliderController;
 import dev.isxander.yacl.gui.controllers.slider.IntegerSliderController;
 import dev.isxander.yacl.gui.controllers.string.StringController;
+import net.minecraft.text.LiteralText;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.ConfigEntry;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.ConfigSubCategory;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.FabricConfigSpec;
@@ -70,7 +71,7 @@ public class YACLCompat {
                 //not nested subcat not supported. merging
                 var scb = OptionGroup.createBuilder()
                         .name(cc.getTranslation())
-                        .tooltip(Text.literal("Unsupported"));
+                        .tooltip(new LiteralText("Unsupported"));
                 // optional
                 addEntriesRecursive(builder, subCategoryBuilder, cc);
                 //subCategoryBuilder.group(scb.build());
@@ -125,7 +126,7 @@ public class YACLCompat {
         } else if (entry instanceof ListStringConfigValue<?> lc) {
             var e = Option.createBuilder(Text.class)
                     .name(lc.getTranslation())
-                    .binding(Binding.immutable(Text.literal("String Lists are not supported")))
+                    .binding(Binding.immutable(new LiteralText("String Lists are not supported")))
                     .controller(LabelController::new);
             var description = lc.getDescription();
             if (description != null) e.tooltip(description);// Shown when the user hover over this option

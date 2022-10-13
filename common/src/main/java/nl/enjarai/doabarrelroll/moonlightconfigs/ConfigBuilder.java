@@ -89,11 +89,11 @@ public abstract class ConfigBuilder {
     public abstract <T> Supplier<List<? extends T>> defineForgeList(String path, List<? extends T> defaultValue, Predicate<Object> elementValidator);
 
     public Text description(String name) {
-        return Text.translatable(translationKey(name));
+        return new TranslatableText(translationKey(name));
     }
 
     public Text tooltip(String name) {
-        return Text.translatable(tooltipKey(name));
+        return new TranslatableText(tooltipKey(name));
     }
 
     public String tooltipKey(String name) {

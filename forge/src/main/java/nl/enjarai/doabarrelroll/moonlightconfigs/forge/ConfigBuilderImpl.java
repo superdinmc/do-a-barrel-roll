@@ -55,19 +55,19 @@ public class ConfigBuilderImpl extends ConfigBuilder {
     @Override
     public Supplier<Boolean> define(String name, boolean defaultValue) {
         maybeAddTranslationString(name);
-        return builder.define(name, defaultValue);
+        return builder.define(name, defaultValue)::get;
     }
 
     @Override
     public Supplier<Double> define(String name, double defaultValue, double min, double max) {
         maybeAddTranslationString(name);
-        return builder.defineInRange(name, defaultValue, min, max);
+        return builder.defineInRange(name, defaultValue, min, max)::get;
     }
 
     @Override
     public Supplier<Integer> define(String name, int defaultValue, int min, int max) {
         maybeAddTranslationString(name);
-        return builder.defineInRange(name, defaultValue, min, max);
+        return builder.defineInRange(name, defaultValue, min, max)::get;
     }
 
     @Override
@@ -77,12 +77,11 @@ public class ConfigBuilderImpl extends ConfigBuilder {
         return () -> Integer.parseUnsignedInt(stringConfig.get().replace("0x", ""), 16);
     }
 
-    @SuppressWarnings("UnnecessaryLocalVariable")
     @Override
     public Supplier<String> define(String name, String defaultValue, Predicate<Object> validator) {
         maybeAddTranslationString(name);
         ForgeConfigSpec.ConfigValue<String> stringConfig = builder.define(name, (String) defaultValue, validator);
-        return stringConfig;
+        return stringConfig::get;
     }
 
     @Override
@@ -102,7 +101,7 @@ public class ConfigBuilderImpl extends ConfigBuilder {
     @Override
     public <V extends Enum<V>> Supplier<V> define(String name, V defaultValue) {
         maybeAddTranslationString(name);
-        return builder.defineEnum(name, defaultValue);
+        return builder.defineEnum(name, defaultValue)::get;
     }
 
     @Override

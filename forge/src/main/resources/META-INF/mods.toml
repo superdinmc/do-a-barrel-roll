@@ -20,14 +20,14 @@ Big thanks to MehVahdJukaar (https://github.com/MehVahdJukaar) for their help wi
 [[dependencies.do-a-barrel-roll]]
 modId = "forge"
 mandatory = true
-versionRange = "[42.1.0,)"
+versionRange = "[35.1.0,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.do-a-barrel-roll]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.19,)"
+versionRange = "[1.16,)"
 ordering = "NONE"
 side = "BOTH"
 

@@ -8,18 +8,15 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.client.ConfigGuiHandler;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigSpec;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigType;
 import org.jetbrains.annotations.Nullable;
@@ -103,8 +100,8 @@ public class ConfigSpecWrapper extends ConfigSpec {
     public Screen makeScreen(Screen parent, @Nullable Identifier background) {
         var container = ModList.get().getModContainerById(this.getModId());
         if (container.isPresent()) {
-            var factory = container.get().getCustomExtension(ConfigScreenHandler.ConfigScreenFactory.class);
-            if (factory.isPresent()) return factory.get().screenFunction().apply(MinecraftClient.getInstance(), parent);
+            var factory = ConfigGuiHandler.getGuiFactoryFor((ModInfo) container.get().getModInfo());
+            if (factory.isPresent()) return factory.get().apply(MinecraftClient.getInstance(), parent);
         }
         return null;
     }
@@ -112,11 +109,11 @@ public class ConfigSpecWrapper extends ConfigSpec {
     @Override
     public boolean hasConfigScreen() {
         return ModList.get().getModContainerById(this.getModId())
-                .map(container -> container.getCustomExtension(ConfigScreenHandler.ConfigScreenFactory.class)
+                .map(container -> ConfigGuiHandler.getGuiFactoryFor((ModInfo) container.getModInfo())
                         .isPresent()).orElse(false);
     }
 
-    protected void onConfigChange(ModConfigEvent event) {
+    protected void onConfigChange(ModConfig.ModConfigEvent event) {
         if (event.getConfig().getSpec() == this.getSpec()) {
             //send this configuration to connected clients
             onRefresh();

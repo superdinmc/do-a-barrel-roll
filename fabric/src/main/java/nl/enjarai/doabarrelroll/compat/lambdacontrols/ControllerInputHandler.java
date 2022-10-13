@@ -1,9 +1,9 @@
-package nl.enjarai.doabarrelroll.compat.midnightcontrols;
+package nl.enjarai.doabarrelroll.compat.lambdacontrols;
 
 import net.minecraft.client.MinecraftClient;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.ElytraMath;
-import nl.enjarai.doabarrelroll.compat.midnightcontrols.mixin.MidnightControlsConfigAccessor;
+import nl.enjarai.doabarrelroll.compat.lambdacontrols.mixin.MidnightControlsConfigAccessor;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 
 import static org.lwjgl.glfw.GLFW.*;
