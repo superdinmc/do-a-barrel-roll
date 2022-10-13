@@ -1,1 +1,1 @@
-- Fixed an issue which made the mod incompatible with any other mods using mixinextras on forge.
+- Undid a change in 2.0.1 which broke the entire mod... oops.
