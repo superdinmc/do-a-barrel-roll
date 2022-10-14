@@ -13,6 +13,7 @@ import net.minecraft.util.math.Vec3f;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.RotationInstant;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
+import nl.enjarai.doabarrelroll.util.Vec2d;
 
 public class DoABarrelRollClient {
     public static final String MODID = "do_a_barrel_roll";
@@ -25,7 +26,7 @@ public class DoABarrelRollClient {
     private static double lastLerpUpdate;
     public static double landingLerp = 1;
     public static Vec3d left;
-    public static Vec2f mouseTurnVec = Vec2f.ZERO;
+    public static Vec2d mouseTurnVec = Vec2d.ZERO;
     public static double throttle = 0;
 
     // TODO triple jump to activate???
@@ -45,7 +46,7 @@ public class DoABarrelRollClient {
         if (ModConfig.INSTANCE.getMomentumBasedMouse()) {
 
             // add the mouse movement to the current vector and normalize if needed
-            var turnVec = mouseTurnVec.add(new Vec2f((float) cursorDeltaX, (float) cursorDeltaY).multiply(1f / 300));
+            Vec2d turnVec = mouseTurnVec.add(new Vec2d(cursorDeltaX, cursorDeltaY).multiply(1f / 300));
             if (turnVec.lengthSquared() > 1) {
                 turnVec = turnVec.normalize();
             }
@@ -59,7 +60,7 @@ public class DoABarrelRollClient {
         } else {
 
             // if we are not using a momentum based mouse, we can reset it and apply the values directly
-            mouseTurnVec = Vec2f.ZERO;
+            mouseTurnVec = Vec2d.ZERO;
             changeElytraLook(cursorDeltaY, 0, cursorDeltaX, ModConfig.INSTANCE.getDesktopSensitivity());
         }
 
@@ -124,7 +125,7 @@ public class DoABarrelRollClient {
         pitchSmoother.clear();
         yawSmoother.clear();
         rollSmoother.clear();
-        mouseTurnVec = Vec2f.ZERO;
+        mouseTurnVec = Vec2d.ZERO;
         lastLookUpdate = GlfwUtil.getTime();
         throttle = 0;
     }
