@@ -18,11 +18,6 @@ subprojects {
 
         // The following line declares the yarn mappings you may select this one as well.
         mappings "net.fabricmc:yarn:${rootProject.yarn_version}:v2"
-
-        // Mixin Extras for extra compatibility.
-        implementation("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
-
-        annotationProcessor("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
     }
 }
 
@@ -99,7 +94,15 @@ allprojects {
         maven { url "https://maven.terraformersmc.com/releases/" }
 
         // Jitpack for Mixin Extras.
-        maven { url 'https://jitpack.io' }
+        maven {
+            url 'https://jitpack.io'
+            content {
+                includeGroup 'com.github.LlamaLad7'
+            }
+        }
+
+        // YACL
+        maven { url = "https://maven.isxander.dev/releases" }
     }
 
     tasks.withType(JavaCompile) {

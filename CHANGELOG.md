@@ -1,1 +1,1 @@
-- Undid a change in 2.0.1 which broke the entire mod... oops.
+- Actually fixed MixinExtras compatibility issues this time.
