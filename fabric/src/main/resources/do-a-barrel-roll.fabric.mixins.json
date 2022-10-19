@@ -4,6 +4,7 @@
   "package": "nl.enjarai.doabarrelroll.fabric.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "MouseMixin"
   ],
   "mixins": [
   ],

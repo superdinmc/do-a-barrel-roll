@@ -28,9 +28,7 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
-
-    modCompileOnly("curse.maven:yacl-667299:3987709")
-
+    modCompileOnly "dev.isxander:yet-another-config-lib:${project.yacl_version}"
 
     // Mod Menu integration. Currently unused.
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
@@ -40,6 +38,9 @@ dependencies {
         exclude group: "net.fabricmc.fabric-api"
     }
 
+    // Mixin Extras for extra compatibility.
+    implementation("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
+    annotationProcessor("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
     include("com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}")
 }
 

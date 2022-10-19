@@ -1,9 +1,10 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "net.mehvahdjukaar.do-a-barrel-roll.core.forge.mixins",
+  "package": "nl.enjarai.doabarrelroll.forge.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "MouseMixin"
   ],
   "mixins": [
   ],

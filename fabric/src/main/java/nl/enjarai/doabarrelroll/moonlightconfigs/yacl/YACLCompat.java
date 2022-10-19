@@ -1,7 +1,6 @@
 package nl.enjarai.doabarrelroll.moonlightconfigs.yacl;
 
 import dev.isxander.yacl.api.*;
-import dev.isxander.yacl.api.ConfigCategory.Builder;
 import dev.isxander.yacl.gui.controllers.ColorController;
 import dev.isxander.yacl.gui.controllers.EnumController;
 import dev.isxander.yacl.gui.controllers.LabelController;
@@ -10,6 +9,9 @@ import dev.isxander.yacl.gui.controllers.slider.DoubleSliderController;
 import dev.isxander.yacl.gui.controllers.slider.IntegerSliderController;
 import dev.isxander.yacl.gui.controllers.string.StringController;
 import net.minecraft.text.LiteralText;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.ConfigEntry;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.ConfigSubCategory;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.FabricConfigSpec;
@@ -17,9 +19,6 @@ import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.values.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class YACLCompat {
 

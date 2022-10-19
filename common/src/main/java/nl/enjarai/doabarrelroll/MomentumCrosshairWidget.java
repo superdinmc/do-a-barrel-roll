@@ -3,19 +3,25 @@ package nl.enjarai.doabarrelroll;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec2f;
+import nl.enjarai.doabarrelroll.util.Vec2d;
 
 public class MomentumCrosshairWidget {
 
-    public static void render(MatrixStack matrices, int scaledWidth, int scaledHeight, Vec2f mouseTurnVec) {
+    public static void render(MatrixStack matrices, int scaledWidth, int scaledHeight, Vec2d mouseTurnVec) {
         int color = 0xffffffff;
         int centerX = scaledWidth / 2;
         int centerY = scaledHeight / 2 - 1;
         var turnVec = mouseTurnVec.multiply(50);
         var lineVec = turnVec.add(turnVec.negate().normalize().multiply(Math.min(turnVec.length(), 10f)));
 
-        if (!lineVec.equals(Vec2f.ZERO)) {
+        if (!lineVec.equals(Vec2d.ZERO)) {
 
             RenderSystem.enableBlend();
             RenderSystem.disableTexture();

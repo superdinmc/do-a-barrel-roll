@@ -23,10 +23,10 @@ loom {
 configurations {
     common
     shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
+    shadow
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentForge.extendsFrom common
-    shade
 }
 
 dependencies {
@@ -36,10 +36,6 @@ dependencies {
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
     modImplementation ("curse.maven:configured-457570:4010624")
-
-    implementation(shadowCommon("com.github.LlamaLad7:MixinExtras:${rootProject.mixin_extras_version}"))
-    annotationProcessor("com.github.LlamaLad7:MixinExtras:${rootProject.mixin_extras_version}")
-    forgeRuntimeLibrary("com.github.LlamaLad7:MixinExtras:${rootProject.mixin_extras_version}")
 }
 
 processResources {
@@ -57,10 +53,6 @@ shadowJar {
 
     configurations = [project.configurations.shadowCommon]
     classifier "dev-shadow"
-
-//    exclude "META-INF/**"
-    // ensure repackaged packages have unique names
-    relocate 'com.llamalad7.mixinextras', "nl.enjarai.doabarrelroll.mixinextras"
 }
 
 remapJar {
