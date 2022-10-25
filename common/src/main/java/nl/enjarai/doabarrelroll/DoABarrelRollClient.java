@@ -6,6 +6,7 @@ import net.minecraft.client.util.GlfwUtil;
 import net.minecraft.client.util.SmoothUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
@@ -44,7 +45,7 @@ public class DoABarrelRollClient {
 
             if (client.player != null) {
                 client.player.sendMessage(
-                        Text.translatable(
+                        new TranslatableText(
                                 "key.do_a_barrel_roll." +
                                         (ModConfig.INSTANCE.getModEnabled() ? "toggle_enabled.enable" : "toggle_enabled.disable")
                         ),
