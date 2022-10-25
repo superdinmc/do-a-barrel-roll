@@ -5,6 +5,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.GlfwUtil;
 import net.minecraft.client.util.SmoothUtil;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
@@ -35,6 +36,23 @@ public class DoABarrelRollClient {
         return new Identifier(MODID, path);
     }
 
+
+    public static void clientTick(MinecraftClient client) {
+        while (ModKeybindings.TOGGLE_ENABLED.wasPressed()) {
+            ModConfig.INSTANCE.setModEnabled(!ModConfig.INSTANCE.getModEnabled());
+            ModConfig.INSTANCE.save();
+
+            if (client.player != null) {
+                client.player.sendMessage(
+                        Text.translatable(
+                                "key.do_a_barrel_roll." +
+                                        (ModConfig.INSTANCE.getModEnabled() ? "toggle_enabled.enable" : "toggle_enabled.disable")
+                        ),
+                        true
+                );
+            }
+        }
+    }
 
     public static boolean updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY) {
 

@@ -2,6 +2,7 @@ package nl.enjarai.doabarrelroll.moonlightconfigs;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.text.TranslatableText;
+import nl.enjarai.doabarrelroll.util.Value;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,29 +63,29 @@ public abstract class ConfigBuilder {
 
     public abstract ConfigBuilder pop();
 
-    public abstract Supplier<Boolean> define(String name, boolean defaultValue);
+    public abstract Value<Boolean> define(String name, boolean defaultValue);
 
-    public abstract Supplier<Double> define(String name, double defaultValue, double min, double max);
+    public abstract Value<Double> define(String name, double defaultValue, double min, double max);
 
-    public abstract Supplier<Integer> define(String name, int defaultValue, int min, int max);
+    public abstract Value<Integer> define(String name, int defaultValue, int min, int max);
 
-    public abstract Supplier<Integer> defineColor(String name, int defaultValue);
+    public abstract Value<Integer> defineColor(String name, int defaultValue);
 
-    public abstract Supplier<String> define(String name, String defaultValue, Predicate<Object> validator);
+    public abstract Value<String> define(String name, String defaultValue, Predicate<Object> validator);
 
-    public Supplier<String> define(String name, String defaultValue) {
+    public Value<String> define(String name, String defaultValue) {
         return define(name, defaultValue, STRING_CHECK);
     }
 
-    public <T extends String> Supplier<List<String>> define(String name, List<? extends T> defaultValue) {
+    public <T extends String> Value<List<String>> define(String name, List<? extends T> defaultValue) {
         return define(name, defaultValue, s -> true);
     }
 
     protected abstract String currentCategory();
 
-    public abstract <T extends String> Supplier<List<String>> define(String name, List<? extends T> defaultValue, Predicate<Object> predicate);
+    public abstract <T extends String> Value<List<String>> define(String name, List<? extends T> defaultValue, Predicate<Object> predicate);
 
-    public abstract <V extends Enum<V>> Supplier<V> define(String name, V defaultValue);
+    public abstract <V extends Enum<V>> Value<V> define(String name, V defaultValue);
 
     @Deprecated
     public abstract <T> Supplier<List<? extends T>> defineForgeList(String path, List<? extends T> defaultValue, Predicate<Object> elementValidator);

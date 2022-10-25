@@ -4,16 +4,8 @@ import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.gui.entries.EnumListEntry;
-import me.shedaniel.clothconfig2.impl.builders.BooleanToggleBuilder;
-import me.shedaniel.clothconfig2.impl.builders.ColorFieldBuilder;
-import me.shedaniel.clothconfig2.impl.builders.DoubleFieldBuilder;
-import me.shedaniel.clothconfig2.impl.builders.EnumSelectorBuilder;
-import me.shedaniel.clothconfig2.impl.builders.IntFieldBuilder;
-import me.shedaniel.clothconfig2.impl.builders.StringFieldBuilder;
-import me.shedaniel.clothconfig2.impl.builders.StringListBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.ConfigEntry;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.ConfigSubCategory;
@@ -38,7 +30,7 @@ public class ClothConfigCompat {
 
         builder.setParentScreen(parent);
         builder.setTitle(spec.getName());
-        builder.setSavingRunnable(spec::saveConfig);
+        builder.setSavingRunnable(spec::save);
 
         if (background != null) builder.setDefaultBackgroundTexture(background);
 

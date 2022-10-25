@@ -30,5 +30,10 @@
   "config.do_a_barrel_roll.controller.yaw": "Yaw",
   "config.do_a_barrel_roll.controller.yaw.description": "Only applicable when MidnightControls is installed.",
   "config.do_a_barrel_roll.controller.roll": "Roll",
-  "config.do_a_barrel_roll.controller.roll.description": "Only applicable when MidnightControls is installed."
+  "config.do_a_barrel_roll.controller.roll.description": "Only applicable when MidnightControls is installed.",
+
+  "category.do_a_barrel_roll.do_a_barrel_roll": "Do a Barrel Roll",
+  "key.do_a_barrel_roll.toggle_enabled": "Toggle Enabled",
+  "key.do_a_barrel_roll.toggle_enabled.enable": "§aEnabled §rDo a Barrel Roll",
+  "key.do_a_barrel_roll.toggle_enabled.disable": "§cDisabled §rDo a Barrel Roll"
 }
