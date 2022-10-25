@@ -1,1 +1,3 @@
-- Actually fixed MixinExtras compatibility issues this time.
+- Added a keybind to easily toggle the mod in flight.
+- Fixed an issue causing a crash when loaded server-side.
+- Likely fixed a funky issue with Forge config shitting itself.

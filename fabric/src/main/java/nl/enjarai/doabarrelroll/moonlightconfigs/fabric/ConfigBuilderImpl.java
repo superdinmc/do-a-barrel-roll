@@ -3,12 +3,14 @@ package nl.enjarai.doabarrelroll.moonlightconfigs.fabric;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigType;
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.values.*;
+import nl.enjarai.doabarrelroll.util.CombinedValue;
+import nl.enjarai.doabarrelroll.util.Value;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Stack;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
+
 import net.minecraft.util.Identifier;
 
 /**
@@ -35,7 +37,7 @@ public class ConfigBuilderImpl extends ConfigBuilder {
         FabricConfigSpec spec = new FabricConfigSpec(this.getName(),
                 mainCategory, this.type, this.synced, this.changeCallback);
         spec.loadFromFile();
-        spec.saveConfig();
+        spec.save();
         return spec;
     }
 
@@ -74,7 +76,7 @@ public class ConfigBuilderImpl extends ConfigBuilder {
 
 
     @Override
-    public Supplier<Boolean> define(String name, boolean defaultValue) {
+    public Value<Boolean> define(String name, boolean defaultValue) {
         var config = new BoolConfigValue(name, defaultValue);
         doAddConfig(name, config);
         return config;
@@ -82,50 +84,51 @@ public class ConfigBuilderImpl extends ConfigBuilder {
 
 
     @Override
-    public Supplier<Double> define(String name, double defaultValue, double min, double max) {
+    public Value<Double> define(String name, double defaultValue, double min, double max) {
         var config = new DoubleConfigValue(name, defaultValue, min, max);
         doAddConfig(name, config);
         return config;
     }
 
     @Override
-    public Supplier<Integer> define(String name, int defaultValue, int min, int max) {
+    public Value<Integer> define(String name, int defaultValue, int min, int max) {
         var config = new IntConfigValue(name, defaultValue, min, max);
         doAddConfig(name, config);
         return config;
     }
 
     @Override
-    public Supplier<Integer> defineColor(String name, int defaultValue) {
+    public Value<Integer> defineColor(String name, int defaultValue) {
         var config = new ColorConfigValue(name, defaultValue);
         doAddConfig(name, config);
         return config;
     }
 
     @Override
-    public Supplier<String> define(String name, String defaultValue, Predicate<Object> validator) {
+    public Value<String> define(String name, String defaultValue, Predicate<Object> validator) {
         var config = new StringConfigValue(name, defaultValue, validator);
         doAddConfig(name, config);
         return config;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public <T extends String> Supplier<List<String>> define(String name, List<? extends T> defaultValue, Predicate<Object> predicate) {
+    public <T extends String> Value<List<String>> define(String name, List<? extends T> defaultValue, Predicate<Object> predicate) {
         var config = new ListStringConfigValue<>(name, (List<String>) defaultValue, predicate);
         doAddConfig(name, config);
         return config;
     }
 
     @Override
-    public <V extends Enum<V>> Supplier<V> define(String name, V defaultValue) {
+    public <V extends Enum<V>> Value<V> define(String name, V defaultValue) {
         var config = new EnumConfigValue<>(name, defaultValue);
         doAddConfig(name, config);
         return config;
     }
 
     @Override
-    public <T> Supplier<List<? extends T>> defineForgeList(String path, List<? extends T> defaultValue, Predicate<Object> elementValidator) {
-        return () -> defaultValue;
+    public <T> Value<List<? extends T>> defineForgeList(String path, List<? extends T> defaultValue, Predicate<Object> elementValidator) {
+        return new CombinedValue<>(value -> {}, () -> defaultValue);
     }
 
     @Override

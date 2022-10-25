@@ -32,7 +32,7 @@ public class YACLCompat {
         YetAnotherConfigLib.Builder builder = YetAnotherConfigLib.createBuilder();
 
         builder.title(spec.getName());
-        builder.save(spec::saveConfig);
+        builder.save(spec::save);
 
 
         for (var en : spec.getMainEntry().getEntries()) {

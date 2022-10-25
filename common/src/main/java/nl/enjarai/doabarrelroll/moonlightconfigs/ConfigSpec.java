@@ -85,6 +85,8 @@ public abstract class ConfigSpec {
 
     public abstract void loadFromBytes(InputStream stream);
 
+    public abstract void save();
+
     @Nullable
     @Environment(EnvType.CLIENT)
     public Screen makeScreen(Screen parent) {

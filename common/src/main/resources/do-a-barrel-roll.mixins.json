@@ -7,12 +7,12 @@
     "ClientPlayerEntityMixin",
     "GameRendererMixin",
     "InGameHudMixin",
-    "PlayerEntityRendererMixin"
+    "PlayerEntityRendererMixin",
+    "LivingEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "mixins": [
-    "LivingEntityMixin"
   ]
 }

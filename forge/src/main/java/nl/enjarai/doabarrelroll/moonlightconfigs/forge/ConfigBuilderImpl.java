@@ -5,6 +5,8 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigType;
+import nl.enjarai.doabarrelroll.util.CombinedValue;
+import nl.enjarai.doabarrelroll.util.Value;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -53,56 +55,68 @@ public class ConfigBuilderImpl extends ConfigBuilder {
     }
 
     @Override
-    public Supplier<Boolean> define(String name, boolean defaultValue) {
+    public Value<Boolean> define(String name, boolean defaultValue) {
         maybeAddTranslationString(name);
-        return builder.define(name, defaultValue);
+        var value = builder.define(name, defaultValue);
+        return new CombinedValue<>(value::set, value);
     }
 
     @Override
-    public Supplier<Double> define(String name, double defaultValue, double min, double max) {
+    public Value<Double> define(String name, double defaultValue, double min, double max) {
         maybeAddTranslationString(name);
-        return builder.defineInRange(name, defaultValue, min, max);
+        var value = builder.defineInRange(name, defaultValue, min, max);
+        return new CombinedValue<>(value::set, value);
     }
 
     @Override
-    public Supplier<Integer> define(String name, int defaultValue, int min, int max) {
+    public Value<Integer> define(String name, int defaultValue, int min, int max) {
         maybeAddTranslationString(name);
-        return builder.defineInRange(name, defaultValue, min, max);
+        var value = builder.defineInRange(name, defaultValue, min, max);
+        return new CombinedValue<>(value::set, value);
     }
 
     @Override
-    public Supplier<Integer> defineColor(String name, int defaultValue) {
+    public Value<Integer> defineColor(String name, int defaultValue) {
         maybeAddTranslationString(name);
         var stringConfig = builder.define(name, Integer.toHexString(defaultValue), ConfigBuilder.COLOR_CHECK);
-        return () -> Integer.parseUnsignedInt(stringConfig.get().replace("0x", ""), 16);
+        return new CombinedValue<>(
+                (value) -> stringConfig.set(Integer.toHexString(value)),
+                () -> Integer.parseUnsignedInt(stringConfig.get().replace("0x", ""), 16)
+        );
     }
 
-    @SuppressWarnings("UnnecessaryLocalVariable")
     @Override
-    public Supplier<String> define(String name, String defaultValue, Predicate<Object> validator) {
+    public Value<String> define(String name, String defaultValue, Predicate<Object> validator) {
         maybeAddTranslationString(name);
-        ForgeConfigSpec.ConfigValue<String> stringConfig = builder.define(name, (String) defaultValue, validator);
-        return stringConfig;
+        ForgeConfigSpec.ConfigValue<String> stringConfig = builder.define(name, defaultValue, validator);
+        return new CombinedValue<>(stringConfig::set, stringConfig);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public <T extends String> Supplier<List<String>> define(String name, List<? extends T> defaultValue, Predicate<Object> predicate) {
-        maybeAddTranslationString(name);
-        var value = builder.defineList(name, defaultValue, predicate);
-        return () -> (List<String>) value.get();
-    }
-
-    @Override
-    public <T> Supplier<List<? extends T>> defineForgeList(String name, List<? extends T> defaultValue, Predicate<Object> predicate) {
+    public <T extends String> Value<List<String>> define(String name, List<? extends T> defaultValue, Predicate<Object> predicate) {
         maybeAddTranslationString(name);
         var value = builder.defineList(name, defaultValue, predicate);
-        return (Supplier<List<? extends T>>) value;
+        return new CombinedValue<>((val) -> {
+            throw new UnsupportedOperationException("Forge is bad");
+        }, () -> (List<String>) value.get());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> Value<List<? extends T>> defineForgeList(String name, List<? extends T> defaultValue, Predicate<Object> predicate) {
+        maybeAddTranslationString(name);
+        var value = builder.defineList(name, defaultValue, predicate);
+        return new CombinedValue<>((val) -> {
+            throw new UnsupportedOperationException("Forge is bad");
+        }, (Supplier<List<? extends T>>) value);
     }
 
     @Override
-    public <V extends Enum<V>> Supplier<V> define(String name, V defaultValue) {
+    public <V extends Enum<V>> Value<V> define(String name, V defaultValue) {
         maybeAddTranslationString(name);
-        return builder.defineEnum(name, defaultValue);
+        var value = builder.defineEnum(name, defaultValue);
+        return new CombinedValue<>(value::set, value);
     }
 
     @Override

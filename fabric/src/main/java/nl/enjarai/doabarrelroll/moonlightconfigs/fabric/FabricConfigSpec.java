@@ -64,7 +64,8 @@ public class FabricConfigSpec extends ConfigSpec {
         }
     }
 
-    public void saveConfig() {
+    @Override
+    public void save() {
         try (FileOutputStream stream = new FileOutputStream(this.file);
              Writer writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8)) {
 

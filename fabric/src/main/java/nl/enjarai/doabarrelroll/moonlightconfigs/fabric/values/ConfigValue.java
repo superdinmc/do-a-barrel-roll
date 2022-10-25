@@ -1,13 +1,14 @@
 package nl.enjarai.doabarrelroll.moonlightconfigs.fabric.values;
 
 import nl.enjarai.doabarrelroll.moonlightconfigs.fabric.ConfigEntry;
+import nl.enjarai.doabarrelroll.util.Value;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.Supplier;
 import net.minecraft.text.Text;
 
-public abstract class ConfigValue<T> extends ConfigEntry implements Supplier<T> {
+public abstract class ConfigValue<T> extends ConfigEntry implements Value<T> {
 
     protected final T defaultValue;
     protected T value;
@@ -25,6 +26,14 @@ public abstract class ConfigValue<T> extends ConfigEntry implements Supplier<T> 
     }
 
     public abstract boolean isValid(T value);
+
+    @Override
+    public void accept(T t) {
+        if (!isValid(t)) {
+            throw new IllegalArgumentException("value is invalid");
+        }
+        this.value = t;
+    }
 
     public void set(T newValue) {
         this.value = newValue;

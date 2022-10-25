@@ -6,6 +6,7 @@ import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigSpec;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigType;
+import nl.enjarai.doabarrelroll.util.Value;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -19,27 +20,27 @@ public class ModConfig {
     }
 
     public ConfigSpec SPEC;
-    private final Supplier<Boolean> MOD_ENABLED;
 
+    private final Value<Boolean> MOD_ENABLED;
 
-    private final Supplier<Boolean> SWITCH_ROLL_AND_YAW;
-    private final Supplier<Boolean> MOMENTUM_BASED_MOUSE;
-    private final Supplier<Boolean> SHOW_MOMENTUM_WIDGET;
-    private final Supplier<Boolean> INVERT_PITCH;
+    private final Value<Boolean> SWITCH_ROLL_AND_YAW;
+    private final Value<Boolean> MOMENTUM_BASED_MOUSE;
+    private final Value<Boolean> SHOW_MOMENTUM_WIDGET;
+    private final Value<Boolean> INVERT_PITCH;
 
-    private final Supplier<Boolean> ENABLE_BANKING;
-    private final Supplier<Double> BANKING_STRENGTH;
+    private final Value<Boolean> ENABLE_BANKING;
+    private final Value<Double> BANKING_STRENGTH;
 
-    private final Supplier<Boolean> ENABLE_THRUST;
-    private final Supplier<Double> MAX_THRUST;
+    private final Value<Boolean> ENABLE_THRUST;
+    private final Value<Double> MAX_THRUST;
 
-    private final Supplier<Double> DESKTOP_SENSITIVITY_PITCH;
-    private final Supplier<Double> DESKTOP_SENSITIVITY_YAW;
-    private final Supplier<Double> DESKTOP_SENSITIVITY_ROLL;
+    private final Value<Double> DESKTOP_SENSITIVITY_PITCH;
+    private final Value<Double> DESKTOP_SENSITIVITY_YAW;
+    private final Value<Double> DESKTOP_SENSITIVITY_ROLL;
 
-    private final Supplier<Double> CONTROLLER_SENSITIVITY_PITCH;
-    private final Supplier<Double> CONTROLLER_SENSITIVITY_YAW;
-    private final Supplier<Double> CONTROLLER_SENSITIVITY_ROLL;
+    private final Value<Double> CONTROLLER_SENSITIVITY_PITCH;
+    private final Value<Double> CONTROLLER_SENSITIVITY_YAW;
+    private final Value<Double> CONTROLLER_SENSITIVITY_ROLL;
 
 
     private ModConfig() {
@@ -85,9 +86,9 @@ public class ModConfig {
                 builder.pop();
 
             } else {
-                CONTROLLER_SENSITIVITY_PITCH = () -> 1.0;
-                CONTROLLER_SENSITIVITY_YAW = () -> 0.4;
-                CONTROLLER_SENSITIVITY_ROLL = () -> 1.0;
+                CONTROLLER_SENSITIVITY_PITCH = Value.of(1.0);
+                CONTROLLER_SENSITIVITY_YAW = Value.of(0.4);
+                CONTROLLER_SENSITIVITY_ROLL = Value.of(1.0);
             }
 
         builder.pop();
@@ -147,6 +148,58 @@ public class ModConfig {
                 CONTROLLER_SENSITIVITY_YAW.get(),
                 CONTROLLER_SENSITIVITY_ROLL.get()
         );
+    }
+
+    public void setModEnabled(boolean enabled) {
+        MOD_ENABLED.accept(enabled);
+    }
+
+    public void setSwitchRollAndYaw(boolean enabled) {
+        SWITCH_ROLL_AND_YAW.accept(enabled);
+    }
+
+    public void setMomentumBasedMouse(boolean enabled) {
+        MOMENTUM_BASED_MOUSE.accept(enabled);
+    }
+
+    public void setShowMomentumWidget(boolean enabled) {
+        SHOW_MOMENTUM_WIDGET.accept(enabled);
+    }
+
+    public void setInvertPitch(boolean enabled) {
+        INVERT_PITCH.accept(enabled);
+    }
+
+    public void setEnableBanking(boolean enabled) {
+        ENABLE_BANKING.accept(enabled);
+    }
+
+    public void setBankingStrength(double strength) {
+        BANKING_STRENGTH.accept(strength);
+    }
+
+    public void setEnableThrust(boolean enabled) {
+        ENABLE_THRUST.accept(enabled);
+    }
+
+    public void setMaxThrust(double thrust) {
+        MAX_THRUST.accept(thrust);
+    }
+
+    public void setDesktopSensitivity(Sensitivity sensitivity) {
+        DESKTOP_SENSITIVITY_PITCH.accept(sensitivity.pitch);
+        DESKTOP_SENSITIVITY_YAW.accept(sensitivity.yaw);
+        DESKTOP_SENSITIVITY_ROLL.accept(sensitivity.roll);
+    }
+
+    public void setControllerSensitivity(Sensitivity sensitivity) {
+        CONTROLLER_SENSITIVITY_PITCH.accept(sensitivity.pitch);
+        CONTROLLER_SENSITIVITY_YAW.accept(sensitivity.yaw);
+        CONTROLLER_SENSITIVITY_ROLL.accept(sensitivity.roll);
+    }
+
+    public void save() {
+        SPEC.save();
     }
 
 

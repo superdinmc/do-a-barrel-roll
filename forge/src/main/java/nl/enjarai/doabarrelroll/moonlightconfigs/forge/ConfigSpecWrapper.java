@@ -136,5 +136,9 @@ public class ConfigSpecWrapper extends ConfigSpec {
         this.onRefresh();
     }
 
-
+    @Override
+    public void save() {
+        spec.save();
+        modConfig.save();
+    }
 }
