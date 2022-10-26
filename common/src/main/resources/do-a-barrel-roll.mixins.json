@@ -8,7 +8,8 @@
     "GameRendererMixin",
     "InGameHudMixin",
     "PlayerEntityRendererMixin",
-    "LivingEntityMixin"
+    "LivingEntityMixin",
+    "PlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

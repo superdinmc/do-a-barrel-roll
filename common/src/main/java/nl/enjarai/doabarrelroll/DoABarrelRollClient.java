@@ -9,12 +9,15 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
+import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
 import nl.enjarai.doabarrelroll.config.ModConfig;
-import nl.enjarai.doabarrelroll.config.RotationInstant;
+import nl.enjarai.doabarrelroll.flight.RotationModifiers;
+import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
+import nl.enjarai.doabarrelroll.flight.ElytraMath;
+import nl.enjarai.doabarrelroll.util.MixinHooks;
 import nl.enjarai.doabarrelroll.util.Vec2d;
 
 public class DoABarrelRollClient {
@@ -180,70 +183,23 @@ public class DoABarrelRollClient {
         var rotDelta = new RotationInstant(pitch, yaw, roll, delta);
 
         ElytraMath.changeElytraLookDirectly(player, rotDelta
-                .useModifier(DoABarrelRollClient::manageThrottle)
-                .useModifier(DoABarrelRollClient::strafeButtons)
+                .useModifier(RotationModifiers::manageThrottle)
+                .useModifier(RotationModifiers::strafeButtons)
                 .applySensitivity(sensitivity)
                 .useModifier(ModConfig.INSTANCE::configureRotation)
                 .smooth(pitchSmoother, yawSmoother, rollSmoother, ROTATION_SMOOTHNESS)
-                .useModifier(DoABarrelRollClient::banking, () -> ModConfig.INSTANCE.getEnableBanking())
+                .useModifier(RotationModifiers::banking, () -> ModConfig.INSTANCE.getEnableBanking())
         );
     }
 
-    public static RotationInstant strafeButtons(RotationInstant rotationInstant) {
-        var client = MinecraftClient.getInstance();
-
-        var yawDelta = 1800 * rotationInstant.getRenderDelta();
-        var yaw = 0;
-
-        if (client.options.leftKey.isPressed()) {
-            yaw -= yawDelta;
-        }
-        if (client.options.rightKey.isPressed()) {
-            yaw += yawDelta;
-        }
-
-        return rotationInstant.add(0, yaw, 0);
-    }
-
-    public static RotationInstant banking(RotationInstant rotationInstant) {
-        var client = MinecraftClient.getInstance();
-        var player = client.player;
-        if (player == null) return rotationInstant;
-
-        var delta = rotationInstant.getRenderDelta();
-        var currentRoll = ElytraMath.getRoll(player.getYaw(), left) * ElytraMath.TORAD;
-        var strength = 10 * Math.cos(player.getPitch() * ElytraMath.TORAD) * ModConfig.INSTANCE.getBankingStrength();
-
-        var dX = Math.sin(currentRoll) * strength;
-        var dY = -strength + Math.cos(currentRoll) * strength;
-
-        // check if we accidentally got NaN, for some reason this happens sometimes
-        if (Double.isNaN(dX)) dX = 0;
-        if (Double.isNaN(dY)) dY = 0;
-
-        return rotationInstant.addAbsolute(dX * delta, dY * delta, currentRoll);
-    }
-
-    public static RotationInstant manageThrottle(RotationInstant rotationInstant) {
-        var client = MinecraftClient.getInstance();
-
-        var delta = rotationInstant.getRenderDelta();
-
-        if (client.options.forwardKey.isPressed()) {
-            throttle += 0.1 * delta;
-        } else if (client.options.backKey.isPressed()) {
-            throttle -= 0.1 * delta;
-        } else {
-            throttle -= throttle * 0.95 * delta;
-        }
-
-        throttle = MathHelper.clamp(throttle, 0, ModConfig.INSTANCE.getMaxThrust());
-
-        return rotationInstant;
-    }
-
     public static boolean isFallFlying() {
+        if (ModConfig.INSTANCE.getActivationBehaviour() == ActivationBehaviour.HYBRID && !MixinHooks.thirdJump) {
+            return false;
+        }
+
         var player = MinecraftClient.getInstance().player;
-        return player != null && player.isFallFlying() && ModConfig.INSTANCE.getModEnabled();
+        return player != null
+                && player.isFallFlying()
+                && ModConfig.INSTANCE.getModEnabled();
     }
 }

@@ -35,7 +35,8 @@
 	"mixins": [
 		"do-a-barrel-roll.mixins.json",
 		"do-a-barrel-roll.fabric.mixins.json",
-		"do-a-barrel-roll.compat.midnightcontrols.mixins.json"
+		"do-a-barrel-roll.compat.midnightcontrols.mixins.json",
+		"do-a-barrel-roll.compat.cameraoverhaul.mixins.json"
 	],
 
 	"depends": {

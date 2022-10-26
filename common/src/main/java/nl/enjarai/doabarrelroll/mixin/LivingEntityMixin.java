@@ -22,6 +22,7 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
 
+    @SuppressWarnings("ConstantConditions")
     @ModifyArg(
             method = "travel",
             at = @At(

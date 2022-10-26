@@ -1,3 +1,2 @@
-- Added a keybind to easily toggle the mod in flight.
-- Fixed an issue causing a crash when loaded server-side.
-- Likely fixed a funky issue with Forge config shitting itself.
+- Added multiple deploy behaviour options to make the mod less jarring when Elytra-sprint-jumping.
+- Fixed compatibility with CameraOverhaul.

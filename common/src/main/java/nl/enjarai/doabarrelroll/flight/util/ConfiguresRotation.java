@@ -1,4 +1,4 @@
-package nl.enjarai.doabarrelroll.config;
+package nl.enjarai.doabarrelroll.flight.util;
 
 @FunctionalInterface
 public interface ConfiguresRotation {
