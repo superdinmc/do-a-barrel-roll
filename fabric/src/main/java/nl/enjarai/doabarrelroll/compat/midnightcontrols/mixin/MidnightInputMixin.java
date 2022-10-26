@@ -2,6 +2,7 @@ package nl.enjarai.doabarrelroll.compat.midnightcontrols.mixin;
 
 import net.minecraft.client.MinecraftClient;
 import nl.enjarai.doabarrelroll.compat.midnightcontrols.ControllerInputHandler;
+import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(targets = "eu.midnightdust.midnightcontrols.client.MidnightInput")
 public abstract class MidnightInputMixin {
 
+    @Dynamic
     @Inject(
             method = "handleLook(Lnet/minecraft/client/MinecraftClient;IFI)V",
             at = @At(value = "HEAD"),
@@ -24,6 +26,7 @@ public abstract class MidnightInputMixin {
     }
 
     // reset the left vector after turning using the controller
+    @Dynamic
     @Inject(
             method = "onRender(Lnet/minecraft/client/MinecraftClient;)V",
             at = @At(value = "TAIL")

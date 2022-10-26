@@ -1,9 +1,10 @@
-package nl.enjarai.doabarrelroll;
+package nl.enjarai.doabarrelroll.flight;
 
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import nl.enjarai.doabarrelroll.config.RotationInstant;
+import nl.enjarai.doabarrelroll.DoABarrelRollClient;
+import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 
 public class ElytraMath {
 

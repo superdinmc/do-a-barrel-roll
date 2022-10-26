@@ -1,8 +1,9 @@
-package nl.enjarai.doabarrelroll.config;
+package nl.enjarai.doabarrelroll.flight.util;
 
 import java.util.function.BooleanSupplier;
 
 import net.minecraft.client.util.SmoothUtil;
+import nl.enjarai.doabarrelroll.config.Sensitivity;
 
 public class RotationInstant {
     private final double pitch;

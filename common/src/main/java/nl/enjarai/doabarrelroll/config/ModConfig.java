@@ -3,13 +3,13 @@ package nl.enjarai.doabarrelroll.config;
 
 import dev.architectury.injectables.targets.ArchitecturyTarget;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
+import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigSpec;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigType;
 import nl.enjarai.doabarrelroll.util.Value;
 
 import java.util.Objects;
-import java.util.function.Supplier;
 
 public class ModConfig {
 
@@ -27,6 +27,7 @@ public class ModConfig {
     private final Value<Boolean> MOMENTUM_BASED_MOUSE;
     private final Value<Boolean> SHOW_MOMENTUM_WIDGET;
     private final Value<Boolean> INVERT_PITCH;
+    private final Value<ActivationBehaviour> ACTIVATION_BEHAVIOUR;
 
     private final Value<Boolean> ENABLE_BANKING;
     private final Value<Double> BANKING_STRENGTH;
@@ -54,6 +55,7 @@ public class ModConfig {
                 INVERT_PITCH = builder.define("invert_pitch", false);
                 MOMENTUM_BASED_MOUSE = builder.withDescription().define("momentum_based_mouse", false);
                 SHOW_MOMENTUM_WIDGET = builder.withDescription().define("show_momentum_widget", true);
+                ACTIVATION_BEHAVIOUR = builder.withDescription().define("activation_behaviour", ActivationBehaviour.VANILLA);
             builder.pop();
 
             builder.push("banking");
@@ -118,6 +120,10 @@ public class ModConfig {
         return INVERT_PITCH.get();
     } //= false;
 
+    public ActivationBehaviour getActivationBehaviour() {
+        return ACTIVATION_BEHAVIOUR.get();
+    } //= ActivationBehaviour.VANILLA;
+
     public boolean getEnableBanking() {
         return ENABLE_BANKING.get();
     }// = true;
@@ -168,6 +174,10 @@ public class ModConfig {
 
     public void setInvertPitch(boolean enabled) {
         INVERT_PITCH.accept(enabled);
+    }
+
+    public void setActivationBehaviour(ActivationBehaviour behaviour) {
+        ACTIVATION_BEHAVIOUR.accept(behaviour);
     }
 
     public void setEnableBanking(boolean enabled) {
