@@ -193,7 +193,9 @@ public class DoABarrelRollClient {
     }
 
     public static boolean isFallFlying() {
-        if (ModConfig.INSTANCE.getActivationBehaviour() == ActivationBehaviour.HYBRID && !MixinHooks.thirdJump) {
+        var hybrid = ModConfig.INSTANCE.getActivationBehaviour() == ActivationBehaviour.HYBRID ||
+                ModConfig.INSTANCE.getActivationBehaviour() == ActivationBehaviour.HYBRID_TOGGLE;
+        if (hybrid && !MixinHooks.thirdJump) {
             return false;
         }
 

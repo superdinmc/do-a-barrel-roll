@@ -23,6 +23,7 @@ public class ListStringConfigValue<T extends String> extends ConfigValue<List<St
         return true;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void loadFromJson(JsonObject element) {
         if (element.has(this.name)) {

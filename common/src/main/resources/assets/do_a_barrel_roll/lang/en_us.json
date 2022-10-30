@@ -10,7 +10,7 @@
   "config.do_a_barrel_roll.controls.show_momentum_widget": "Show momentum widget",
   "config.do_a_barrel_roll.controls.show_momentum_widget.description": "Turn the crosshair into a helpful widget when using the momentum based camera.",
   "config.do_a_barrel_roll.controls.activation_behaviour": "Activation behaviour",
-  "config.do_a_barrel_roll.controls.activation_behaviour.description": "Configures how the Elytra is activated.\n\n§lVANILLA§r: Same as vanilla; jump in midair.\n§lTRIPLE_JUMP§r: Requires you to jump twice in midair instead of once.\n§lHYBRID§r: Jumping once in midair activates standard vanilla flight, jumping again after that enables the mod.",
+  "config.do_a_barrel_roll.controls.activation_behaviour.description": "Configures how the Elytra is activated.\n\n§lVANILLA§r: Same as vanilla; jump in midair.\n§lTRIPLE_JUMP§r: Requires you to jump twice in midair instead of once.\n§lHYBRID§r: Jumping once in midair activates standard vanilla flight, jumping again after that enables the mod.\n§lHYBRID_TOGGLE§r: Same as HYBRID, but jumping toggles the mod instead of just enabling it once.",
   "config.do_a_barrel_roll.controls.invert_pitch": "Invert pitch",
   "config.do_a_barrel_roll.banking": "Banking options",
   "config.do_a_barrel_roll.banking.enable_banking": "Enable banking",

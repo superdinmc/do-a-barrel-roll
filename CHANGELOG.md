@@ -1,2 +1,2 @@
-- Added multiple deploy behaviour options to make the mod less jarring when Elytra-sprint-jumping.
-- Fixed compatibility with CameraOverhaul.
+- Added a HYBRID_TOGGLE activation mode.
+- General compatibility hotfix.

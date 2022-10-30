@@ -47,7 +47,9 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         var behaviour = ModConfig.INSTANCE.getActivationBehaviour();
 
         if ((((PlayerEntity) (Object) this) instanceof ClientPlayerEntity)
-                && (behaviour == ActivationBehaviour.TRIPLE_JUMP || behaviour == ActivationBehaviour.HYBRID)) {
+                && (behaviour == ActivationBehaviour.TRIPLE_JUMP
+                || behaviour == ActivationBehaviour.HYBRID
+                || behaviour == ActivationBehaviour.HYBRID_TOGGLE)) {
 
             var shouldCancel = behaviour == ActivationBehaviour.TRIPLE_JUMP;
 
@@ -59,7 +61,8 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                     MixinHooks.secondJump = true;
                     if (shouldCancel) cir.setReturnValue(false);
                 } else {
-                    MixinHooks.thirdJump = true;
+                    // Set thirdJump to true if we're in HYBRID mode, but toggle it in HYBRID_TOGGLE mode.
+                    MixinHooks.thirdJump = behaviour != ActivationBehaviour.HYBRID_TOGGLE || !MixinHooks.thirdJump;
                 }
                 // Reaching this point is the only way for the function to progress, activating the Elytra.
             } else {

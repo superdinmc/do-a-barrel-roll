@@ -87,7 +87,6 @@ public abstract class ConfigBuilder {
 
     public abstract <V extends Enum<V>> Value<V> define(String name, V defaultValue);
 
-    @Deprecated
     public abstract <T> Supplier<List<? extends T>> defineForgeList(String path, List<? extends T> defaultValue, Predicate<Object> elementValidator);
 
     public Text description(String name) {
