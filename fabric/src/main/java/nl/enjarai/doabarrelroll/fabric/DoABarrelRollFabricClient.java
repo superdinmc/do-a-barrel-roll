@@ -14,15 +14,15 @@ public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunc
     @Override
     public void onInitializeClient() {
         ModConfig.touch();
-    }
-
-    @Override
-    public void onPreLaunch() {
-        MixinExtrasBootstrap.init();
 
         // Register keybindings on fabric
         ModKeybindings.ALL.forEach(KeyBindingRegistryImpl::registerKeyBinding);
 
         ClientTickEvents.END_CLIENT_TICK.register(DoABarrelRollClient::clientTick);
+    }
+
+    @Override
+    public void onPreLaunch() {
+        MixinExtrasBootstrap.init();
     }
 }
