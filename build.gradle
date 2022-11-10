@@ -76,10 +76,6 @@ allprojects {
         maven { url 'https://maven.terraformersmc.com' }
 
         // MidnightControls.
-        maven {
-            name 'Gegy'
-            url 'https://maven.gegy.dev'
-        }
         maven { url = "https://aperlambda.github.io/maven" }
         maven {
             name = "Modrinth"
@@ -103,6 +99,9 @@ allprojects {
 
         // YACL
         maven { url = "https://maven.isxander.dev/releases" }
+
+        // Personal maven for backup mirrors of some dependencies.
+        maven { url = "https://maven.enjarai.nl/releases" }
     }
 
     tasks.withType(JavaCompile) {
