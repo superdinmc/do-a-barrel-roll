@@ -67,6 +67,10 @@ allprojects {
         // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
         // See https://docs.gradle.org/current/userguide/declaring_repositories.html
         // for more information about repositories.
+
+        // Personal maven for backup mirrors of some dependencies.
+        maven { url = "https://maven.enjarai.nl/mirrors" }
+
         maven {
             url = "https://www.cursemaven.com"
             allowInsecureProtocol = true
@@ -99,9 +103,6 @@ allprojects {
 
         // YACL
         maven { url = "https://maven.isxander.dev/releases" }
-
-        // Personal maven for backup mirrors of some dependencies.
-        maven { url = "https://maven.enjarai.nl/releases" }
     }
 
     tasks.withType(JavaCompile) {
