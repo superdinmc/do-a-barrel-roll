@@ -34,6 +34,8 @@ public class ModConfig {
 
     private final Value<Boolean> ENABLE_THRUST;
     private final Value<Double> MAX_THRUST;
+    private final Value<Double> THRUST_ACCELERATION;
+    private final Value<Boolean> THRUST_PARTICLES;
 
     private final Value<Double> DESKTOP_SENSITIVITY_PITCH;
     private final Value<Double> DESKTOP_SENSITIVITY_YAW;
@@ -65,7 +67,9 @@ public class ModConfig {
 
             builder.push("thrust");
                 ENABLE_THRUST = builder.withDescription().define("enable_thrust", false);
-                MAX_THRUST = builder.withDescription().define("max_thrust", 1.0, 0.0, 5.0);
+                MAX_THRUST = builder.withDescription().define("max_thrust", 2.0, 0.0, 10.0);
+                THRUST_ACCELERATION = builder.withDescription().define("thrust_acceleration", 0.1, 0.0, 1.0);
+                THRUST_PARTICLES = builder.define("thrust_particles", true);
             builder.pop();
 
         builder.pop();
@@ -140,6 +144,14 @@ public class ModConfig {
         return MAX_THRUST.get();
     }
 
+    public double getThrustAcceleration() {
+        return THRUST_ACCELERATION.get();
+    }
+
+    public boolean getThrustParticles() {
+        return THRUST_PARTICLES.get();
+    }
+
     public Sensitivity getDesktopSensitivity() {
         return new Sensitivity(
                 DESKTOP_SENSITIVITY_PITCH.get(),
@@ -196,6 +208,14 @@ public class ModConfig {
         MAX_THRUST.accept(thrust);
     }
 
+    public void setThrustAcceleration(double acceleration) {
+        THRUST_ACCELERATION.accept(acceleration);
+    }
+
+    public void setThrustParticles(boolean enabled) {
+        THRUST_PARTICLES.accept(enabled);
+    }
+
     public void setDesktopSensitivity(Sensitivity sensitivity) {
         DESKTOP_SENSITIVITY_PITCH.accept(sensitivity.pitch);
         DESKTOP_SENSITIVITY_YAW.accept(sensitivity.yaw);
@@ -211,7 +231,6 @@ public class ModConfig {
     public void save() {
         SPEC.save();
     }
-
 
     public RotationInstant configureRotation(RotationInstant rotationInstant) {
         var pitch = rotationInstant.getPitch();

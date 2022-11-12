@@ -182,12 +182,12 @@ public class DoABarrelRollClient {
         var rotDelta = new RotationInstant(pitch, yaw, roll, delta);
 
         ElytraMath.changeElytraLookDirectly(player, rotDelta
-                .useModifier(RotationModifiers::manageThrottle)
+                .useModifier(RotationModifiers::manageThrottle, ModConfig.INSTANCE::getEnableThrust)
                 .useModifier(RotationModifiers::strafeButtons)
                 .applySensitivity(sensitivity)
                 .useModifier(ModConfig.INSTANCE::configureRotation)
                 .smooth(pitchSmoother, yawSmoother, rollSmoother, ROTATION_SMOOTHNESS)
-                .useModifier(RotationModifiers::banking, () -> ModConfig.INSTANCE.getEnableBanking())
+                .useModifier(RotationModifiers::banking, ModConfig.INSTANCE::getEnableBanking)
         );
     }
 
