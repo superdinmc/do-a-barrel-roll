@@ -54,6 +54,7 @@ jobs:
           name: ${{ inputs.branch }}
           path: ./build/libs/
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Branch
