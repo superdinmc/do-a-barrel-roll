@@ -34,6 +34,8 @@ jobs:
     secrets:
       CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
       MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+      PUBLISH_MAVEN_USERNAME: ${{ secrets.PUBLISH_MAVEN_USERNAME }}
+      PUBLISH_MAVEN_PASSWORD: ${{ secrets.PUBLISH_MAVEN_PASSWORD }}
     needs:
       - deploy_1_18
 
@@ -47,3 +49,5 @@ jobs:
     secrets:
       CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
       MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+      PUBLISH_MAVEN_USERNAME: ${{ secrets.PUBLISH_MAVEN_USERNAME }}
+      PUBLISH_MAVEN_PASSWORD: ${{ secrets.PUBLISH_MAVEN_PASSWORD }}

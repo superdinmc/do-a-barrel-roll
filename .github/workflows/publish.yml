@@ -20,6 +20,10 @@ on:
         required: true
       MODRINTH_TOKEN:
         required: true
+      PUBLISH_MAVEN_USERNAME:
+        required: true
+      PUBLISH_MAVEN_PASSWORD:
+        required: true
 
 jobs:
   build:
