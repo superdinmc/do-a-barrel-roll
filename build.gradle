@@ -1,5 +1,6 @@
 plugins {
     id "base"
+    id "maven-publish"
 
     id "architectury-plugin" version "3.4-SNAPSHOT"
     id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
@@ -11,6 +12,7 @@ architectury {
 
 subprojects {
     apply plugin: "dev.architectury.loom"
+    apply plugin: "maven-publish"
 
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
@@ -46,7 +48,6 @@ tasks {
 allprojects {
     apply plugin: "java"
     apply plugin: "architectury-plugin"
-    apply plugin: "maven-publish"
 
     archivesBaseName = rootProject.mod_id
     version = "${rootProject.mod_version}+${rootProject.minecraft_version}"
@@ -67,6 +68,10 @@ allprojects {
         // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
         // See https://docs.gradle.org/current/userguide/declaring_repositories.html
         // for more information about repositories.
+
+        // Personal maven for backup mirrors of some dependencies.
+        maven { url = "https://maven.enjarai.nl/mirrors" }
+
         maven {
             url = "https://www.cursemaven.com"
             allowInsecureProtocol = true
@@ -76,10 +81,6 @@ allprojects {
         maven { url 'https://maven.terraformersmc.com' }
 
         // MidnightControls.
-        maven {
-            name 'Gegy'
-            url 'https://maven.gegy.dev'
-        }
         maven { url = "https://aperlambda.github.io/maven" }
         maven {
             name = "Modrinth"
@@ -115,14 +116,40 @@ allprojects {
     }
 }
 
+// Disable publishing for the root project.
+project.tasks.publish.enabled = false
+
 subprojects {
-    tasks {
-        if (!path.startsWith(":common")) {
+    if (!path.startsWith(":common")) {
+        tasks {
             tasks.getByName("remapJar") {
                 dependsOn("shadowJar")
                 // The project name will be "fabric" or "forge", so this will become the classifier/suffix
                 // for the jar. For example: do-a-barrel-roll-2.0.0+1.19.2-fabric.jar
                 archiveClassifier.set(project.name)
+            }
+        }
+
+        publishing {
+            repositories {
+                maven {
+                    name = "enjaraiMaven"
+                    url = "https://maven.enjarai.nl/releases"
+                    credentials(PasswordCredentials)
+                    authentication {
+                        basic(BasicAuthentication)
+                    }
+                }
+            }
+
+            publications {
+                mavenJava(MavenPublication) {
+                    groupId = project.maven_group
+                    artifactId = archivesBaseName
+                    version = project.version + "-" + project.name
+
+                    from components.java
+                }
             }
         }
     }

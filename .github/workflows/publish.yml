@@ -22,6 +22,37 @@ on:
         required: true
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: ${{ inputs.java_vers }}
+
+      - name: Grant Execute Permiussion
+        run: chmod +x gradlew
+
+      - name: Build
+        run: ./gradlew build
+
+      - name: Publish to Maven
+        run: ./gradlew publish
+        env:
+          ORG_GRADLE_PROJECT_enjaraiMavenUsername: ${{ secrets.PUBLISH_MAVEN_USERNAME }}
+          ORG_GRADLE_PROJECT_enjaraiMavenPassword: ${{ secrets.PUBLISH_MAVEN_PASSWORD }}
+
+      - name: Upload To Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ inputs.branch }}
+          path: ./build/libs/
   deploy:
     runs-on: ubuntu-latest
     steps:
