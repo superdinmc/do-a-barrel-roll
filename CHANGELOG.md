@@ -1,2 +1,3 @@
-- Added a HYBRID_TOGGLE activation mode.
-- General compatibility hotfix.
+- Significantly improved thrusting with more config options and math.
+- Fixed inconsistent compatibility with Elytra Aeronautics.
+- Changed default toggle keybind to L to avoid conflicting with Iris.
