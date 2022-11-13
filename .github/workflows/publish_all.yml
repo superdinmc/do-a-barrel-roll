@@ -35,7 +35,6 @@ jobs:
       CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
       MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
     needs:
-      - build
       - deploy_1_18
 
   deploy_1_18:
@@ -48,5 +47,3 @@ jobs:
     secrets:
       CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
       MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-    needs:
-      - build
