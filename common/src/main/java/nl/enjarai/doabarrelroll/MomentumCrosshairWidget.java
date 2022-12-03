@@ -25,7 +25,7 @@ public class MomentumCrosshairWidget {
             RenderSystem.enableBlend();
             RenderSystem.disableTexture();
             RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.ONE_MINUS_DST_COLOR, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
-            RenderSystem.setShader(GameRenderer::getPositionColorShader);
+            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
             ModMath.forBresenhamLine(centerX, centerY, centerX + (int) lineVec.x, centerY + (int) lineVec.y, (x, y) -> {
 
                 var matrix = matrices.peek().getPositionMatrix();
@@ -36,7 +36,7 @@ public class MomentumCrosshairWidget {
                 bufferBuilder.vertex(matrix, (float) x + 1, (float) y + 1, 0.0F).color(color).next();
                 bufferBuilder.vertex(matrix, (float) x + 1, (float) y, 0.0F).color(color).next();
                 bufferBuilder.vertex(matrix, (float) x, (float) y, 0.0F).color(color).next();
-                BufferRenderer.drawWithShader(bufferBuilder.end());
+                BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 
             });
             RenderSystem.enableTexture();

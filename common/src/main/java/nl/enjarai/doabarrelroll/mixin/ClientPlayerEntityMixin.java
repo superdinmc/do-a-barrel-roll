@@ -8,7 +8,6 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.recipebook.ClientRecipeBook;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.encryption.PlayerPublicKey;
 import net.minecraft.stat.StatHandler;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.flight.ElytraMath;
@@ -25,7 +24,9 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	@Shadow public abstract float getYaw(float tickDelta);
 	@Shadow public Input input;
 
-	public ClientPlayerEntityMixin(ClientWorld world, GameProfile profile, PlayerPublicKey publicKey) { super(world, profile, publicKey); }
+	public ClientPlayerEntityMixin(ClientWorld world, GameProfile profile) {
+		super(world, profile);
+	}
 
 	@Inject(
 			method = "<init>",

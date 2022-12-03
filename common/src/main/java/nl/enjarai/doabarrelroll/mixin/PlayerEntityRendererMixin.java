@@ -4,10 +4,10 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.flight.ElytraMath;
+import org.joml.Quaternionf;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -31,16 +31,16 @@ public abstract class PlayerEntityRendererMixin {
             method = "setupTransforms(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/client/util/math/MatrixStack;FFF)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/util/math/MatrixStack;multiply(Lnet/minecraft/util/math/Quaternion;)V",
+                    target = "Lnet/minecraft/client/util/math/MatrixStack;multiply(Lorg/joml/Quaternionf;)V",
                     ordinal = 1
             ),
             index = 0
     )
-    private Quaternion doABarrelRoll$modifyRoll(Quaternion original) {
+    private Quaternionf doABarrelRoll$modifyRoll(Quaternionf original) {
         if (!(player instanceof ClientPlayerEntity)) return original;
 
         var roll = ElytraMath.getRoll(player.getYaw(), DoABarrelRollClient.left);
 
-        return Vec3f.POSITIVE_Y.getDegreesQuaternion((float) roll);
+        return RotationAxis.POSITIVE_Y.rotationDegrees((float) roll);
     }
 }

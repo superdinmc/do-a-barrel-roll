@@ -8,14 +8,14 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
 import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
 import nl.enjarai.doabarrelroll.config.ModConfig;
-import nl.enjarai.doabarrelroll.flight.RotationModifiers;
-import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
 import nl.enjarai.doabarrelroll.flight.ElytraMath;
+import nl.enjarai.doabarrelroll.flight.RotationModifiers;
+import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 import nl.enjarai.doabarrelroll.util.MixinHooks;
 import nl.enjarai.doabarrelroll.util.Vec2d;
 
@@ -127,7 +127,7 @@ public class DoABarrelRollClient {
             // calculate the camera angle and apply it
             double angle = -Math.acos(MathHelper.clamp(left.dotProduct(ElytraMath.getAssumedLeft(client.player.getYaw())), -1, 1)) * ElytraMath.TODEG;
             if (left.getY() < 0) angle *= -1;
-            matrix.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion((float) angle));
+            matrix.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) angle));
 
         }
     }
