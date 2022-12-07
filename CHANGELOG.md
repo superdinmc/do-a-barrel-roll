@@ -1,3 +1,2 @@
-- Significantly improved thrusting with more config options and math.
-- Fixed inconsistent compatibility with Elytra Aeronautics.
-- Changed default toggle keybind to L to avoid conflicting with Iris.
+- Updated to 1.19.3
+- Added Cicada to have some nice conversations
