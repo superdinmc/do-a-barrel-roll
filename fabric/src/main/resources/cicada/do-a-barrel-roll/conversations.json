@@ -1,0 +1,49 @@
+{
+  "conversations": {
+    "cicada:greetings": {
+      "lines": [
+        {
+          "order": 20,
+          "text": "I'm here, ready to rumble!"
+        }
+      ]
+    },
+    "cicada:good_old_days": {
+      "lines": [
+        {
+          "order": 10,
+          "text": "Why don't we do something like that? It would be fun!"
+        }
+      ]
+    },
+
+    "do_a_barrel_roll:flight_sim": {
+      "priority": {
+        "priority": 100
+      },
+      "lines": [
+        {
+          "order": 0,
+          "text": "Why play a flight sim when you have modded Minecraft?"
+        }
+      ]
+    },
+
+    "cicada:christmas": {
+      "lines": [
+        {
+          "order": 20,
+          "text": "PADORU PADORU!"
+        }
+      ]
+    },
+    "cicada:new_year": {
+      "lines": [
+        {
+          "order": 20,
+          "text": "\uD83C\uDF86\uD83C\uDF86\uD83C\uDF86"
+        }
+      ]
+    }
+  }
+}

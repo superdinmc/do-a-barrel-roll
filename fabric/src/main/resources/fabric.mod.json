@@ -24,9 +24,12 @@
 			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
 		],
 		"modmenu": [
-          "nl.enjarai.doabarrelroll.compat.modmenu.ModMenuIntegration"
+			"nl.enjarai.doabarrelroll.compat.modmenu.ModMenuIntegration"
 		],
 		"preLaunch": [
+			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
+		],
+		"cicada": [
 			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
 		]
 	},
