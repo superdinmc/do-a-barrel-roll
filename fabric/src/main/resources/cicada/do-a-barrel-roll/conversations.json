@@ -17,6 +17,18 @@
       ]
     },
 
+    "do_a_barrel_roll:flight_sim": {
+      "priority": {
+        "priority": 100
+      },
+      "lines": [
+        {
+          "order": 0,
+          "text": "Why play a flight sim when you have modded Minecraft?"
+        }
+      ]
+    },
+
     "cicada:christmas": {
       "lines": [
         {
