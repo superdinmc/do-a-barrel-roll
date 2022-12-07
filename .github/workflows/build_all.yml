@@ -4,10 +4,16 @@ on: [workflow_call]
 
 jobs:
 
-  build_1_19:
+  build_1_19_3:
     uses: enjarai/do-a-barrel-roll/.github/workflows/build.yml@main
     with:
       branch: main
+      java_version: 17
+
+  build_1_19:
+    uses: enjarai/do-a-barrel-roll/.github/workflows/build.yml@1.19.2
+    with:
+      branch: 1.19.2
       java_version: 17
 
   build_1_18:

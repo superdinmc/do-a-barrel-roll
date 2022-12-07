@@ -28,7 +28,7 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
-    modImplementation("nl.enjarai:cicada-lib:${project.cicada_version}") {
+    include modImplementation("nl.enjarai:cicada-lib:${project.cicada_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
 
