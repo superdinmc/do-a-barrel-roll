@@ -5,6 +5,14 @@
         {
           "order": 20,
           "text": "I'm here, ready to rumble!"
+        },
+        {
+          "condition": {
+            "type": "cicada:mod_loaded",
+            "mod_id": "showmeyourskin"
+          },
+          "order": 22,
+          "text": "It's just a figure of speech, I'm not actually about to start intensely vibrating."
         }
       ]
     },
@@ -25,6 +33,18 @@
         {
           "order": 0,
           "text": "Why play a flight sim when you have modded Minecraft?"
+        }
+      ]
+    },
+    "showmeyourskin:plagiarism": {
+      "lines": [
+        {
+          "order": 10,
+          "text": "Seems like blatant plagiarism isn't beyond you."
+        },
+        {
+          "order": 30,
+          "text": "Well no of course I-"
         }
       ]
     },
