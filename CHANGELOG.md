@@ -1,2 +1,1 @@
-- Updated to 1.19.3
-- Added Cicada to have some nice conversations
+- Fixed compatibility with YACL 2.0.0 (thanks @mvilk for noticing and fixing this)
