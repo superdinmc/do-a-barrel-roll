@@ -26,6 +26,16 @@ The default controls are as follows, but can be modified:
 - Mouse y axis to pitch
 - strafe keys (normally A and D) to yaw
 
+## Configuration
+
+The mod can be configured in-game using ModMenu and a compatible config library.
+Currently, both Cloth Config and YACL are supported.
+Once you install either one, 
+you can access the config screen by finding the mod in ModMenu and pressing the config button.
+
+A wide range of options are available, including custom mouse behavior, elytra activation restrictions and
+changing values of modifiers like banking, sensitivity and more.
+
 ![](img/do-a-barrel-roll.gif)
 
 ## Disclaimer
