@@ -1,1 +1,2 @@
 - Made smoothing configurable
+- Fix issue with custom player model rotation being applied when mod is disabled
