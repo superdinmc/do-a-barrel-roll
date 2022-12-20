@@ -1,1 +1,1 @@
-- Fixed compatibility with YACL 2.0.0 (thanks @mvilk for noticing and fixing this)
+- Made smoothing configurable

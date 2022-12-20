@@ -21,7 +21,6 @@ import nl.enjarai.doabarrelroll.util.Vec2d;
 
 public class DoABarrelRollClient {
     public static final String MODID = "do_a_barrel_roll";
-    public static final Sensitivity ROTATION_SMOOTHNESS = new Sensitivity(1, 0.4, 1);
 
     public static final SmoothUtil pitchSmoother = new SmoothUtil();
     public static final SmoothUtil yawSmoother = new SmoothUtil();
@@ -186,7 +185,7 @@ public class DoABarrelRollClient {
                 .useModifier(RotationModifiers::strafeButtons)
                 .applySensitivity(sensitivity)
                 .useModifier(ModConfig.INSTANCE::configureRotation)
-                .smooth(pitchSmoother, yawSmoother, rollSmoother, ROTATION_SMOOTHNESS)
+                .smooth(pitchSmoother, yawSmoother, rollSmoother, ModConfig.INSTANCE.getSmoothing())
                 .useModifier(RotationModifiers::banking, ModConfig.INSTANCE::getEnableBanking)
         );
     }
