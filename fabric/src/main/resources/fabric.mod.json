@@ -13,7 +13,8 @@
 	],
 	"contact": {
 		"homepage": "https://enjarai.nl",
-		"sources": "https://github.com/enjarai/do-a-barrel-roll"
+		"sources": "https://github.com/enjarai/do-a-barrel-roll",
+		"issues": "https://github.com/enjarai/do-a-barrel-roll/issues"
 	},
 	
 	"license": "GPL-3.0",

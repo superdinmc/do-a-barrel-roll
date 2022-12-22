@@ -2,7 +2,7 @@ package nl.enjarai.doabarrelroll.moonlightconfigs.yacl;
 
 import dev.isxander.yacl.api.*;
 import dev.isxander.yacl.gui.controllers.ColorController;
-import dev.isxander.yacl.gui.controllers.EnumController;
+import dev.isxander.yacl.gui.controllers.cycling.EnumController;
 import dev.isxander.yacl.gui.controllers.LabelController;
 import dev.isxander.yacl.gui.controllers.TickBoxController;
 import dev.isxander.yacl.gui.controllers.slider.DoubleSliderController;
