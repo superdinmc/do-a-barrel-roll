@@ -37,6 +37,10 @@ public class ModConfig {
     private final Value<Double> THRUST_ACCELERATION;
     private final Value<Boolean> THRUST_PARTICLES;
 
+    private final Value<Double> SMOOTHING_PITCH;
+    private final Value<Double> SMOOTHING_YAW;
+    private final Value<Double> SMOOTHING_ROLL;
+
     private final Value<Double> DESKTOP_SENSITIVITY_PITCH;
     private final Value<Double> DESKTOP_SENSITIVITY_YAW;
     private final Value<Double> DESKTOP_SENSITIVITY_ROLL;
@@ -76,6 +80,12 @@ public class ModConfig {
 
 
         builder.push("sensitivity");
+
+            builder.push("smoothing");
+                SMOOTHING_PITCH = builder.define("smoothing_pitch", 1.0, 0.0, 2.0);
+                SMOOTHING_YAW = builder.define("smoothing_yaw", 0.4, 0.0, 2.0);
+                SMOOTHING_ROLL = builder.define("smoothing_roll", 1.0, 0.0, 2.0);
+            builder.pop();
 
             builder.push("desktop");
                 DESKTOP_SENSITIVITY_PITCH = builder.define("pitch", 1.0, 0.0, 2.0);
@@ -150,6 +160,14 @@ public class ModConfig {
 
     public boolean getThrustParticles() {
         return THRUST_PARTICLES.get();
+    }
+
+    public Sensitivity getSmoothing() {
+        return new Sensitivity(
+                SMOOTHING_PITCH.get(),
+                SMOOTHING_YAW.get(),
+                SMOOTHING_ROLL.get()
+        );
     }
 
     public Sensitivity getDesktopSensitivity() {

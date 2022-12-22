@@ -7,6 +7,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3f;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
+import nl.enjarai.doabarrelroll.config.ModConfig;
+import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.flight.ElytraMath;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,7 +39,7 @@ public abstract class PlayerEntityRendererMixin {
             index = 0
     )
     private Quaternion doABarrelRoll$modifyRoll(Quaternion original) {
-        if (!(player instanceof ClientPlayerEntity)) return original;
+        if (!ModConfig.INSTANCE.getModEnabled() || !(player instanceof ClientPlayerEntity)) return original;
 
         var roll = ElytraMath.getRoll(player.getYaw(), DoABarrelRollClient.left);
 

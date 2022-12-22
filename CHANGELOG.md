@@ -1,2 +1,2 @@
-- Updated to 1.19.3
-- Added Cicada to have some nice conversations
+- Made smoothing configurable
+- Fix issue with custom player model rotation being applied when mod is disabled
