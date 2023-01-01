@@ -46,7 +46,7 @@ public abstract class CameraSystemMixin {
             method = "OnCameraUpdate(Lnet/minecraft/entity/Entity;Lnet/minecraft/client/render/Camera;Lmirsario/cameraoverhaul/core/structures/Transform;F)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lmirsario/cameraoverhaul/common/systems/CameraSystem;YawDeltaRollOffset(Lmirsario/cameraoverhaul/core/structures/Transform;Lmirsario/cameraoverhaul/core/structures/Transform;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec2f;DFF)V"
+                    target = "Lmirsario/cameraoverhaul/common/systems/CameraSystem;YawDeltaRollOffset(Lmirsario/cameraoverhaul/core/structures/Transform;Lmirsario/cameraoverhaul/core/structures/Transform;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec2f;DFFF)V"
             ),
             index = 5
     )
