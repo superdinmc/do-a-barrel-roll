@@ -1,2 +1,1 @@
-- Made smoothing configurable
-- Fix issue with custom player model rotation being applied when mod is disabled
+- Patch to a compat mixin to support the latest CameraOverhaul update.
