@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.Mod;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
-public class ForgeBusEvents {
+public class ForgeClientBusEvents {
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {

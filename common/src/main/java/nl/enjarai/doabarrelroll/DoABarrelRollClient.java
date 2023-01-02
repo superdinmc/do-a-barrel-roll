@@ -6,7 +6,6 @@ import net.minecraft.client.util.GlfwUtil;
 import net.minecraft.client.util.SmoothUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
@@ -20,8 +19,6 @@ import nl.enjarai.doabarrelroll.util.MixinHooks;
 import nl.enjarai.doabarrelroll.util.Vec2d;
 
 public class DoABarrelRollClient {
-    public static final String MODID = "do_a_barrel_roll";
-
     public static final SmoothUtil pitchSmoother = new SmoothUtil();
     public static final SmoothUtil yawSmoother = new SmoothUtil();
     public static final SmoothUtil rollSmoother = new SmoothUtil();
@@ -33,10 +30,6 @@ public class DoABarrelRollClient {
     public static double throttle = 0;
 
     // TODO triple jump to activate???
-
-    public static Identifier id(String path) {
-        return new Identifier(MODID, path);
-    }
 
 
     public static void clientTick(MinecraftClient client) {

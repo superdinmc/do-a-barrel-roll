@@ -2,11 +2,18 @@ package nl.enjarai.doabarrelroll.config;
 
 
 import dev.architectury.injectables.targets.ArchitecturyTarget;
-import nl.enjarai.doabarrelroll.DoABarrelRollClient;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.toast.SystemToast;
+import net.minecraft.client.toast.Toast;
+import net.minecraft.client.toast.ToastManager;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
+import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigSpec;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigType;
+import nl.enjarai.doabarrelroll.server.ServerModConfig;
 import nl.enjarai.doabarrelroll.util.Value;
 
 import java.util.Objects;
@@ -51,7 +58,7 @@ public class ModConfig {
 
 
     private ModConfig() {
-        ConfigBuilder builder = ConfigBuilder.create(DoABarrelRollClient.id("client"), ConfigType.CLIENT);
+        ConfigBuilder builder = ConfigBuilder.create(DoABarrelRoll.id("client"), ConfigType.CLIENT);
 
         builder.push("general");
             MOD_ENABLED = builder.define("mod_enabled", true);
@@ -69,12 +76,20 @@ public class ModConfig {
                 BANKING_STRENGTH = builder.define("banking_strength", 20.0, 0.0, 100.0);
             builder.pop();
 
-            builder.push("thrust");
-                ENABLE_THRUST = builder.withDescription().define("enable_thrust", false);
-                MAX_THRUST = builder.withDescription().define("max_thrust", 2.0, 0.0, 10.0);
-                THRUST_ACCELERATION = builder.withDescription().define("thrust_acceleration", 0.1, 0.0, 1.0);
-                THRUST_PARTICLES = builder.define("thrust_particles", true);
-            builder.pop();
+            if (!Objects.equals(ArchitecturyTarget.getCurrentTarget(), "forge")) {
+                builder.push("thrust");
+                    ENABLE_THRUST = builder.withDescription().define("enable_thrust", false);
+                    MAX_THRUST = builder.withDescription().define("max_thrust", 2.0, 0.0, 10.0);
+                    THRUST_ACCELERATION = builder.withDescription().define("thrust_acceleration", 0.1, 0.0, 1.0);
+                    THRUST_PARTICLES = builder.define("thrust_particles", true);
+                builder.pop();
+
+            } else {
+                ENABLE_THRUST = Value.of(false);
+                MAX_THRUST = Value.of(2.0);
+                THRUST_ACCELERATION = Value.of(0.1);
+                THRUST_PARTICLES = Value.of(true);
+            }
 
         builder.pop();
 
@@ -94,7 +109,6 @@ public class ModConfig {
             builder.pop();
 
             if (!Objects.equals(ArchitecturyTarget.getCurrentTarget(), "forge")) {
-
                 builder.push("controller");
                     CONTROLLER_SENSITIVITY_PITCH = builder.withDescription().define("pitch", 1.0, 0.0, 2.0);
                     CONTROLLER_SENSITIVITY_YAW = builder.withDescription().define("yaw", 0.4, 0.0, 2.0);
@@ -147,7 +161,7 @@ public class ModConfig {
     }// = 20;
 
     public boolean getEnableThrust() {
-        return ENABLE_THRUST.get();
+        return ENABLE_THRUST.get() && ConfigSyncClient.getConfig().map(config -> config.allowThrusting).orElse(true);
     }
 
     public double getMaxThrust() {
@@ -265,5 +279,16 @@ public class ModConfig {
         }
 
         return new RotationInstant(pitch, yaw, roll, rotationInstant.getRenderDelta());
+    }
+
+    public void notifyPlayerOfServerConfig(ServerModConfig serverConfig) {
+        if (!serverConfig.allowThrusting && ENABLE_THRUST.get()) {
+            MinecraftClient.getInstance().getToastManager().add(SystemToast.create(
+                    MinecraftClient.getInstance(),
+                    SystemToast.Type.UNSECURE_SERVER_WARNING,
+                    Text.translatable("toast.do_a_barrel_roll"),
+                    Text.translatable("toast.do_a_barrel_roll.thrusting_disabled_by_server")
+            ));
+        }
     }
 }

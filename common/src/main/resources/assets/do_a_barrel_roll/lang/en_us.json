@@ -40,5 +40,8 @@
   "category.do_a_barrel_roll.do_a_barrel_roll": "Do a Barrel Roll",
   "key.do_a_barrel_roll.toggle_enabled": "Toggle Enabled",
   "key.do_a_barrel_roll.toggle_enabled.enable": "§aEnabled §rDo a Barrel Roll",
-  "key.do_a_barrel_roll.toggle_enabled.disable": "§cDisabled §rDo a Barrel Roll"
+  "key.do_a_barrel_roll.toggle_enabled.disable": "§cDisabled §rDo a Barrel Roll",
+
+  "toast.do_a_barrel_roll": "Do a Barrel Roll",
+  "toast.do_a_barrel_roll.thrusting_disabled_by_server": "§cElytra thrusting is not allowed on this server, the feature will be forcibly disabled. Disable it in your client config to remove this message."
 }
