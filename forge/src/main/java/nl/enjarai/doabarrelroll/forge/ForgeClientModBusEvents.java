@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.Mod;
 import nl.enjarai.doabarrelroll.ModKeybindings;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ForgeModBusEvents {
+public class ForgeClientModBusEvents {
     @SubscribeEvent
     public static void onKeyMappingsRegister(RegisterKeyMappingsEvent event) {
         // Register keybindings on forge
