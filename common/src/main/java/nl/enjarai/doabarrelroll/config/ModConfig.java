@@ -8,6 +8,7 @@ import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.ToastManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
@@ -285,9 +286,9 @@ public class ModConfig {
         if (!serverConfig.allowThrusting && ENABLE_THRUST.get()) {
             MinecraftClient.getInstance().getToastManager().add(SystemToast.create(
                     MinecraftClient.getInstance(),
-                    SystemToast.Type.UNSECURE_SERVER_WARNING,
-                    Text.translatable("toast.do_a_barrel_roll"),
-                    Text.translatable("toast.do_a_barrel_roll.thrusting_disabled_by_server")
+                    SystemToast.Type.NARRATOR_TOGGLE,
+                    new TranslatableText("toast.do_a_barrel_roll"),
+                    new TranslatableText("toast.do_a_barrel_roll.thrusting_disabled_by_server")
             ));
         }
     }
