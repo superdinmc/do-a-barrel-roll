@@ -47,3 +47,22 @@ and may get you flagged.
 **Use at your own risk.**
 
 Big thanks to [MehVahdJukaar](https://github.com/MehVahdJukaar) for their help with the Forge port.
+
+## For server owners
+
+The mod includes a "thrusting" feature that is probably considered cheating by most servers, 
+as it lets users accelerate without using fireworks.
+If you want to completely ban players from using this feature on your server, you can either:
+
+- Install the mod on your server and set `"allowThrusting"` to `false` in `config/do_a_barrel_roll-server.json`
+- Send a custom packet to the client at login on the `do_a_barrel_roll:config_sync` channel with one 
+string field containing the following JSON:
+```json
+{
+  "allowThrusting": false
+}
+```
+The client will respond with a boolean on the same channel to indicate success.
+
+This option will be respected by any clients using version 2.4.0 or later of the mod. 
+The Forge version does not currently support thrusting, so it will not be affected by this option.

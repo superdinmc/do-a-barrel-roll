@@ -9,17 +9,20 @@ import nl.enjarai.cicada.api.conversation.ConversationManager;
 import nl.enjarai.cicada.api.util.CicadaEntrypoint;
 import nl.enjarai.cicada.api.util.JsonSource;
 import nl.enjarai.cicada.api.util.ProperLogger;
+import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.ModKeybindings;
 import nl.enjarai.doabarrelroll.config.ModConfig;
+import nl.enjarai.doabarrelroll.fabric.config.FabricConfigSyncClient;
 import org.slf4j.Logger;
 
 public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunchEntrypoint, CicadaEntrypoint {
-    public static final Logger LOGGER = ProperLogger.getLogger(DoABarrelRollClient.MODID);
+    public static final Logger LOGGER = ProperLogger.getLogger(DoABarrelRoll.MODID);
 
     @Override
     public void onInitializeClient() {
         ModConfig.touch();
+        FabricConfigSyncClient.init();
 
         // Register keybindings on fabric
         ModKeybindings.ALL.forEach(KeyBindingRegistryImpl::registerKeyBinding);

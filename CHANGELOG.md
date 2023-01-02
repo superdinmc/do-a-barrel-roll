@@ -1,1 +1,2 @@
-- Patch to a compat mixin to support the latest CameraOverhaul update.
+- Added a server-side config to disable thrusting on all connected clients.
+- Re-enable Forge publishing for 1.19.3, as forge is now updated.

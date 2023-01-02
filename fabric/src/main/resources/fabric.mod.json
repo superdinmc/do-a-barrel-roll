@@ -24,6 +24,9 @@
 		"client": [
 			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
 		],
+		"main": [
+			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabric"
+		],
 		"modmenu": [
 			"nl.enjarai.doabarrelroll.compat.modmenu.ModMenuIntegration"
 		],
@@ -35,7 +38,7 @@
 		]
 	},
 	
-	"environment": "client",
+	"environment": "*",
 	"mixins": [
 		"do-a-barrel-roll.mixins.json",
 		"do-a-barrel-roll.fabric.mixins.json",
