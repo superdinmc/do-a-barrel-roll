@@ -1,14 +1,15 @@
-package nl.enjarai.doabarrelroll.server;
+package nl.enjarai.doabarrelroll.net;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
+import nl.enjarai.doabarrelroll.config.ServerModConfig;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public class ConfigSyncServer {
+public class HandshakeServer {
     public static final Map<ServerPlayerEntity, ConfigSyncState> SYNC_STATES = new WeakHashMap<>();
 
     public static ConfigSyncState getSyncState(ServerPlayerEntity player) {

@@ -13,7 +13,7 @@ import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.ModKeybindings;
 import nl.enjarai.doabarrelroll.config.ModConfig;
-import nl.enjarai.doabarrelroll.fabric.config.FabricConfigSyncClient;
+import nl.enjarai.doabarrelroll.fabric.net.HandshakeClientFabric;
 import org.slf4j.Logger;
 
 public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunchEntrypoint, CicadaEntrypoint {
@@ -22,7 +22,7 @@ public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunc
     @Override
     public void onInitializeClient() {
         ModConfig.touch();
-        FabricConfigSyncClient.init();
+        HandshakeClientFabric.init();
 
         // Register keybindings on fabric
         ModKeybindings.ALL.forEach(KeyBindingRegistryImpl::registerKeyBinding);
