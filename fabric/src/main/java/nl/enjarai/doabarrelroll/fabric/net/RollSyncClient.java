@@ -14,9 +14,7 @@ public class RollSyncClient {
         var client = MinecraftClient.getInstance();
 
         if (client.player != null) {
-            double roll = -Math.acos(MathHelper.clamp(DoABarrelRollClient.left.dotProduct(
-                    ElytraMath.getAssumedLeft(client.player.getYaw())), -1, 1)) * ElytraMath.TODEG;
-            if (DoABarrelRollClient.left.getY() < 0) roll *= -1;
+            double roll = ElytraMath.getRoll(client.player.getYaw(), DoABarrelRollClient.left);
 
             if (roll != Components.ROLL.get(client.player).getRoll()) {
                 Components.ROLL.get(client.player).setRoll(roll);

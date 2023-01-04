@@ -17,10 +17,28 @@ public class RollSyncServer {
     public static void init() {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             server.getPlayerManager().getPlayerList().forEach(player -> {
-                if (HandshakeServer.getHandshakeState(player) == HandshakeServer.HandshakeState.ACCEPTED &&
-                        player.isFallFlying()) {
-                    Components.ROLL.sync(player);
+                var comp = Components.ROLL.get(player);
+
+                if (HandshakeServer.getHandshakeState(player) == HandshakeServer.HandshakeState.ACCEPTED) {
+                    comp.setHasClient(true);
+
+                    if (player.isFallFlying()) {
+                        Components.ROLL.sync(player);
+                    } else if (Components.ROLL.get(player).getRoll() != 0) {
+                        comp.setRoll(0);
+                        Components.ROLL.sync(player);
+                    }
+                } else {
+                    var hadClient = comp.hasClient();
+                    comp.setHasClient(false);
+
+                    if (hadClient) {
+                        comp.setRoll(0);
+                        Components.ROLL.sync(player);
+                    }
                 }
+
+                comp.tick();
             });
         });
     }
