@@ -4,25 +4,32 @@ import com.google.gson.JsonSyntaxException;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
-import nl.enjarai.doabarrelroll.config.ModConfig;
-import nl.enjarai.doabarrelroll.config.ServerModConfig;
 
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-public class HandshakeClient {
-    private static ServerModConfig serverConfig = null;
+public class HandshakeClient<T> {
+    private final Function<String, T> configDeserializer;
+    private final Consumer<T> updateCallback;
+    private T serverConfig = null;
+
+    public HandshakeClient(Function<String, T> configDeserializer, Consumer<T> updateCallback) {
+        this.configDeserializer = configDeserializer;
+        this.updateCallback = updateCallback;
+    }
 
     /**
      * Returns the server config if the client has received one for this server,
      * returns an empty optional in any other case.
      */
-    public static Optional<ServerModConfig> getConfig() {
+    public Optional<T> getConfig() {
         return Optional.ofNullable(serverConfig);
     }
 
-    public static PacketByteBuf handleConfigSync(PacketByteBuf buf) {
+    public PacketByteBuf handleConfigSync(PacketByteBuf buf) {
         try {
-            serverConfig = ServerModConfig.fromJson(buf.readString());
+            serverConfig = configDeserializer.apply(buf.readString());
             DoABarrelRoll.LOGGER.info("Successfully received and applied server config.");
         } catch (JsonSyntaxException e) {
             serverConfig = null;
@@ -30,7 +37,7 @@ public class HandshakeClient {
         }
 
         if (serverConfig != null) {
-            ModConfig.INSTANCE.notifyPlayerOfServerConfig(serverConfig);
+            updateCallback.accept(serverConfig);
         }
 
         var returnBuf = new PacketByteBuf(Unpooled.buffer());
@@ -38,7 +45,7 @@ public class HandshakeClient {
         return returnBuf;
     }
 
-    public static void reset() {
+    public void reset() {
         serverConfig = null;
     }
 }

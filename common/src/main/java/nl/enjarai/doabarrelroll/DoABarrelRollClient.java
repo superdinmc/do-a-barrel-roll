@@ -12,16 +12,22 @@ import net.minecraft.util.math.Vec3d;
 import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
+import nl.enjarai.doabarrelroll.config.ServerModConfig;
 import nl.enjarai.doabarrelroll.flight.ElytraMath;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
+import nl.enjarai.doabarrelroll.net.HandshakeClient;
 import nl.enjarai.doabarrelroll.util.MixinHooks;
 import nl.enjarai.doabarrelroll.util.Vec2d;
 
 public class DoABarrelRollClient {
-    public static final SmoothUtil pitchSmoother = new SmoothUtil();
-    public static final SmoothUtil yawSmoother = new SmoothUtil();
-    public static final SmoothUtil rollSmoother = new SmoothUtil();
+    public static final HandshakeClient<ServerModConfig> HANDSHAKE_CLIENT = new HandshakeClient<>(
+            ServerModConfig::fromJson,
+            ModConfig.INSTANCE::notifyPlayerOfServerConfig
+    );
+    public static final SmoothUtil PITCH_SMOOTHER = new SmoothUtil();
+    public static final SmoothUtil YAW_SMOOTHER = new SmoothUtil();
+    public static final SmoothUtil ROLL_SMOOTHER = new SmoothUtil();
     private static double lastLookUpdate;
     private static double lastLerpUpdate;
     public static double landingLerp = 1;
@@ -135,9 +141,9 @@ public class DoABarrelRollClient {
 
 
     private static void clearValues() {
-        pitchSmoother.clear();
-        yawSmoother.clear();
-        rollSmoother.clear();
+        PITCH_SMOOTHER.clear();
+        YAW_SMOOTHER.clear();
+        ROLL_SMOOTHER.clear();
         mouseTurnVec = Vec2d.ZERO;
         lastLookUpdate = GlfwUtil.getTime();
         throttle = 0;
@@ -178,7 +184,7 @@ public class DoABarrelRollClient {
                 .useModifier(RotationModifiers::strafeButtons)
                 .applySensitivity(sensitivity)
                 .useModifier(ModConfig.INSTANCE::configureRotation)
-                .smooth(pitchSmoother, yawSmoother, rollSmoother, ModConfig.INSTANCE.getSmoothing())
+                .smooth(PITCH_SMOOTHER, YAW_SMOOTHER, ROLL_SMOOTHER, ModConfig.INSTANCE.getSmoothing())
                 .useModifier(RotationModifiers::banking, ModConfig.INSTANCE::getEnableBanking)
         );
     }

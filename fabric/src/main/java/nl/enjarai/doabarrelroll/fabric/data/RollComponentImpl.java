@@ -4,6 +4,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.MathHelper;
+import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.net.HandshakeServer;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,7 +58,7 @@ public class RollComponentImpl implements RollComponent {
     // Sync only with clients that have accepted our handshake
     @Override
     public boolean shouldSyncWith(ServerPlayerEntity player) {
-        return HandshakeServer.getHandshakeState(player) == HandshakeServer.HandshakeState.ACCEPTED;
+        return DoABarrelRoll.handshakeServer.getHandshakeState(player) == HandshakeServer.HandshakeState.ACCEPTED;
     }
 
     @Override

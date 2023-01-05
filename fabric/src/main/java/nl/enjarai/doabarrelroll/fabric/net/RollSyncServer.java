@@ -19,7 +19,7 @@ public class RollSyncServer {
             server.getPlayerManager().getPlayerList().forEach(player -> {
                 var comp = Components.ROLL.get(player);
 
-                if (HandshakeServer.getHandshakeState(player) == HandshakeServer.HandshakeState.ACCEPTED) {
+                if (DoABarrelRoll.handshakeServer.getHandshakeState(player) == HandshakeServer.HandshakeState.ACCEPTED) {
                     comp.setHasClient(true);
 
                     if (player.isFallFlying()) {

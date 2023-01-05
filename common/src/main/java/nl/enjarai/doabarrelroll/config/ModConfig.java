@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
+import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigSpec;
@@ -158,7 +159,8 @@ public class ModConfig {
     }// = 20;
 
     public boolean getEnableThrust() {
-        return ENABLE_THRUST.get() && HandshakeClient.getConfig().map(config -> config.allowThrusting).orElse(true);
+        return ENABLE_THRUST.get() && DoABarrelRollClient.HANDSHAKE_CLIENT
+                .getConfig().map(config -> config.allowThrusting).orElse(true);
     }
 
     public double getMaxThrust() {
