@@ -1,15 +1,15 @@
-package nl.enjarai.doabarrelroll.config;
+package nl.enjarai.doabarrelroll.net;
 
 import com.google.gson.JsonSyntaxException;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
-import nl.enjarai.doabarrelroll.server.ServerModConfig;
+import nl.enjarai.doabarrelroll.config.ModConfig;
+import nl.enjarai.doabarrelroll.config.ServerModConfig;
 
 import java.util.Optional;
 
-public class ConfigSyncClient {
+public class HandshakeClient {
     private static ServerModConfig serverConfig = null;
 
     /**

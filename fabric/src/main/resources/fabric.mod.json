@@ -35,6 +35,9 @@
 		],
 		"cicada": [
 			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
+		],
+		"cardinal-components": [
+			"nl.enjarai.doabarrelroll.fabric.data.Components"
 		]
 	},
 	
@@ -52,6 +55,9 @@
 	},
 
 	"custom": {
+		"cardinal-components": [
+			"do_a_barrel_roll:roll"
+		],
 		"projects": {
 			"modrinth": "6FtRfnLg",
 			"curseforge": 663658
