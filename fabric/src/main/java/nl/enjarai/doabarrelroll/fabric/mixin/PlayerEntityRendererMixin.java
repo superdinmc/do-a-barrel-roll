@@ -4,13 +4,9 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RotationAxis;
-import nl.enjarai.doabarrelroll.DoABarrelRollClient;
+import net.minecraft.util.math.Quaternion;
+import net.minecraft.util.math.Vec3f;
 import nl.enjarai.doabarrelroll.fabric.data.Components;
-import nl.enjarai.doabarrelroll.fabric.data.RollComponent;
-import nl.enjarai.doabarrelroll.flight.ElytraMath;
-import org.joml.Quaternionf;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -36,16 +32,16 @@ public abstract class PlayerEntityRendererMixin {
             method = "setupTransforms(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/client/util/math/MatrixStack;FFF)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/util/math/MatrixStack;multiply(Lorg/joml/Quaternionf;)V",
+                    target = "Lnet/minecraft/client/util/math/MatrixStack;multiply(Lnet/minecraft/util/math/Quaternion;)V",
                     ordinal = 1
             ),
             index = 0
     )
-    private Quaternionf doABarrelRoll$modifyOthersRoll(Quaternionf original) {
+    private Quaternion doABarrelRoll$modifyOthersRoll(Quaternion original) {
         if (player != null && player instanceof OtherClientPlayerEntity && Components.ROLL.get(player).hasClient()) {
             var roll = Components.ROLL.get(player).getRoll(tickDelta);
 
-            return RotationAxis.POSITIVE_Y.rotationDegrees((float) roll);
+            return Vec3f.POSITIVE_Y.getDegreesQuaternion((float) roll);
         }
 
         return original;
