@@ -1,9 +1,1 @@
-- Added syncing of roll visuals when the mod is installed on both the server and client.
-  - Other players will now be able to see your roll when you're flying.
-  - Everything is still fully compatible with both vanilla clients and servers. All these configurations are valid:
-    - Server with mod, client with mod: roll is synced
-    - Server with mod, client without mod: client can join and play without issues, but can't see roll
-    - Server without mod, client with mod: client can join and play without issues, but can only see their own roll
-    - Server with mod, client 1 with mod, client 2 with mod, client 3 without mod: client 1 and 2 can see each other's roll, client 3 cannot
-    - Server without mod, client 1 with mod, client 2 with mod, client 3 without mod: client 1 and 2 can only see their own roll
-  - This feature is *only available on the Fabric version of the mod* due to technical limitations.
+- Fix missing translations.
