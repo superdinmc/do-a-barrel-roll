@@ -9,8 +9,8 @@
 
 Do a Barrel Roll is a lightweight, fully clientside mod for Fabric and Forge that changes 
 elytra flight to be more fun and semi-realistic.
-It achieves this by redesigning movement with the 
-now completely unlocked camera orientation in mind, 
+It achieves this by redesigning movement with a 
+completely unlocked camera orientation in mind, 
 allowing for full pitch, yaw and roll control in flight.
 
 Some subtle and less subtle modifiers are also applied to the camera,
@@ -28,13 +28,26 @@ The default controls are as follows, but can be modified:
 
 ## Configuration
 
-The mod can be configured in-game using ModMenu and a compatible config library.
-Currently, both Cloth Config and YACL are supported.
-Once you install either one, 
-you can access the config screen by finding the mod in ModMenu and pressing the config button.
+The mod can be configured in-game using ModMenu on Fabric, or the builtin mods button on Forge and a compatible config library.
+Currently, Cloth Config, YACL and Configured are supported.
+Once you install any of these, 
+you can access the config screen by finding the mod in your mod menu of choice and pressing the config button.
 
 A wide range of options are available, including custom mouse behavior, elytra activation restrictions and
 changing values of modifiers like banking, sensitivity and more.
+
+## Server-side features
+
+Visual aspects of the mod (playermodel roll in particular) can be synced between 
+clients by installing it on the server-side as well. 
+Everything is still fully compatible with both vanilla clients and servers. 
+All the following configurations are valid:
+
+- Server with mod, client with mod: visuals are synced
+- Server with mod, client without mod: client can join and play without issues, but can't see visuals
+- Server without mod, client with mod: client can join and play without issues, but can only see their own visuals
+- Server with mod, client 1 with mod, client 2 with mod, client 3 without mod: client 1 and 2 can see each other's visuals, client 3 cannot
+- Server without mod, client 1 with mod, client 2 with mod, client 3 without mod: client 1 and 2 can only see their own visuals
 
 ![](img/do-a-barrel-roll.gif)
 
@@ -46,7 +59,14 @@ However, doing things like loop de loops looks to the server like rapid camera m
 and may get you flagged.
 **Use at your own risk.**
 
-Big thanks to [MehVahdJukaar](https://github.com/MehVahdJukaar) for their help with the Forge port.
+## Credits
+
+Based on the [Cool Elytra Roll](https://github.com/Jorbon/cool_elytra) mod by [Jorbon](https://github.com/Jorbon),
+specifically it's "realistic mode".
+
+Ported to Forge by [MehVahdJukaar](https://github.com/MehVahdJukaar).
+
+Mod icon by Mizeno.
 
 ## For server owners
 
