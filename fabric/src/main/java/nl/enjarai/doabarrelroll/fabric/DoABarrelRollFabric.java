@@ -1,16 +1,20 @@
 package nl.enjarai.doabarrelroll.fabric;
 
 import net.fabricmc.api.ModInitializer;
-import nl.enjarai.doabarrelroll.fabric.server.FabricConfigSyncServer;
-import nl.enjarai.doabarrelroll.server.ServerModConfig;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import nl.enjarai.doabarrelroll.fabric.net.HandshakeServerFabric;
+import nl.enjarai.doabarrelroll.config.ServerModConfig;
+import nl.enjarai.doabarrelroll.fabric.net.RollSyncServer;
 
 public class DoABarrelRollFabric implements ModInitializer {
     @Override
     public void onInitialize() {
-        ServerModConfig.load();
-
         // Register server-side listeners for config syncing, this is done on
         // both client and server to ensure everything works in LAN worlds as well.
-        FabricConfigSyncServer.init();
+        ServerModConfig.load();
+        HandshakeServerFabric.init();
+
+        // Register server-side listeners for roll syncing.
+        RollSyncServer.init();
     }
 }

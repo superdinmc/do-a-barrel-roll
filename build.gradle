@@ -105,6 +105,12 @@ allprojects {
 
         // YACL
         maven { url = "https://maven.isxander.dev/releases" }
+
+        // Cardinal Components API
+        maven {
+            name = "Ladysnake Mods"
+            url = 'https://ladysnake.jfrog.io/artifactory/mods'
+        }
     }
 
     tasks.withType(JavaCompile) {

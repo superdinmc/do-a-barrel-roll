@@ -1,15 +1,12 @@
-package nl.enjarai.doabarrelroll.mixin;
+package nl.enjarai.doabarrelroll.fabric.mixin;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3f;
-import nl.enjarai.doabarrelroll.DoABarrelRollClient;
-import nl.enjarai.doabarrelroll.config.ModConfig;
-import nl.enjarai.doabarrelroll.config.ModConfig;
-import nl.enjarai.doabarrelroll.flight.ElytraMath;
+import nl.enjarai.doabarrelroll.fabric.data.Components;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,13 +17,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class PlayerEntityRendererMixin {
 
     private AbstractClientPlayerEntity player;
+    private float tickDelta;
 
     @Inject(
             method = "setupTransforms(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/client/util/math/MatrixStack;FFF)V",
             at = @At("HEAD")
     )
-    private void doABarrelRoll$capturePlayer(AbstractClientPlayerEntity abstractClientPlayerEntity, MatrixStack matrixStack, float f, float g, float h, CallbackInfo ci) {
+    private void doABarrelRoll$captureOtherPlayer(AbstractClientPlayerEntity abstractClientPlayerEntity, MatrixStack matrixStack, float f, float g, float h, CallbackInfo ci) {
         player = abstractClientPlayerEntity;
+        tickDelta = h;
     }
 
     @ModifyArg(
@@ -38,11 +37,13 @@ public abstract class PlayerEntityRendererMixin {
             ),
             index = 0
     )
-    private Quaternion doABarrelRoll$modifyRoll(Quaternion original) {
-        if (!ModConfig.INSTANCE.getModEnabled() || !(player instanceof ClientPlayerEntity)) return original;
+    private Quaternion doABarrelRoll$modifyOthersRoll(Quaternion original) {
+        if (player != null && player instanceof OtherClientPlayerEntity && Components.ROLL.get(player).hasClient()) {
+            var roll = Components.ROLL.get(player).getRoll(tickDelta);
 
-        var roll = ElytraMath.getRoll(player.getYaw(), DoABarrelRollClient.left);
+            return Vec3f.POSITIVE_Y.getDegreesQuaternion((float) roll);
+        }
 
-        return Vec3f.POSITIVE_Y.getDegreesQuaternion((float) roll);
+        return original;
     }
 }

@@ -1,4 +1,4 @@
-package nl.enjarai.doabarrelroll.server;
+package nl.enjarai.doabarrelroll.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

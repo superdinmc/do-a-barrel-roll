@@ -4,9 +4,6 @@ package nl.enjarai.doabarrelroll.config;
 import dev.architectury.injectables.targets.ArchitecturyTarget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
-import net.minecraft.client.toast.Toast;
-import net.minecraft.client.toast.ToastManager;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
@@ -14,7 +11,7 @@ import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigSpec;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigType;
-import nl.enjarai.doabarrelroll.server.ServerModConfig;
+import nl.enjarai.doabarrelroll.net.HandshakeClient;
 import nl.enjarai.doabarrelroll.util.Value;
 
 import java.util.Objects;
@@ -162,7 +159,7 @@ public class ModConfig {
     }// = 20;
 
     public boolean getEnableThrust() {
-        return ENABLE_THRUST.get() && ConfigSyncClient.getConfig().map(config -> config.allowThrusting).orElse(true);
+        return ENABLE_THRUST.get() && HandshakeClient.getConfig().map(config -> config.allowThrusting).orElse(true);
     }
 
     public double getMaxThrust() {
