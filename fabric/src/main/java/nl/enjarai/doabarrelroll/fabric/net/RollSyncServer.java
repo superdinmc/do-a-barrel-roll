@@ -11,6 +11,9 @@ public class RollSyncServer {
     public static void startListening(ServerPlayNetworkHandler handler) {
         ServerPlayNetworking.registerReceiver(handler, DoABarrelRoll.ROLL_CHANNEL, (server, player, handler1, buf, responseSender) -> {
             Components.ROLL.get(player).setRoll(buf.readDouble());
+            if (buf.isReadable(1)) {
+                Components.ROLL.get(player).setFallFlying(buf.readBoolean());
+            }
         });
     }
 

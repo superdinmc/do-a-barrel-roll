@@ -12,6 +12,7 @@ public class RollComponentImpl implements RollComponent {
     private double roll = 0;
     private double lastRoll = 0;
     private boolean hasClient = false;
+    private boolean fallFlying = true;
 
     @Override
     public double getRoll() {
@@ -48,6 +49,16 @@ public class RollComponentImpl implements RollComponent {
         this.hasClient = hasClient;
     }
 
+    @Override
+    public boolean isFallFlying() {
+        return fallFlying;
+    }
+
+    @Override
+    public void setFallFlying(boolean fallFlying) {
+        this.fallFlying = fallFlying;
+    }
+
     // We don't really need to save this, so both read and write are empty.
     @Override
     public void readFromNbt(@NotNull NbtCompound tag) {}
@@ -65,6 +76,7 @@ public class RollComponentImpl implements RollComponent {
     public void writeSyncPacket(PacketByteBuf buf, ServerPlayerEntity recipient) {
         buf.writeDouble(roll);
         buf.writeBoolean(hasClient);
+        buf.writeBoolean(fallFlying);
     }
 
     @Override
@@ -72,6 +84,10 @@ public class RollComponentImpl implements RollComponent {
         lastRoll = roll;
         roll = buf.readDouble();
         hasClient = buf.readBoolean();
+
+        if (buf.isReadable(1)) {
+            fallFlying = buf.readBoolean();
+        }
 
         if (lastRoll < -90 && roll > 90) {
             lastRoll += 360;

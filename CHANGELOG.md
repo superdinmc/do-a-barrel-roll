@@ -1,1 +1,2 @@
+- Fixed an issue with vanilla playermodel roll not applying to others who have the mod loaded, but not enabled.
 - Fix missing translations.

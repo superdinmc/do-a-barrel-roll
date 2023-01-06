@@ -42,10 +42,14 @@ public abstract class PlayerEntityRendererMixin {
             index = 0
     )
     private Quaternionf doABarrelRoll$modifyOthersRoll(Quaternionf original) {
-        if (player != null && player instanceof OtherClientPlayerEntity && Components.ROLL.get(player).hasClient()) {
-            var roll = Components.ROLL.get(player).getRoll(tickDelta);
+        if (player != null && player instanceof OtherClientPlayerEntity) {
+            var component = Components.ROLL.get(player);
 
-            return RotationAxis.POSITIVE_Y.rotationDegrees((float) roll);
+            if (component.hasClient() && component.isFallFlying()) {
+                var roll = component.getRoll(tickDelta);
+
+                return RotationAxis.POSITIVE_Y.rotationDegrees((float) roll);
+            }
         }
 
         return original;
