@@ -9,16 +9,17 @@ public class HandshakeServerFabric {
     public static void init() {
         ServerPlayConnectionEvents.INIT.register((handler, server) -> {
             ServerPlayNetworking.registerReceiver(handler, DoABarrelRoll.SYNC_CHANNEL, (server1, player, handler1, buf, responseSender) -> {
-                if (HandshakeServer.clientReplied(player, buf) == HandshakeServer.HandshakeState.ACCEPTED) {
+                if (DoABarrelRoll.handshakeServer.clientReplied(player, buf) == HandshakeServer.HandshakeState.ACCEPTED) {
                     RollSyncServer.startListening(handler1);
                 }
             });
 
-            ServerPlayNetworking.send(handler.getPlayer(), DoABarrelRoll.SYNC_CHANNEL, HandshakeServer.getConfigSyncBuf(handler.getPlayer()));
+            ServerPlayNetworking.send(handler.getPlayer(), DoABarrelRoll.SYNC_CHANNEL,
+                    DoABarrelRoll.handshakeServer.getConfigSyncBuf(handler.getPlayer()));
         });
 
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            HandshakeServer.playerDisconnected(handler.getPlayer());
+            DoABarrelRoll.handshakeServer.playerDisconnected(handler.getPlayer());
         });
     }
 }

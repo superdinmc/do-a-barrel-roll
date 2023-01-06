@@ -14,6 +14,10 @@ public interface RollComponent extends Component, AutoSyncedComponent {
 
     double getRoll(float tickDelta);
 
+    boolean isFallFlying();
+
+    void setFallFlying(boolean fallFlying);
+
     void tick();
 
     boolean hasClient();

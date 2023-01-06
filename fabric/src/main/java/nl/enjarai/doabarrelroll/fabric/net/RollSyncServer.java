@@ -11,6 +11,9 @@ public class RollSyncServer {
     public static void startListening(ServerPlayNetworkHandler handler) {
         ServerPlayNetworking.registerReceiver(handler, DoABarrelRoll.ROLL_CHANNEL, (server, player, handler1, buf, responseSender) -> {
             Components.ROLL.get(player).setRoll(buf.readDouble());
+            if (buf.isReadable(1)) {
+                Components.ROLL.get(player).setFallFlying(buf.readBoolean());
+            }
         });
     }
 
@@ -19,7 +22,7 @@ public class RollSyncServer {
             server.getPlayerManager().getPlayerList().forEach(player -> {
                 var comp = Components.ROLL.get(player);
 
-                if (HandshakeServer.getHandshakeState(player) == HandshakeServer.HandshakeState.ACCEPTED) {
+                if (DoABarrelRoll.handshakeServer.getHandshakeState(player) == HandshakeServer.HandshakeState.ACCEPTED) {
                     comp.setHasClient(true);
 
                     if (player.isFallFlying()) {
