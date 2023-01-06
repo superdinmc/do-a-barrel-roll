@@ -16,10 +16,12 @@ import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.ModKeybindings;
 import nl.enjarai.doabarrelroll.config.ModConfig;
+import nl.enjarai.doabarrelroll.config.ServerModConfig;
 import nl.enjarai.doabarrelroll.fabric.data.Components;
 import nl.enjarai.doabarrelroll.fabric.net.HandshakeClientFabric;
 import nl.enjarai.doabarrelroll.fabric.net.RollSyncClient;
 import nl.enjarai.doabarrelroll.flight.ElytraMath;
+import nl.enjarai.doabarrelroll.net.HandshakeClient;
 import org.slf4j.Logger;
 
 public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunchEntrypoint, CicadaEntrypoint {

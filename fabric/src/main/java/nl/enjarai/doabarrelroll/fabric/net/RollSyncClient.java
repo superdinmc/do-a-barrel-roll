@@ -16,11 +16,14 @@ public class RollSyncClient {
         if (client.player != null) {
             double roll = ElytraMath.getRoll(client.player.getYaw(), DoABarrelRollClient.left);
 
-            if (roll != Components.ROLL.get(client.player).getRoll()) {
+            if (roll != Components.ROLL.get(client.player).getRoll() ||
+                    DoABarrelRollClient.isFallFlying() != Components.ROLL.get(client.player).isFallFlying()) {
                 Components.ROLL.get(client.player).setRoll(roll);
+                Components.ROLL.get(client.player).setFallFlying(DoABarrelRollClient.isFallFlying());
 
                 var buf = PacketByteBufs.create();
                 buf.writeDouble(roll);
+                buf.writeBoolean(DoABarrelRollClient.isFallFlying());
 
                 ClientPlayNetworking.send(DoABarrelRoll.ROLL_CHANNEL, buf);
             }
