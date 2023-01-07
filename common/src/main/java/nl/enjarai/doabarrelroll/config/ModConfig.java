@@ -267,7 +267,7 @@ public class ModConfig {
         var yaw = rotationInstant.getYaw();
         var roll = rotationInstant.getRoll();
 
-        if (getSwitchRollAndYaw()) {
+        if (!getSwitchRollAndYaw()) {
             var temp = yaw;
             yaw = roll;
             roll = temp;

@@ -20,7 +20,8 @@ public class RotationModifiers {
             yaw += yawDelta;
         }
 
-        return rotationInstant.add(0, yaw, 0);
+        // Putting this in the roll value, since it'll be swapped later
+        return rotationInstant.add(0, 0, yaw);
     }
 
     public static RotationInstant banking(RotationInstant rotationInstant) {

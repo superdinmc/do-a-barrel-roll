@@ -48,15 +48,15 @@ public class DoABarrelRollClient {
                 10, DoABarrelRollClient::isFallFlying);
 
         // Mouse modifiers, including swapping axes
-        RollEvents.LATE_CAMERA_MODIFIERS.register(rotationDelta -> rotationDelta
+        RollEvents.EARLY_CAMERA_MODIFIERS.register(rotationDelta -> rotationDelta
                 .useModifier(ModConfig.INSTANCE::configureRotation),
-                10, DoABarrelRollClient::isFallFlying);
+                20, DoABarrelRollClient::isFallFlying);
 
         // Generic movement modifiers, banking and such
         RollEvents.LATE_CAMERA_MODIFIERS.register(rotationDelta -> rotationDelta
                 .smooth(PITCH_SMOOTHER, YAW_SMOOTHER, ROLL_SMOOTHER, ModConfig.INSTANCE.getSmoothing())
                 .useModifier(RotationModifiers::banking, ModConfig.INSTANCE::getEnableBanking),
-                20, DoABarrelRollClient::isFallFlying);
+                10, DoABarrelRollClient::isFallFlying);
     }
 
     public static void clientTick(MinecraftClient client) {
@@ -95,13 +95,13 @@ public class DoABarrelRollClient {
             // enlarge the vector and apply it to the camera
             var delta = getDelta();
             var readyTurnVec = mouseTurnVec.multiply(1200 * (float) delta);
-            changeElytraLook(readyTurnVec.y, 0, readyTurnVec.x, ModConfig.INSTANCE.getDesktopSensitivity(), delta);
+            changeElytraLook(readyTurnVec.y, readyTurnVec.x, 0, ModConfig.INSTANCE.getDesktopSensitivity(), delta);
 
         } else {
 
             // if we are not using a momentum based mouse, we can reset it and apply the values directly
             mouseTurnVec = Vec2d.ZERO;
-            changeElytraLook(cursorDeltaY, 0, cursorDeltaX, ModConfig.INSTANCE.getDesktopSensitivity());
+            changeElytraLook(cursorDeltaY, cursorDeltaX, 0, ModConfig.INSTANCE.getDesktopSensitivity());
         }
 
         return false;
