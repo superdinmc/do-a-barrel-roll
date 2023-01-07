@@ -11,7 +11,6 @@ import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigSpec;
 import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigType;
-import nl.enjarai.doabarrelroll.net.HandshakeClient;
 import nl.enjarai.doabarrelroll.util.Value;
 
 import java.util.Objects;

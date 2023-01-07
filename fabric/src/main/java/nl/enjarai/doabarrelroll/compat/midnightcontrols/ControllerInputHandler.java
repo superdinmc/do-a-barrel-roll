@@ -13,7 +13,7 @@ public class ControllerInputHandler {
 
     public static boolean onControllerInput(MinecraftClient client, int axis, float value, int state) {
 
-        if (DoABarrelRollClient.isFallFlying()) {
+        if (DoABarrelRollClient.isRolling()) {
 
             // some math to process the raw input
             var powValue = Math.pow(value, 2.0d);

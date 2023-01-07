@@ -1,4 +1,4 @@
-package nl.enjarai.doabarrelroll.net;
+package nl.enjarai.doabarrelroll.api.net;
 
 import com.google.gson.JsonSyntaxException;
 import io.netty.buffer.Unpooled;

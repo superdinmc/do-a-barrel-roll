@@ -9,6 +9,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
+import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
@@ -16,7 +17,7 @@ import nl.enjarai.doabarrelroll.config.ServerModConfig;
 import nl.enjarai.doabarrelroll.flight.ElytraMath;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
-import nl.enjarai.doabarrelroll.net.HandshakeClient;
+import nl.enjarai.doabarrelroll.api.net.HandshakeClient;
 import nl.enjarai.doabarrelroll.util.MixinHooks;
 import nl.enjarai.doabarrelroll.util.Vec2d;
 
@@ -37,6 +38,26 @@ public class DoABarrelRollClient {
 
     // TODO triple jump to activate???
 
+    public static void init() {
+        RollEvents.SHOULD_ROLL_CHECK.register(DoABarrelRollClient::isFallFlying);
+
+        // Keyboard modifiers
+        RollEvents.EARLY_CAMERA_MODIFIERS.register(rotationDelta -> rotationDelta
+                .useModifier(RotationModifiers::manageThrottle, ModConfig.INSTANCE::getEnableThrust)
+                .useModifier(RotationModifiers::strafeButtons),
+                10, DoABarrelRollClient::isFallFlying);
+
+        // Mouse modifiers, including swapping axes
+        RollEvents.LATE_CAMERA_MODIFIERS.register(rotationDelta -> rotationDelta
+                .useModifier(ModConfig.INSTANCE::configureRotation),
+                10, DoABarrelRollClient::isFallFlying);
+
+        // Generic movement modifiers, banking and such
+        RollEvents.LATE_CAMERA_MODIFIERS.register(rotationDelta -> rotationDelta
+                .smooth(PITCH_SMOOTHER, YAW_SMOOTHER, ROLL_SMOOTHER, ModConfig.INSTANCE.getSmoothing())
+                .useModifier(RotationModifiers::banking, ModConfig.INSTANCE::getEnableBanking),
+                20, DoABarrelRollClient::isFallFlying);
+    }
 
     public static void clientTick(MinecraftClient client) {
         while (ModKeybindings.TOGGLE_ENABLED.wasPressed()) {
@@ -57,7 +78,7 @@ public class DoABarrelRollClient {
 
     public static boolean updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY) {
 
-        if (!isFallFlying()) return true;
+        if (!isRolling()) return true;
 
         // reset the landing animation when flying
         landingLerp = 0;
@@ -92,7 +113,7 @@ public class DoABarrelRollClient {
         double lerpDelta = time - lastLerpUpdate;
         lastLerpUpdate = time;
 
-        if (!isFallFlying()) {
+        if (!isRolling()) {
 
             landingLerp = MathHelper.lerp(MathHelper.clamp(lerpDelta * 2, 0, 1), landingLerp, 1);
 
@@ -179,14 +200,9 @@ public class DoABarrelRollClient {
 
         var rotDelta = new RotationInstant(pitch, yaw, roll, delta);
 
-        ElytraMath.changeElytraLookDirectly(player, rotDelta
-                .useModifier(RotationModifiers::manageThrottle, ModConfig.INSTANCE::getEnableThrust)
-                .useModifier(RotationModifiers::strafeButtons)
-                .applySensitivity(sensitivity)
-                .useModifier(ModConfig.INSTANCE::configureRotation)
-                .smooth(PITCH_SMOOTHER, YAW_SMOOTHER, ROLL_SMOOTHER, ModConfig.INSTANCE.getSmoothing())
-                .useModifier(RotationModifiers::banking, ModConfig.INSTANCE::getEnableBanking)
-        );
+        ElytraMath.changeElytraLookDirectly(player,
+                RollEvents.lateCameraModifiers(
+                        RollEvents.earlyCameraModifiers(rotDelta).applySensitivity(sensitivity)));
     }
 
     public static boolean isFallFlying() {
@@ -200,5 +216,9 @@ public class DoABarrelRollClient {
         return player != null
                 && player.isFallFlying()
                 && ModConfig.INSTANCE.getModEnabled();
+    }
+
+    public static boolean isRolling() {
+        return RollEvents.shouldRoll();
     }
 }

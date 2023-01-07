@@ -3,7 +3,7 @@ package nl.enjarai.doabarrelroll.fabric.net;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
-import nl.enjarai.doabarrelroll.net.HandshakeServer;
+import nl.enjarai.doabarrelroll.api.net.HandshakeServer;
 
 public class HandshakeServerFabric {
     public static void init() {
