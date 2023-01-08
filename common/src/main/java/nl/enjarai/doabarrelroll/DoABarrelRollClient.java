@@ -42,18 +42,18 @@ public class DoABarrelRollClient {
         RollEvents.SHOULD_ROLL_CHECK.register(DoABarrelRollClient::isFallFlying);
 
         // Keyboard modifiers
-        RollEvents.EARLY_CAMERA_MODIFIERS.register(rotationDelta -> rotationDelta
+        RollEvents.EARLY_CAMERA_MODIFIERS.register((rotationDelta, currentRotation) -> rotationDelta
                 .useModifier(RotationModifiers::manageThrottle, ModConfig.INSTANCE::getEnableThrust)
-                .useModifier(RotationModifiers::strafeButtons),
+                .useModifier(RotationModifiers.strafeButtons(1800)),
                 10, DoABarrelRollClient::isFallFlying);
 
         // Mouse modifiers, including swapping axes
-        RollEvents.EARLY_CAMERA_MODIFIERS.register(rotationDelta -> rotationDelta
+        RollEvents.EARLY_CAMERA_MODIFIERS.register((rotationDelta, currentRotation) -> rotationDelta
                 .useModifier(ModConfig.INSTANCE::configureRotation),
                 20, DoABarrelRollClient::isFallFlying);
 
         // Generic movement modifiers, banking and such
-        RollEvents.LATE_CAMERA_MODIFIERS.register(rotationDelta -> rotationDelta
+        RollEvents.LATE_CAMERA_MODIFIERS.register((rotationDelta, currentRotation) -> rotationDelta
                 .smooth(PITCH_SMOOTHER, YAW_SMOOTHER, ROLL_SMOOTHER, ModConfig.INSTANCE.getSmoothing())
                 .useModifier(RotationModifiers::banking, ModConfig.INSTANCE::getEnableBanking),
                 10, DoABarrelRollClient::isFallFlying);
@@ -199,10 +199,20 @@ public class DoABarrelRollClient {
         if (player == null) return;
 
         var rotDelta = new RotationInstant(pitch, yaw, roll, delta);
+        var currentRoll = ElytraMath.getRoll(player.getYaw(), DoABarrelRollClient.left);
+        var currentRotation = new RotationInstant(
+                player.getPitch(),
+                player.getYaw(),
+                currentRoll,
+                0
+        );
 
         ElytraMath.changeElytraLookDirectly(player,
                 RollEvents.lateCameraModifiers(
-                        RollEvents.earlyCameraModifiers(rotDelta).applySensitivity(sensitivity)));
+                        RollEvents.earlyCameraModifiers(rotDelta, currentRotation).applySensitivity(sensitivity),
+                        currentRotation
+                )
+        );
     }
 
     public static boolean isFallFlying() {

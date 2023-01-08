@@ -4,24 +4,29 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.config.ModConfig;
+import nl.enjarai.doabarrelroll.flight.util.ConfiguresRotation;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 
+import java.util.function.Supplier;
+
 public class RotationModifiers {
-    public static RotationInstant strafeButtons(RotationInstant rotationInstant) {
-        var client = MinecraftClient.getInstance();
+    public static ConfiguresRotation strafeButtons(double power) {
+        return (rotationInstant) -> {
+            var client = MinecraftClient.getInstance();
 
-        var yawDelta = 1800 * rotationInstant.getRenderDelta();
-        var yaw = 0;
+            var yawDelta = power * rotationInstant.getRenderDelta();
+            var yaw = 0;
 
-        if (client.options.leftKey.isPressed()) {
-            yaw -= yawDelta;
-        }
-        if (client.options.rightKey.isPressed()) {
-            yaw += yawDelta;
-        }
+            if (client.options.leftKey.isPressed()) {
+                yaw -= yawDelta;
+            }
+            if (client.options.rightKey.isPressed()) {
+                yaw += yawDelta;
+            }
 
-        // Putting this in the roll value, since it'll be swapped later
-        return rotationInstant.add(0, 0, yaw);
+            // Putting this in the roll value, since it'll be swapped later
+            return rotationInstant.add(0, 0, yaw);
+        };
     }
 
     public static RotationInstant banking(RotationInstant rotationInstant) {

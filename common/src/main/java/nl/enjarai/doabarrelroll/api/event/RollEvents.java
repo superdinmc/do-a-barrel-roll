@@ -27,9 +27,9 @@ public interface RollEvents {
      */
     Event<CameraModifiersEvent> EARLY_CAMERA_MODIFIERS = new Event<>();
 
-    static RotationInstant earlyCameraModifiers(RotationInstant rotationDelta) {
+    static RotationInstant earlyCameraModifiers(RotationInstant rotationDelta, RotationInstant currentRotation) {
         for (var listener : EARLY_CAMERA_MODIFIERS.getListeners()) {
-            rotationDelta = listener.applyCameraModifiers(rotationDelta);
+            rotationDelta = listener.applyCameraModifiers(rotationDelta, currentRotation);
         }
 
         return rotationDelta;
@@ -40,15 +40,15 @@ public interface RollEvents {
      */
     Event<CameraModifiersEvent> LATE_CAMERA_MODIFIERS = new Event<>();
 
-    static RotationInstant lateCameraModifiers(RotationInstant rotationDelta) {
+    static RotationInstant lateCameraModifiers(RotationInstant rotationDelta, RotationInstant currentRotation) {
         for (var listener : LATE_CAMERA_MODIFIERS.getListeners()) {
-            rotationDelta = listener.applyCameraModifiers(rotationDelta);
+            rotationDelta = listener.applyCameraModifiers(rotationDelta, currentRotation);
         }
 
         return rotationDelta;
     }
 
     interface CameraModifiersEvent {
-        RotationInstant applyCameraModifiers(RotationInstant rotationDelta);
+        RotationInstant applyCameraModifiers(RotationInstant rotationDelta, RotationInstant currentRotation);
     }
 }
