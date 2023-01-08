@@ -14,8 +14,15 @@ public class ModKeybindings {
             GLFW.GLFW_KEY_L,
             "category.do_a_barrel_roll.do_a_barrel_roll"
     );
+    public static final KeyBinding TOGGLE_THRUST = new KeyBinding(
+            "key.do_a_barrel_roll.toggle_thrust",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_K,
+            "category.do_a_barrel_roll.do_a_barrel_roll"
+    );
 
     public static final List<KeyBinding> ALL = List.of(
-            TOGGLE_ENABLED
+            TOGGLE_ENABLED,
+            TOGGLE_THRUST
     );
 }
