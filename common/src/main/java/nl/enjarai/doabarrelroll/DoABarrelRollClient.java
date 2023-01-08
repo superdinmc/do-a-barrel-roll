@@ -74,6 +74,20 @@ public class DoABarrelRollClient {
                 );
             }
         }
+        while (ModKeybindings.TOGGLE_THRUST.wasPressed()) {
+            ModConfig.INSTANCE.setEnableThrust(!ModConfig.INSTANCE.getEnableThrust());
+            ModConfig.INSTANCE.save();
+
+            if (client.player != null) {
+                client.player.sendMessage(
+                        Text.translatable(
+                                "key.do_a_barrel_roll." +
+                                        (ModConfig.INSTANCE.getEnableThrust() ? "toggle_thrust.enable" : "toggle_thrust.disable")
+                        ),
+                        true
+                );
+            }
+        }
     }
 
     public static boolean updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY) {
