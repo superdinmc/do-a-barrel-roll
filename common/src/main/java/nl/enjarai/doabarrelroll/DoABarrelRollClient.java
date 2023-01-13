@@ -5,9 +5,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.GlfwUtil;
 import net.minecraft.client.util.SmoothUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
@@ -15,11 +13,11 @@ import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.api.net.HandshakeClient;
 import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
 import nl.enjarai.doabarrelroll.config.ModConfig;
+import nl.enjarai.doabarrelroll.config.Sensitivity;
 import nl.enjarai.doabarrelroll.config.ServerModConfig;
+import nl.enjarai.doabarrelroll.flight.ElytraMath;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
-import nl.enjarai.doabarrelroll.config.Sensitivity;
-import nl.enjarai.doabarrelroll.flight.ElytraMath;
 import nl.enjarai.doabarrelroll.util.MixinHooks;
 import nl.enjarai.doabarrelroll.util.Vec2d;
 
@@ -82,7 +80,7 @@ public class DoABarrelRollClient {
 
             if (client.player != null) {
                 client.player.sendMessage(
-                        Text.translatable(
+                        new TranslatableText(
                                 "key.do_a_barrel_roll." +
                                         (ModConfig.INSTANCE.getEnableThrust() ? "toggle_thrust.enable" : "toggle_thrust.disable")
                         ),
