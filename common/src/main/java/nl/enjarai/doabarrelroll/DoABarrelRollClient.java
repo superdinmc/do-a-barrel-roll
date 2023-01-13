@@ -9,6 +9,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
+import nl.enjarai.doabarrelroll.api.event.RollEvents;
+import nl.enjarai.doabarrelroll.api.net.HandshakeClient;
 import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.ServerModConfig;
@@ -16,7 +18,6 @@ import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
 import nl.enjarai.doabarrelroll.flight.ElytraMath;
-import nl.enjarai.doabarrelroll.net.HandshakeClient;
 import nl.enjarai.doabarrelroll.util.MixinHooks;
 import nl.enjarai.doabarrelroll.util.Vec2d;
 
