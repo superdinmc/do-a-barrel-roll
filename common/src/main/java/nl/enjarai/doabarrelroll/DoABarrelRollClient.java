@@ -37,6 +37,26 @@ public class DoABarrelRollClient {
 
     // TODO triple jump to activate???
 
+    public static void init() {
+        RollEvents.SHOULD_ROLL_CHECK.register(DoABarrelRollClient::isFallFlying);
+
+        // Keyboard modifiers
+        RollEvents.EARLY_CAMERA_MODIFIERS.register((rotationDelta, currentRotation) -> rotationDelta
+                .useModifier(RotationModifiers::manageThrottle, ModConfig.INSTANCE::getEnableThrust)
+                .useModifier(RotationModifiers.strafeButtons(1800)),
+                10, DoABarrelRollClient::isFallFlying);
+
+        // Mouse modifiers, including swapping axes
+        RollEvents.EARLY_CAMERA_MODIFIERS.register((rotationDelta, currentRotation) -> rotationDelta
+                .useModifier(ModConfig.INSTANCE::configureRotation),
+                20, DoABarrelRollClient::isFallFlying);
+
+        // Generic movement modifiers, banking and such
+        RollEvents.LATE_CAMERA_MODIFIERS.register((rotationDelta, currentRotation) -> rotationDelta
+                .smooth(PITCH_SMOOTHER, YAW_SMOOTHER, ROLL_SMOOTHER, ModConfig.INSTANCE.getSmoothing())
+                .useModifier(RotationModifiers::banking, ModConfig.INSTANCE::getEnableBanking),
+                10, DoABarrelRollClient::isFallFlying);
+    }
 
     public static void clientTick(MinecraftClient client) {
         while (ModKeybindings.TOGGLE_ENABLED.wasPressed()) {
@@ -53,11 +73,25 @@ public class DoABarrelRollClient {
                 );
             }
         }
+        while (ModKeybindings.TOGGLE_THRUST.wasPressed()) {
+            ModConfig.INSTANCE.setEnableThrust(!ModConfig.INSTANCE.getEnableThrust());
+            ModConfig.INSTANCE.save();
+
+            if (client.player != null) {
+                client.player.sendMessage(
+                        Text.translatable(
+                                "key.do_a_barrel_roll." +
+                                        (ModConfig.INSTANCE.getEnableThrust() ? "toggle_thrust.enable" : "toggle_thrust.disable")
+                        ),
+                        true
+                );
+            }
+        }
     }
 
     public static boolean updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY) {
 
-        if (!isFallFlying()) return true;
+        if (!isRolling()) return true;
 
         // reset the landing animation when flying
         landingLerp = 0;
@@ -74,13 +108,13 @@ public class DoABarrelRollClient {
             // enlarge the vector and apply it to the camera
             var delta = getDelta();
             var readyTurnVec = mouseTurnVec.multiply(1200 * (float) delta);
-            changeElytraLook(readyTurnVec.y, 0, readyTurnVec.x, ModConfig.INSTANCE.getDesktopSensitivity(), delta);
+            changeElytraLook(readyTurnVec.y, readyTurnVec.x, 0, ModConfig.INSTANCE.getDesktopSensitivity(), delta);
 
         } else {
 
             // if we are not using a momentum based mouse, we can reset it and apply the values directly
             mouseTurnVec = Vec2d.ZERO;
-            changeElytraLook(cursorDeltaY, 0, cursorDeltaX, ModConfig.INSTANCE.getDesktopSensitivity());
+            changeElytraLook(cursorDeltaY, cursorDeltaX, 0, ModConfig.INSTANCE.getDesktopSensitivity());
         }
 
         return false;
@@ -92,7 +126,7 @@ public class DoABarrelRollClient {
         double lerpDelta = time - lastLerpUpdate;
         lastLerpUpdate = time;
 
-        if (!isFallFlying()) {
+        if (!isRolling()) {
 
             landingLerp = MathHelper.lerp(MathHelper.clamp(lerpDelta * 2, 0, 1), landingLerp, 1);
 
@@ -178,14 +212,19 @@ public class DoABarrelRollClient {
         if (player == null) return;
 
         var rotDelta = new RotationInstant(pitch, yaw, roll, delta);
+        var currentRoll = ElytraMath.getRoll(player.getYaw(), DoABarrelRollClient.left);
+        var currentRotation = new RotationInstant(
+                player.getPitch(),
+                player.getYaw(),
+                currentRoll,
+                0
+        );
 
-        ElytraMath.changeElytraLookDirectly(player, rotDelta
-                .useModifier(RotationModifiers::manageThrottle, ModConfig.INSTANCE::getEnableThrust)
-                .useModifier(RotationModifiers::strafeButtons)
-                .applySensitivity(sensitivity)
-                .useModifier(ModConfig.INSTANCE::configureRotation)
-                .smooth(PITCH_SMOOTHER, YAW_SMOOTHER, ROLL_SMOOTHER, ModConfig.INSTANCE.getSmoothing())
-                .useModifier(RotationModifiers::banking, ModConfig.INSTANCE::getEnableBanking)
+        ElytraMath.changeElytraLookDirectly(player,
+                RollEvents.lateCameraModifiers(
+                        RollEvents.earlyCameraModifiers(rotDelta, currentRotation).applySensitivity(sensitivity),
+                        currentRotation
+                )
         );
     }
 
@@ -200,5 +239,9 @@ public class DoABarrelRollClient {
         return player != null
                 && player.isFallFlying()
                 && ModConfig.INSTANCE.getModEnabled();
+    }
+
+    public static boolean isRolling() {
+        return RollEvents.shouldRoll();
     }
 }

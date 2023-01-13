@@ -3,7 +3,6 @@ package nl.enjarai.doabarrelroll.fabric.net;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.fabric.data.Components;
@@ -17,13 +16,13 @@ public class RollSyncClient {
             double roll = ElytraMath.getRoll(client.player.getYaw(), DoABarrelRollClient.left);
 
             if (roll != Components.ROLL.get(client.player).getRoll() ||
-                    DoABarrelRollClient.isFallFlying() != Components.ROLL.get(client.player).isFallFlying()) {
+                    DoABarrelRollClient.isRolling() != Components.ROLL.get(client.player).isFallFlying()) {
                 Components.ROLL.get(client.player).setRoll(roll);
-                Components.ROLL.get(client.player).setFallFlying(DoABarrelRollClient.isFallFlying());
+                Components.ROLL.get(client.player).setFallFlying(DoABarrelRollClient.isRolling());
 
                 var buf = PacketByteBufs.create();
                 buf.writeDouble(roll);
-                buf.writeBoolean(DoABarrelRollClient.isFallFlying());
+                buf.writeBoolean(DoABarrelRollClient.isRolling());
 
                 ClientPlayNetworking.send(DoABarrelRoll.ROLL_CHANNEL, buf);
             }

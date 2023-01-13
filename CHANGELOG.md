@@ -1,2 +1,2 @@
-- Fixed an issue with vanilla playermodel roll not applying to others who have the mod loaded, but not enabled.
-- Fix missing translations.
+- Added a simple event based API for addon mods to interact with.
+- Fixed an issue with servers not properly shutting down.
