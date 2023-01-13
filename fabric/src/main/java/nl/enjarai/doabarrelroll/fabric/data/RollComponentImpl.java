@@ -5,7 +5,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
-import nl.enjarai.doabarrelroll.net.HandshakeServer;
+import nl.enjarai.doabarrelroll.api.net.HandshakeServer;
 import org.jetbrains.annotations.NotNull;
 
 public class RollComponentImpl implements RollComponent {

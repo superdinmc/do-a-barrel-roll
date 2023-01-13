@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.fabric.data.Components;
-import nl.enjarai.doabarrelroll.net.HandshakeServer;
+import nl.enjarai.doabarrelroll.api.net.HandshakeServer;
 
 public class RollSyncServer {
     public static void startListening(ServerPlayNetworkHandler handler) {

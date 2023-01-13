@@ -1,4 +1,4 @@
-package nl.enjarai.doabarrelroll.net;
+package nl.enjarai.doabarrelroll.api.net;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
