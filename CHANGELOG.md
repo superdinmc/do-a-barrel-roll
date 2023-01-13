@@ -1,1 +1,2 @@
 - Added a simple event based API for addon mods to interact with.
+- Fixed an issue with servers not properly shutting down.
