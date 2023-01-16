@@ -17,7 +17,7 @@ public class ModKeybindings {
     public static final KeyBinding TOGGLE_THRUST = new KeyBinding(
             "key.do_a_barrel_roll.toggle_thrust",
             InputUtil.Type.KEYSYM,
-            GLFW.GLFW_KEY_K,
+            InputUtil.UNKNOWN_KEY.getCode(),
             "category.do_a_barrel_roll.do_a_barrel_roll"
     );
 

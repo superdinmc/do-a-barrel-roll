@@ -1,2 +1,2 @@
-- Added a keybind for toggling thrusting (thanks @EightyOne81!) (was actually in last update, but forgot to add to changelog)
-- Fixed issues with using YACL on 1.19.2
+- Disabled thrusting keybind by default.
+- Thrust values can now no longer be zero, preventing NaN issues.

@@ -76,8 +76,8 @@ public class ModConfig {
             if (!Objects.equals(ArchitecturyTarget.getCurrentTarget(), "forge")) {
                 builder.push("thrust");
                     ENABLE_THRUST = builder.withDescription().define("enable_thrust", false);
-                    MAX_THRUST = builder.withDescription().define("max_thrust", 2.0, 0.0, 10.0);
-                    THRUST_ACCELERATION = builder.withDescription().define("thrust_acceleration", 0.1, 0.0, 1.0);
+                    MAX_THRUST = builder.withDescription().define("max_thrust", 2.0, 0.1, 10.0);
+                    THRUST_ACCELERATION = builder.withDescription().define("thrust_acceleration", 0.01, 0.1, 1.0);
                     THRUST_PARTICLES = builder.define("thrust_particles", true);
                 builder.pop();
 
