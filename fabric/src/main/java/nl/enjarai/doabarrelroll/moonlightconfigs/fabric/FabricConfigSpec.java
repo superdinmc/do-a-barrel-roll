@@ -92,9 +92,18 @@ public class FabricConfigSpec extends ConfigSpec {
     @Environment(EnvType.CLIENT)
     public Screen makeScreen(Screen parent, Identifier background) {
         if (YACL) {
-            return YACLCompat.makeScreen(parent, this, background);
-        } else if (clothConfig) {
-            return ClothConfigCompat.makeScreen(parent, this, background);
+            try {
+                return YACLCompat.makeScreen(parent, this, background);
+            } catch (Throwable t) {
+                ConfigBuilder.LOGGER.error("Failed to create YACL screen, attempting fallback", t);
+            }
+        }
+        if (clothConfig) {
+            try {
+                return ClothConfigCompat.makeScreen(parent, this, background);
+            } catch (Throwable t) {
+                ConfigBuilder.LOGGER.error("Failed to create Cloth Config screen", t);
+            }
         }
         return null;
     }

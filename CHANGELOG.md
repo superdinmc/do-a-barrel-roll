@@ -1,2 +1,2 @@
-- Added a simple event based API for addon mods to interact with.
-- Fixed an issue with servers not properly shutting down.
+- Added a keybind for toggling thrusting (thanks @EightyOne81!) (was actually in last update, but forgot to add to changelog)
+- Fixed issues with using YACL on 1.19.2
