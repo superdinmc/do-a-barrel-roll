@@ -69,7 +69,7 @@ public class RollComponentImpl implements RollComponent {
     // Sync only with clients that have accepted our handshake
     @Override
     public boolean shouldSyncWith(ServerPlayerEntity player) {
-        return DoABarrelRoll.handshakeServer.getHandshakeState(player) == HandshakeServer.HandshakeState.ACCEPTED;
+        return DoABarrelRoll.HANDSHAKE_SERVER.getHandshakeState(player) == HandshakeServer.HandshakeState.ACCEPTED;
     }
 
     @Override

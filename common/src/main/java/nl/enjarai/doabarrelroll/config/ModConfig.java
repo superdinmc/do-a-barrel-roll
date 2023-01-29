@@ -159,7 +159,7 @@ public class ModConfig {
 
     public boolean getEnableThrust() {
         return ENABLE_THRUST.get() && DoABarrelRollClient.HANDSHAKE_CLIENT
-                .getConfig().map(config -> config.allowThrusting).orElse(true);
+                .getConfig().map(SyncedModConfig::allowThrusting).orElse(true);
     }
 
     public double getMaxThrust() {
@@ -279,13 +279,21 @@ public class ModConfig {
         return new RotationInstant(pitch, yaw, roll, rotationInstant.getRenderDelta());
     }
 
-    public void notifyPlayerOfServerConfig(ServerModConfig serverConfig) {
-        if (!serverConfig.allowThrusting && ENABLE_THRUST.get()) {
+    public void notifyPlayerOfServerConfig(SyncedModConfig serverConfig) {
+        if (!serverConfig.allowThrusting() && ENABLE_THRUST.get()) {
             MinecraftClient.getInstance().getToastManager().add(SystemToast.create(
                     MinecraftClient.getInstance(),
-                    SystemToast.Type.UNSECURE_SERVER_WARNING,
+                    SystemToast.Type.TUTORIAL_HINT,
                     Text.translatable("toast.do_a_barrel_roll"),
                     Text.translatable("toast.do_a_barrel_roll.thrusting_disabled_by_server")
+            ));
+        }
+        if (serverConfig.forceEnabled() && !MOD_ENABLED.get()) {
+            MinecraftClient.getInstance().getToastManager().add(SystemToast.create(
+                    MinecraftClient.getInstance(),
+                    SystemToast.Type.TUTORIAL_HINT,
+                    Text.translatable("toast.do_a_barrel_roll"),
+                    Text.translatable("toast.do_a_barrel_roll.mod_forced_enabled_by_server")
             ));
         }
     }
