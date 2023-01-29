@@ -2,6 +2,7 @@ package nl.enjarai.doabarrelroll;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.option.Perspective;
 import net.minecraft.client.util.GlfwUtil;
 import net.minecraft.client.util.SmoothUtil;
 import net.minecraft.client.util.math.MatrixStack;
@@ -125,6 +126,7 @@ public class DoABarrelRollClient {
             // calculate the camera angle and apply it
             double angle = -Math.acos(MathHelper.clamp(left.dotProduct(ElytraMath.getAssumedLeft(client.player.getYaw())), -1, 1)) * ElytraMath.TODEG;
             if (left.getY() < 0) angle *= -1;
+            if (client.options.getPerspective().isFrontView()) angle *= -1;
             matrix.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) angle));
 
         }
