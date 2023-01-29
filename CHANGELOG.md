@@ -1,2 +1,2 @@
-- Disabled thrusting keybind by default.
-- Thrust values can now no longer be zero, preventing NaN issues.
+- Added server-side configuration options to enforce the mod to be enabled on clients.
+- Fixed front third person view being rolled oddly.
