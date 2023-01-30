@@ -2,10 +2,10 @@ package nl.enjarai.doabarrelroll;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.option.Perspective;
 import net.minecraft.client.util.GlfwUtil;
 import net.minecraft.client.util.SmoothUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
@@ -14,6 +14,8 @@ import nl.enjarai.doabarrelroll.api.net.HandshakeClient;
 import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.ServerModConfig;
+import nl.enjarai.doabarrelroll.config.*;
+import nl.enjarai.doabarrelroll.flight.ElytraMath;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
@@ -22,8 +24,8 @@ import nl.enjarai.doabarrelroll.util.MixinHooks;
 import nl.enjarai.doabarrelroll.util.Vec2d;
 
 public class DoABarrelRollClient {
-    public static final HandshakeClient<ServerModConfig> HANDSHAKE_CLIENT = new HandshakeClient<>(
-            ServerModConfig::fromJson,
+    public static final HandshakeClient<SyncedModConfig> HANDSHAKE_CLIENT = new HandshakeClient<>(
+            SyncedModConfig.TRANSFER_CODEC,
             ModConfig.INSTANCE::notifyPlayerOfServerConfig
     );
     public static final SmoothUtil PITCH_SMOOTHER = new SmoothUtil();
@@ -57,37 +59,6 @@ public class DoABarrelRollClient {
                 .smooth(PITCH_SMOOTHER, YAW_SMOOTHER, ROLL_SMOOTHER, ModConfig.INSTANCE.getSmoothing())
                 .useModifier(RotationModifiers::banking, ModConfig.INSTANCE::getEnableBanking),
                 10, DoABarrelRollClient::isFallFlying);
-    }
-
-    public static void clientTick(MinecraftClient client) {
-        while (ModKeybindings.TOGGLE_ENABLED.wasPressed()) {
-            ModConfig.INSTANCE.setModEnabled(!ModConfig.INSTANCE.getModEnabled());
-            ModConfig.INSTANCE.save();
-
-            if (client.player != null) {
-                client.player.sendMessage(
-                        Text.translatable(
-                                "key.do_a_barrel_roll." +
-                                        (ModConfig.INSTANCE.getModEnabled() ? "toggle_enabled.enable" : "toggle_enabled.disable")
-                        ),
-                        true
-                );
-            }
-        }
-        while (ModKeybindings.TOGGLE_THRUST.wasPressed()) {
-            ModConfig.INSTANCE.setEnableThrust(!ModConfig.INSTANCE.getEnableThrust());
-            ModConfig.INSTANCE.save();
-
-            if (client.player != null) {
-                client.player.sendMessage(
-                        Text.translatable(
-                                "key.do_a_barrel_roll." +
-                                        (ModConfig.INSTANCE.getEnableThrust() ? "toggle_thrust.enable" : "toggle_thrust.disable")
-                        ),
-                        true
-                );
-            }
-        }
     }
 
     public static boolean updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY) {
@@ -160,6 +131,7 @@ public class DoABarrelRollClient {
             // calculate the camera angle and apply it
             double angle = -Math.acos(MathHelper.clamp(left.dotProduct(ElytraMath.getAssumedLeft(client.player.getYaw())), -1, 1)) * ElytraMath.TODEG;
             if (left.getY() < 0) angle *= -1;
+            if (client.options.getPerspective().isFrontView()) angle *= -1;
             matrix.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion((float) angle));
 
         }
@@ -230,16 +202,20 @@ public class DoABarrelRollClient {
     }
 
     public static boolean isFallFlying() {
-        var hybrid = ModConfig.INSTANCE.getActivationBehaviour() == ActivationBehaviour.HYBRID ||
-                ModConfig.INSTANCE.getActivationBehaviour() == ActivationBehaviour.HYBRID_TOGGLE;
-        if (hybrid && !MixinHooks.thirdJump) {
-            return false;
+        if (!HANDSHAKE_CLIENT.getConfig().map(SyncedModConfig::forceEnabled).orElse(false)) {
+            var hybrid = ModConfig.INSTANCE.getActivationBehaviour() == ActivationBehaviour.HYBRID ||
+                    ModConfig.INSTANCE.getActivationBehaviour() == ActivationBehaviour.HYBRID_TOGGLE;
+            if (hybrid && !MixinHooks.thirdJump) {
+                return false;
+            }
+
+            if (!ModConfig.INSTANCE.getModEnabled()) {
+                return false;
+            }
         }
 
         var player = MinecraftClient.getInstance().player;
-        return player != null
-                && player.isFallFlying()
-                && ModConfig.INSTANCE.getModEnabled();
+        return player != null && player.isFallFlying();
     }
 
     public static boolean isRolling() {
