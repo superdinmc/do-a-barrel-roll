@@ -2,17 +2,21 @@ package nl.enjarai.doabarrelroll.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mojang.serialization.Codec;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
+import nl.enjarai.doabarrelroll.api.net.SyncableConfig;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class ServerModConfig {
+public class SyncedModConfigServer implements SyncableConfig<SyncedModConfigServer>, SyncedModConfig {
     public static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve(DoABarrelRoll.MODID + "-server.json");
-    public static ServerModConfig INSTANCE;
+    public static SyncedModConfigServer INSTANCE;
 
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting() // Makes the json use new lines instead of being a "one-liner"
@@ -20,9 +24,10 @@ public class ServerModConfig {
             .disableHtmlEscaping() // We'll be able to use custom chars without them being saved differently
             .create();
 
-
     public boolean allowThrusting = true;
-
+    public boolean forceEnabled = false;
+    public boolean forceInstalled = false;
+    public int installedTimeout = 20;
 
     public static void load() {
         INSTANCE = loadConfigFile(CONFIG_FILE);
@@ -38,8 +43,8 @@ public class ServerModConfig {
      * @param file file to load the config file from.
      * @return ConfigManager object
      */
-    private static ServerModConfig loadConfigFile(Path file) {
-        ServerModConfig config = null;
+    private static SyncedModConfigServer loadConfigFile(Path file) {
+        SyncedModConfigServer config = null;
 
         if (Files.exists(file)) {
             // An existing config is present, we should use its values
@@ -47,14 +52,14 @@ public class ServerModConfig {
                     new InputStreamReader(new FileInputStream(file.toFile()), StandardCharsets.UTF_8)
             )) {
                 // Parses the config file and puts the values into config object
-                config = GSON.fromJson(fileReader, ServerModConfig.class);
+                config = GSON.fromJson(fileReader, SyncedModConfigServer.class);
             } catch (IOException e) {
                 throw new RuntimeException("Problem occurred when trying to load config: ", e);
             }
         }
         // gson.fromJson() can return null if file is empty
         if (config == null) {
-            config = new ServerModConfig();
+            config = new SyncedModConfigServer();
         }
 
         // Saves the file in order to write new fields if they were added
@@ -75,11 +80,28 @@ public class ServerModConfig {
         }
     }
 
-    public static ServerModConfig fromJson(String json) {
-        return GSON.fromJson(json, ServerModConfig.class);
+    @Override
+    public Integer getSyncTimeout() {
+        return forceInstalled ? installedTimeout : null;
     }
 
-    public String toJson() {
-        return GSON.toJson(this);
+    @Override
+    public Text getSyncTimeoutMessage() {
+        return Text.of("Please install Do a Barrel Roll 2.4.0 or later to play on this server.");
+    }
+
+    @Override
+    public Codec<? super SyncedModConfigServer> getTransferCodec() {
+        return SyncedModConfig.TRANSFER_CODEC;
+    }
+
+    @Override
+    public boolean allowThrusting() {
+        return allowThrusting;
+    }
+
+    @Override
+    public boolean forceEnabled() {
+        return forceEnabled;
     }
 }

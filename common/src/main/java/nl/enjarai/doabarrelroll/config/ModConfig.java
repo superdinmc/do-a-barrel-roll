@@ -77,8 +77,8 @@ public class ModConfig {
             if (!Objects.equals(ArchitecturyTarget.getCurrentTarget(), "forge")) {
                 builder.push("thrust");
                     ENABLE_THRUST = builder.withDescription().define("enable_thrust", false);
-                    MAX_THRUST = builder.withDescription().define("max_thrust", 2.0, 0.0, 10.0);
-                    THRUST_ACCELERATION = builder.withDescription().define("thrust_acceleration", 0.1, 0.0, 1.0);
+                    MAX_THRUST = builder.withDescription().define("max_thrust", 2.0, 0.1, 10.0);
+                    THRUST_ACCELERATION = builder.withDescription().define("thrust_acceleration", 0.01, 0.1, 1.0);
                     THRUST_PARTICLES = builder.define("thrust_particles", true);
                 builder.pop();
 
@@ -160,7 +160,7 @@ public class ModConfig {
 
     public boolean getEnableThrust() {
         return ENABLE_THRUST.get() && DoABarrelRollClient.HANDSHAKE_CLIENT
-                .getConfig().map(config -> config.allowThrusting).orElse(true);
+                .getConfig().map(SyncedModConfig::allowThrusting).orElse(true);
     }
 
     public double getMaxThrust() {
@@ -280,13 +280,21 @@ public class ModConfig {
         return new RotationInstant(pitch, yaw, roll, rotationInstant.getRenderDelta());
     }
 
-    public void notifyPlayerOfServerConfig(ServerModConfig serverConfig) {
-        if (!serverConfig.allowThrusting && ENABLE_THRUST.get()) {
+    public void notifyPlayerOfServerConfig(SyncedModConfig serverConfig) {
+        if (!serverConfig.allowThrusting() && ENABLE_THRUST.get()) {
             MinecraftClient.getInstance().getToastManager().add(SystemToast.create(
                     MinecraftClient.getInstance(),
-                    SystemToast.Type.NARRATOR_TOGGLE,
+                    SystemToast.Type.TUTORIAL_HINT,
                     new TranslatableText("toast.do_a_barrel_roll"),
                     new TranslatableText("toast.do_a_barrel_roll.thrusting_disabled_by_server")
+            ));
+        }
+        if (serverConfig.forceEnabled() && !MOD_ENABLED.get()) {
+            MinecraftClient.getInstance().getToastManager().add(SystemToast.create(
+                    MinecraftClient.getInstance(),
+                    SystemToast.Type.TUTORIAL_HINT,
+                    Text.translatable("toast.do_a_barrel_roll"),
+                    Text.translatable("toast.do_a_barrel_roll.mod_forced_enabled_by_server")
             ));
         }
     }

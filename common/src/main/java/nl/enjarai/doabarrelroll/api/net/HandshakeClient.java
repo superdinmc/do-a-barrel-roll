@@ -1,21 +1,22 @@
 package nl.enjarai.doabarrelroll.api.net;
 
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.JsonParser;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class HandshakeClient<T> {
-    private final Function<String, T> configDeserializer;
+    private final Codec<T> transferCodec;
     private final Consumer<T> updateCallback;
     private T serverConfig = null;
 
-    public HandshakeClient(Function<String, T> configDeserializer, Consumer<T> updateCallback) {
-        this.configDeserializer = configDeserializer;
+    public HandshakeClient(Codec<T> transferCodec, Consumer<T> updateCallback) {
+        this.transferCodec = transferCodec;
         this.updateCallback = updateCallback;
     }
 
@@ -28,16 +29,18 @@ public class HandshakeClient<T> {
     }
 
     public PacketByteBuf handleConfigSync(PacketByteBuf buf) {
+        var data = buf.readString();
         try {
-            serverConfig = configDeserializer.apply(buf.readString());
-            DoABarrelRoll.LOGGER.info("Successfully received and applied server config.");
-        } catch (JsonSyntaxException e) {
+            serverConfig = transferCodec.parse(JsonOps.INSTANCE, JsonParser.parseString(data))
+                    .getOrThrow(false, DoABarrelRoll.LOGGER::error);
+        } catch (RuntimeException e) {
             serverConfig = null;
-            DoABarrelRoll.LOGGER.error("Received invalid config from server", e);
+            DoABarrelRoll.LOGGER.error("Failed to parse config from server", e);
         }
 
         if (serverConfig != null) {
             updateCallback.accept(serverConfig);
+            DoABarrelRoll.LOGGER.info("Received config from server");
         }
 
         var returnBuf = new PacketByteBuf(Unpooled.buffer());

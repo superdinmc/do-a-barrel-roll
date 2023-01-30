@@ -31,7 +31,7 @@ public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunc
         ModKeybindings.ALL.forEach(KeyBindingRegistryImpl::registerKeyBinding);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            DoABarrelRollClient.clientTick(client);
+            ModKeybindings.clientTick(client);
 
             RollSyncClient.sendUpdate();
         });

@@ -45,10 +45,13 @@
   "key.do_a_barrel_roll.toggle_enabled": "Toggle Enabled",
   "key.do_a_barrel_roll.toggle_enabled.enable": "§aEnabled §rDo a Barrel Roll",
   "key.do_a_barrel_roll.toggle_enabled.disable": "§cDisabled §rDo a Barrel Roll",
+  "key.do_a_barrel_roll.toggle_enabled.disallowed": "§cYou cannot disable Do a Barrel Roll on this server",
   "key.do_a_barrel_roll.toggle_thrust": "Toggle Thrust",
   "key.do_a_barrel_roll.toggle_thrust.enable": "§aEnabled §rThrust",
   "key.do_a_barrel_roll.toggle_thrust.disable": "§cDisabled §rThrust",
+  "key.do_a_barrel_roll.toggle_thrust.disallowed": "§cYou cannot use thrusting on this server",
 
   "toast.do_a_barrel_roll": "Do a Barrel Roll",
-  "toast.do_a_barrel_roll.thrusting_disabled_by_server": "§cElytra thrusting is not allowed on this server, the feature will be forcibly disabled. Disable it in your client config to remove this message."
+  "toast.do_a_barrel_roll.thrusting_disabled_by_server": "§cElytra thrusting is not allowed on this server, the feature will be forcibly disabled. Disable it in your client config to remove this message.",
+  "toast.do_a_barrel_roll.mod_forced_enabled_by_server": "This mod is forcibly enabled by this server, client-side toggling and some activation behaviours will be disabled."
 }

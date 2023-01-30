@@ -1,2 +1,2 @@
-- Added a keybind for toggling thrusting (thanks @EightyOne81!) (was actually in last update, but forgot to add to changelog)
-- Fixed issues with using YACL on 1.19.2
+- Added server-side configuration options to enforce the mod to be enabled on clients.
+- Fixed front third person view being rolled oddly.
