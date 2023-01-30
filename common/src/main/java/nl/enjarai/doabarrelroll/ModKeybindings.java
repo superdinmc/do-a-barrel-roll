@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.SyncedModConfig;
 import org.lwjgl.glfw.GLFW;
@@ -38,7 +39,7 @@ public class ModKeybindings {
 
                 if (client.player != null) {
                     client.player.sendMessage(
-                            Text.translatable(
+                            new TranslatableText(
                                     "key.do_a_barrel_roll." +
                                             (ModConfig.INSTANCE.getModEnabled() ? "toggle_enabled.enable" : "toggle_enabled.disable")
                             ),
@@ -48,7 +49,7 @@ public class ModKeybindings {
             } else {
                 if (client.player != null) {
                     client.player.sendMessage(
-                            Text.translatable("key.do_a_barrel_roll.toggle_enabled.disallowed"),
+                            new TranslatableText("key.do_a_barrel_roll.toggle_enabled.disallowed"),
                             true
                     );
                 }
@@ -61,7 +62,7 @@ public class ModKeybindings {
 
                 if (client.player != null) {
                     client.player.sendMessage(
-                            Text.translatable(
+                            new TranslatableText(
                                     "key.do_a_barrel_roll." +
                                             (ModConfig.INSTANCE.getEnableThrust() ? "toggle_thrust.enable" : "toggle_thrust.disable")
                             ),
@@ -71,7 +72,7 @@ public class ModKeybindings {
             } else {
                 if (client.player != null) {
                     client.player.sendMessage(
-                            Text.translatable("key.do_a_barrel_roll.toggle_thrust.disallowed"),
+                            new TranslatableText("key.do_a_barrel_roll.toggle_thrust.disallowed"),
                             true
                     );
                 }

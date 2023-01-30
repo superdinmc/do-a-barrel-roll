@@ -293,8 +293,8 @@ public class ModConfig {
             MinecraftClient.getInstance().getToastManager().add(SystemToast.create(
                     MinecraftClient.getInstance(),
                     SystemToast.Type.TUTORIAL_HINT,
-                    Text.translatable("toast.do_a_barrel_roll"),
-                    Text.translatable("toast.do_a_barrel_roll.mod_forced_enabled_by_server")
+                    new TranslatableText("toast.do_a_barrel_roll"),
+                    new TranslatableText("toast.do_a_barrel_roll.mod_forced_enabled_by_server")
             ));
         }
     }
