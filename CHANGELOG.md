@@ -1,2 +1,1 @@
-- Added server-side configuration options to enforce the mod to be enabled on clients.
-- Fixed front third person view being rolled oddly.
+- Fixed critical forge crash issue.
