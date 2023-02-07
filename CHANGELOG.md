@@ -1,1 +1,1 @@
-- Fixed critical forge crash issue.
+- Hopefully fixed mod functionality on 1.18.2 forge.
