@@ -15,9 +15,3 @@ jobs:
     with:
       branch: 1.19.2
       java_version: 17
-
-  build_1_18:
-    uses: enjarai/do-a-barrel-roll/.github/workflows/build.yml@1.18.2
-    with:
-      branch: 1.18.2
-      java_version: 17
