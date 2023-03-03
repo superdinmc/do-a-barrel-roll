@@ -2,13 +2,8 @@ package nl.enjarai.doabarrelroll;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec2f;
 import nl.enjarai.doabarrelroll.util.Vec2d;
 
 public class MomentumCrosshairWidget {
@@ -23,7 +18,6 @@ public class MomentumCrosshairWidget {
         if (!lineVec.equals(Vec2d.ZERO)) {
 
             RenderSystem.enableBlend();
-            RenderSystem.disableTexture();
             RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.ONE_MINUS_DST_COLOR, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
             RenderSystem.setShader(GameRenderer::getPositionColorProgram);
             ModMath.forBresenhamLine(centerX, centerY, centerX + (int) lineVec.x, centerY + (int) lineVec.y, (x, y) -> {
@@ -39,7 +33,6 @@ public class MomentumCrosshairWidget {
                 BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 
             });
-            RenderSystem.enableTexture();
         }
 
         // change the position of the crosshair, which is rendered up the stack

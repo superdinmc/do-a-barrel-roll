@@ -3,7 +3,7 @@ package nl.enjarai.doabarrelroll.fabric;
 import com.llamalad7.mixinextras.MixinExtrasBootstrap;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 import nl.enjarai.cicada.api.conversation.ConversationManager;
 import nl.enjarai.cicada.api.util.CicadaEntrypoint;
@@ -28,7 +28,7 @@ public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunc
         HandshakeClientFabric.init();
 
         // Register keybindings on fabric
-        ModKeybindings.ALL.forEach(KeyBindingRegistryImpl::registerKeyBinding);
+        ModKeybindings.ALL.forEach(KeyBindingHelper::registerKeyBinding);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             ModKeybindings.clientTick(client);
