@@ -1,1 +1,1 @@
-- Hopefully fixed mod functionality on 1.18.2 forge.
+- Updated to 1.19.4
