@@ -2,7 +2,6 @@ package nl.enjarai.doabarrelroll;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.option.Perspective;
 import net.minecraft.client.util.GlfwUtil;
 import net.minecraft.client.util.SmoothUtil;
 import net.minecraft.client.util.math.MatrixStack;
@@ -10,11 +9,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
-import nl.enjarai.doabarrelroll.config.*;
+import nl.enjarai.doabarrelroll.api.net.HandshakeClient;
+import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
+import nl.enjarai.doabarrelroll.config.ModConfig;
+import nl.enjarai.doabarrelroll.config.Sensitivity;
+import nl.enjarai.doabarrelroll.config.SyncedModConfig;
 import nl.enjarai.doabarrelroll.flight.ElytraMath;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
-import nl.enjarai.doabarrelroll.api.net.HandshakeClient;
 import nl.enjarai.doabarrelroll.util.MixinHooks;
 import nl.enjarai.doabarrelroll.util.Vec2d;
 
@@ -51,7 +53,10 @@ public class DoABarrelRollClient {
 
         // Generic movement modifiers, banking and such
         RollEvents.LATE_CAMERA_MODIFIERS.register((rotationDelta, currentRotation) -> rotationDelta
-                .smooth(PITCH_SMOOTHER, YAW_SMOOTHER, ROLL_SMOOTHER, ModConfig.INSTANCE.getSmoothing())
+                .useModifier(RotationModifiers.smoothing(
+                        PITCH_SMOOTHER, YAW_SMOOTHER, ROLL_SMOOTHER,
+                        ModConfig.INSTANCE.getSmoothing()
+                ), ModConfig.INSTANCE::getSmoothingEnabled)
                 .useModifier(RotationModifiers::banking, ModConfig.INSTANCE::getEnableBanking),
                 10, DoABarrelRollClient::isFallFlying);
     }

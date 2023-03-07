@@ -46,18 +46,6 @@ public class RotationInstant {
         return new RotationInstant(this.pitch - y * cos - x * sin, this.yaw - y * sin + x * cos, this.roll, this.renderDelta);
     }
 
-    public RotationInstant smooth(SmoothUtil pitchSmoother, SmoothUtil yawSmoother, SmoothUtil rollSmoother, Sensitivity smoothness) {
-        if (!ModConfig.INSTANCE.getSmoothingEnabled()) {
-            return this;
-        }
-        return new RotationInstant(
-                pitchSmoother.smooth(pitch, smoothness.pitch * renderDelta),
-                yawSmoother.smooth(yaw, smoothness.yaw * renderDelta),
-                rollSmoother.smooth(roll, smoothness.roll * renderDelta),
-                renderDelta
-        );
-    }
-
     public RotationInstant applySensitivity(Sensitivity sensitivity) {
         return new RotationInstant(
                 pitch * sensitivity.pitch,

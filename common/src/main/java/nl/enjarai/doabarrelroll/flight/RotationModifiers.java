@@ -1,13 +1,13 @@
 package nl.enjarai.doabarrelroll.flight;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.SmoothUtil;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.config.ModConfig;
+import nl.enjarai.doabarrelroll.config.Sensitivity;
 import nl.enjarai.doabarrelroll.flight.util.ConfiguresRotation;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
-
-import java.util.function.Supplier;
 
 public class RotationModifiers {
     public static ConfiguresRotation strafeButtons(double power) {
@@ -27,6 +27,15 @@ public class RotationModifiers {
             // Putting this in the roll value, since it'll be swapped later
             return rotationInstant.add(0, 0, yaw);
         };
+    }
+
+    public static ConfiguresRotation smoothing(SmoothUtil pitchSmoother, SmoothUtil yawSmoother, SmoothUtil rollSmoother, Sensitivity smoothness) {
+        return (rotationInstant) -> new RotationInstant(
+                pitchSmoother.smooth(rotationInstant.getPitch(), smoothness.pitch * rotationInstant.getRenderDelta()),
+                yawSmoother.smooth(rotationInstant.getYaw(), smoothness.yaw * rotationInstant.getRenderDelta()),
+                rollSmoother.smooth(rotationInstant.getRoll(), smoothness.roll * rotationInstant.getRenderDelta()),
+                rotationInstant.getRenderDelta()
+        );
     }
 
     public static RotationInstant banking(RotationInstant rotationInstant) {
