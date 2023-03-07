@@ -26,6 +26,7 @@
   "config.do_a_barrel_roll.thrust.thrust_particles": "Enable thrusting particles",
   "config.do_a_barrel_roll.sensitivity": "Sensitivity",
   "config.do_a_barrel_roll.smoothing": "Smoothing",
+  "config.do_a_barrel_roll.smoothing.smoothing_enabled": "Enable Smoothing",
   "config.do_a_barrel_roll.smoothing.smoothing_pitch": "Pitch",
   "config.do_a_barrel_roll.smoothing.smoothing_yaw": "Yaw",
   "config.do_a_barrel_roll.smoothing.smoothing_roll": "Roll",
