@@ -47,9 +47,9 @@ public class RotationInstant {
     }
 
     public RotationInstant smooth(SmoothUtil pitchSmoother, SmoothUtil yawSmoother, SmoothUtil rollSmoother, Sensitivity smoothness) {
-        if (!ModConfig.INSTANCE.getSmoothingEnabled())
+        if (!ModConfig.INSTANCE.getSmoothingEnabled()) {
             return this;
-        
+        }
         return new RotationInstant(
                 pitchSmoother.smooth(pitch, smoothness.pitch * renderDelta),
                 yawSmoother.smooth(yaw, smoothness.yaw * renderDelta),
