@@ -3,6 +3,7 @@ package nl.enjarai.doabarrelroll.flight.util;
 import java.util.function.BooleanSupplier;
 
 import net.minecraft.client.util.SmoothUtil;
+import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
 
 public class RotationInstant {
@@ -46,6 +47,9 @@ public class RotationInstant {
     }
 
     public RotationInstant smooth(SmoothUtil pitchSmoother, SmoothUtil yawSmoother, SmoothUtil rollSmoother, Sensitivity smoothness) {
+        if (!ModConfig.INSTANCE.getSmoothingEnabled())
+            return this;
+        
         return new RotationInstant(
                 pitchSmoother.smooth(pitch, smoothness.pitch * renderDelta),
                 yawSmoother.smooth(yaw, smoothness.yaw * renderDelta),
