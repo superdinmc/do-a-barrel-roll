@@ -47,6 +47,21 @@
         }
       ]
     },
+    "do_a_barrel_roll:modrinth": {
+      "priority": {
+        "priority": 50
+      },
+      "lines": [
+        {
+          "order": 0,
+          "text": "Available on Modrinth!"
+        },
+        {
+          "order": 10,
+          "text": "Curseforge is mid."
+        }
+      ]
+    },
     "showmeyourskin:plagiarism": {
       "lines": [
         {
