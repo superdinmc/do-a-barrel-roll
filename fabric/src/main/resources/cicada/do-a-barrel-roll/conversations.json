@@ -36,6 +36,17 @@
         }
       ]
     },
+    "do_a_barrel_roll:rolling_down_in_the_deep": {
+      "priority": {
+        "priority": 50
+      },
+      "lines": [
+        {
+          "order": 0,
+          "text": "One day I'll finish the swimming version of this mod. One day."
+        }
+      ]
+    },
     "showmeyourskin:plagiarism": {
       "lines": [
         {
