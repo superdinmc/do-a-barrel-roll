@@ -28,7 +28,7 @@ public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunc
         HandshakeClientFabric.init();
 
         // Register keybindings on fabric
-        ModKeybindings.ALL.forEach(KeyBindingHelper::registerKeyBinding);
+        ModKeybindings.FABRIC.forEach(KeyBindingHelper::registerKeyBinding);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             ModKeybindings.clientTick(client);
