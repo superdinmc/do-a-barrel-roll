@@ -11,6 +11,6 @@ public class ForgeClientModBusEvents {
     @SubscribeEvent
     public static void onKeyMappingsRegister(RegisterKeyMappingsEvent event) {
         // Register keybindings on forge
-        ModKeybindings.ALL.forEach(event::register);
+        ModKeybindings.FORGE.forEach(event::register);
     }
 }

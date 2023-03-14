@@ -25,9 +25,12 @@ public class ModKeybindings {
             "category.do_a_barrel_roll.do_a_barrel_roll"
     );
 
-    public static final List<KeyBinding> ALL = List.of(
+    public static final List<KeyBinding> FABRIC = List.of(
             TOGGLE_ENABLED,
             TOGGLE_THRUST
+    );
+    public static final List<KeyBinding> FORGE = List.of(
+            TOGGLE_ENABLED
     );
 
     public static void clientTick(MinecraftClient client) {
