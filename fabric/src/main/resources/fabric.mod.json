@@ -38,6 +38,9 @@
 		],
 		"cardinal-components": [
 			"nl.enjarai.doabarrelroll.fabric.data.Components"
+		],
+		"controlify": [
+			"nl.enjarai.doabarrelroll.compat.controlify.ControlifyCompat"
 		]
 	},
 	
