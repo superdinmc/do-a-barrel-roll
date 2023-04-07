@@ -1,4 +1,6 @@
 {
+  "mod_id": "do_a_barrel_roll",
+
   "conversations": {
     "cicada:greetings": {
       "lines": [

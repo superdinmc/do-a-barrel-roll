@@ -1,1 +1,2 @@
-- Updated to 1.19.4
+- Added compatibility with Controlify for ultimate controller support.
+- Updated Forge version to 1.19.4.

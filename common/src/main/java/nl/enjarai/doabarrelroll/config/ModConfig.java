@@ -123,14 +123,14 @@ public class ModConfig {
                 builder.push("controller");
                 {
                     CONTROLLER_SENSITIVITY_PITCH = builder.withDescription().define("pitch", 1.0, 0.0, 2.0);
-                    CONTROLLER_SENSITIVITY_YAW = builder.withDescription().define("yaw", 0.4, 0.0, 2.0);
+                    CONTROLLER_SENSITIVITY_YAW = builder.withDescription().define("yaw", 0.6, 0.0, 2.0);
                     CONTROLLER_SENSITIVITY_ROLL = builder.withDescription().define("roll", 1.0, 0.0, 2.0);
                 }
                 builder.pop();
 
             } else {
                 CONTROLLER_SENSITIVITY_PITCH = Value.of(1.0);
-                CONTROLLER_SENSITIVITY_YAW = Value.of(0.4);
+                CONTROLLER_SENSITIVITY_YAW = Value.of(0.6);
                 CONTROLLER_SENSITIVITY_ROLL = Value.of(1.0);
             }
         }

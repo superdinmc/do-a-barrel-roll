@@ -10,6 +10,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
+import nl.enjarai.doabarrelroll.api.event.ThrustEvents;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -52,7 +53,8 @@ public abstract class LivingEntityMixin extends Entity {
         }
 
         var client = MinecraftClient.getInstance();
-        int throttleSign = client.options.forwardKey.isPressed() ? 1 : client.options.backKey.isPressed() ? -1 : 0;
+        double throttleSign = client.options.forwardKey.isPressed() ? 1 : client.options.backKey.isPressed() ? -1 : 0;
+        throttleSign = ThrustEvents.modifyThrustInput(throttleSign);
         double maxSpeed = ModConfig.INSTANCE.getMaxThrust();
         double speedIncrease = Math.max(maxSpeed - velocity.length(), 0) / maxSpeed * throttleSign;
         double acceleration = ModConfig.INSTANCE.getThrustAcceleration() * speedIncrease;
