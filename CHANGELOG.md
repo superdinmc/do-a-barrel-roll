@@ -1,2 +1,1 @@
-- Added compatibility with Controlify for ultimate controller support.
-- Updated Forge version to 1.19.4.
+- Fixed an issue with custom capes not showing up on elytra.
