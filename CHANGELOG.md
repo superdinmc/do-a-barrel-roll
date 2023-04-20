@@ -1,1 +1,1 @@
-- Fixed an issue with custom capes not showing up on elytra.
+- Removed a transitive dependency creating conflicts with some mods using owo-lib
