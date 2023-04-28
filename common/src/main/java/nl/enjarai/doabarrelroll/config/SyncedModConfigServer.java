@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.mojang.serialization.Codec;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.api.net.SyncableConfig;
@@ -87,7 +88,7 @@ public class SyncedModConfigServer implements SyncableConfig<SyncedModConfigServ
 
     @Override
     public Text getSyncTimeoutMessage() {
-        return Text.of("Please install Do a Barrel Roll 2.4.0 or later to play on this server.");
+        return new LiteralText("Please install Do a Barrel Roll 2.4.0 or later to play on this server.");
     }
 
     @Override

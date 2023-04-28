@@ -21,44 +21,22 @@
 	"icon": "assets/do_a_barrel_roll/icon.png",
 
 	"entrypoints": {
-		"client": [
-			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
-		],
 		"main": [
 			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabric"
 		],
-		"modmenu": [
-			"nl.enjarai.doabarrelroll.compat.modmenu.ModMenuIntegration"
-		],
-		"preLaunch": [
-			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
-		],
-		"cicada": [
-			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
-		],
 		"cardinal-components": [
 			"nl.enjarai.doabarrelroll.fabric.data.Components"
-		],
-		"controlify": [
-			"nl.enjarai.doabarrelroll.compat.controlify.ControlifyCompat"
 		]
 	},
 	
 	"environment": "*",
 	"mixins": [
 		"do-a-barrel-roll.mixins.json",
-		"do-a-barrel-roll.fabric.mixins.json",
-		"do-a-barrel-roll.compat.midnightcontrols.mixins.json",
-		"do-a-barrel-roll.compat.cameraoverhaul.mixins.json",
-		"do-a-barrel-roll.compat.controlify.mixins.json"
+		"do-a-barrel-roll.fabric.mixins.json"
 	],
 
 	"depends": {
-		"minecraft": ">=1.19.4- <1.19.5-",
-		"fabric": "*",
-		"cicada": "*",
-		"cardinal-components-base": "*",
-		"cardinal-components-entity": "*"
+		"fabric": "*"
 	},
 
 	"custom": {

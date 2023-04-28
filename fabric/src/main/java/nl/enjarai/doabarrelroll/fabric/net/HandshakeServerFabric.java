@@ -15,14 +15,14 @@ public class HandshakeServerFabric {
                 }
             });
 
-            ServerPlayNetworking.send(handler.getPlayer(), DoABarrelRoll.SYNC_CHANNEL,
-                    DoABarrelRoll.HANDSHAKE_SERVER.getConfigSyncBuf(handler.getPlayer()));
+            ServerPlayNetworking.send(handler.player, DoABarrelRoll.SYNC_CHANNEL,
+                    DoABarrelRoll.HANDSHAKE_SERVER.getConfigSyncBuf(handler.player));
 
-            DoABarrelRoll.HANDSHAKE_SERVER.configSentToClient(handler.getPlayer());
+            DoABarrelRoll.HANDSHAKE_SERVER.configSentToClient(handler.player);
         });
 
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            DoABarrelRoll.HANDSHAKE_SERVER.playerDisconnected(handler.getPlayer());
+            DoABarrelRoll.HANDSHAKE_SERVER.playerDisconnected(handler.player);
         });
 
         ServerTickEvents.END_SERVER_TICK.register(DoABarrelRoll.HANDSHAKE_SERVER::tick);

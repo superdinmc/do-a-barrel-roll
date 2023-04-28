@@ -4,7 +4,7 @@ import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer;
-import dev.onyxstudios.cca.api.v3.entity.RespawnCopyStrategy;
+import nerdhub.cardinal.components.api.util.RespawnCopyStrategy;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import org.jetbrains.annotations.NotNull;
 

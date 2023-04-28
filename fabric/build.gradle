@@ -28,9 +28,9 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
-    include modImplementation("nl.enjarai:cicada-lib:${project.cicada_version}") {
-        exclude group: "net.fabricmc.fabric-api"
-    }
+//    include modImplementation("nl.enjarai:cicada-lib:${project.cicada_version}") {
+//        exclude group: "net.fabricmc.fabric-api"
+//    }
 
     modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}") {
         exclude group: "net.fabricmc.fabric-api"
@@ -53,8 +53,8 @@ dependencies {
     annotationProcessor("com.github.LlamaLad7.mixinextras:mixinextras-fabric:${project.mixin_extras_version}")
 
     // Cardinal Components API for storing data server-side.
-    include modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cardinal_components_version}")
-    include modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cardinal_components_version}")
+    include modImplementation("com.github.OnyxStudios.Cardinal-Components-API:Cardinal-Components-API:${project.cardinal_components_version}")
+//    include modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cardinal_components_version}")
 
     // Fungible for easier testing, provided by my personal mirrors maven.
 //    modRuntimeOnly "net.darktree:fungible:${project.fungible_version}"
