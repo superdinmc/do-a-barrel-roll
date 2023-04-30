@@ -37,9 +37,9 @@ public class HandshakeServer<T extends SyncableConfig<T>> {
         var config = configSupplier.get();
         var data = config.getTransferCodec().encodeStart(JsonOps.INSTANCE, config);
         try {
-            buf.writeString(data.getOrThrow(false, System.err::println).toString());
+            buf.writeString(data.getOrThrow(false, error -> DoABarrelRoll.LOGGER.error("[do-a-barrel-roll] " + error)).toString());
         } catch (RuntimeException e) {
-            System.err.println("Failed to encode config\n" + e);
+            DoABarrelRoll.LOGGER.error("[do-a-barrel-roll] Failed to encode config", e);
             buf.writeString("{}");
         }
 
@@ -53,8 +53,8 @@ public class HandshakeServer<T extends SyncableConfig<T>> {
         if (config.getSyncTimeout() != null) {
             scheduledTasks.add(new DelayedRunnable(config.getSyncTimeout(), () -> {
                 if (syncStates.getOrDefault(player, HandshakeState.NOT_SENT) != HandshakeState.ACCEPTED) {
-                    System.out.printf(
-                            "%s did not accept config syncing, config indicates we kick them.",
+                    DoABarrelRoll.LOGGER.info(
+                            "[do-a-barrel-roll] {} did not accept config syncing, config indicates we kick them.",
                             player.getName().getString()
                     );
                     player.networkHandler.disconnect(config.getSyncTimeoutMessage());
@@ -69,12 +69,12 @@ public class HandshakeServer<T extends SyncableConfig<T>> {
         if (state == HandshakeState.SENT) {
             if (buf.readBoolean()) {
                 syncStates.put(player, HandshakeState.ACCEPTED);
-                System.out.printf("Client of %s accepted server config.", player.getName().getString());
+                DoABarrelRoll.LOGGER.info("[do-a-barrel-roll] Client of {} accepted server config.", player.getName().getString());
                 return HandshakeState.ACCEPTED;
             } else {
                 syncStates.put(player, HandshakeState.FAILED);
-                System.out.printf(
-                        "Client of %s failed to process server config, check client logs find what went wrong.",
+                DoABarrelRoll.LOGGER.info(
+                        "[do-a-barrel-roll] Client of {} failed to process server config, check client logs find what went wrong.",
                         player.getName().getString());
                 return HandshakeState.FAILED;
             }

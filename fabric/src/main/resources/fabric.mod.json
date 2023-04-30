@@ -21,8 +21,14 @@
 	"icon": "assets/do_a_barrel_roll/icon.png",
 
 	"entrypoints": {
+		"client": [
+			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
+		],
 		"main": [
 			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabric"
+		],
+		"modmenu": [
+			"nl.enjarai.doabarrelroll.compat.modmenu.ModMenuIntegration"
 		],
 		"cardinal-components": [
 			"nl.enjarai.doabarrelroll.fabric.data.Components"
