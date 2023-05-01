@@ -32,13 +32,13 @@ dependencies {
 //        exclude group: "net.fabricmc.fabric-api"
 //    }
 
-    modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}") {
+    /*modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
 
     modImplementation("dev.isxander:Controlify:${project.controlify_version}") {
         exclude group: "net.fabricmc.fabric-api"
-    }
+    }*/
 
     // Mod Menu integration. Currently unused.
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
