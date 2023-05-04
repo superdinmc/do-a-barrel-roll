@@ -4,18 +4,18 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
-import nl.enjarai.doabarrelroll.util.Vec2d;
+import org.joml.Vector2d;
 
 public class MomentumCrosshairWidget {
 
-    public static void render(MatrixStack matrices, int scaledWidth, int scaledHeight, Vec2d mouseTurnVec) {
+    public static void render(MatrixStack matrices, int scaledWidth, int scaledHeight, Vector2d mouseTurnVec) {
         int color = 0xffffffff;
         int centerX = scaledWidth / 2;
         int centerY = scaledHeight / 2 - 1;
-        var turnVec = mouseTurnVec.multiply(50);
-        var lineVec = turnVec.add(turnVec.negate().normalize().multiply(Math.min(turnVec.length(), 10f)));
+        var turnVec = mouseTurnVec.mul(50);
+        var lineVec = turnVec.add(turnVec.negate().normalize().mul(Math.min(turnVec.length(), 10f)));
 
-        if (!lineVec.equals(Vec2d.ZERO)) {
+        if (!lineVec.equals(new Vector2d())) {
 
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.ONE_MINUS_DST_COLOR, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);

@@ -18,7 +18,7 @@ import nl.enjarai.doabarrelroll.flight.ElytraMath;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 import nl.enjarai.doabarrelroll.util.MixinHooks;
-import nl.enjarai.doabarrelroll.util.Vec2d;
+import org.joml.Vector2d;
 
 public class DoABarrelRollClient {
     public static final HandshakeClient<SyncedModConfig> HANDSHAKE_CLIENT = new HandshakeClient<>(
@@ -32,7 +32,7 @@ public class DoABarrelRollClient {
     private static double lastLerpUpdate;
     public static double landingLerp = 1;
     public static Vec3d left;
-    public static Vec2d mouseTurnVec = Vec2d.ZERO;
+    public static Vector2d mouseTurnVec = new Vector2d();
     public static double throttle = 0;
 
     // TODO triple jump to activate???
@@ -71,7 +71,7 @@ public class DoABarrelRollClient {
         if (ModConfig.INSTANCE.getMomentumBasedMouse()) {
 
             // add the mouse movement to the current vector and normalize if needed
-            Vec2d turnVec = mouseTurnVec.add(new Vec2d(cursorDeltaX, cursorDeltaY).multiply(1f / 300));
+            Vector2d turnVec = mouseTurnVec.add(new Vector2d(cursorDeltaX, cursorDeltaY).mul(1f / 300));
             if (turnVec.lengthSquared() > 1) {
                 turnVec = turnVec.normalize();
             }
@@ -79,13 +79,13 @@ public class DoABarrelRollClient {
 
             // enlarge the vector and apply it to the camera
             var delta = getDelta();
-            var readyTurnVec = mouseTurnVec.multiply(1200 * (float) delta);
+            var readyTurnVec = mouseTurnVec.mul(1200 * (float) delta);
             changeElytraLook(readyTurnVec.y, readyTurnVec.x, 0, ModConfig.INSTANCE.getDesktopSensitivity(), delta);
 
         } else {
 
             // if we are not using a momentum based mouse, we can reset it and apply the values directly
-            mouseTurnVec = Vec2d.ZERO;
+            mouseTurnVec = new Vector2d();
             changeElytraLook(cursorDeltaY, cursorDeltaX, 0, ModConfig.INSTANCE.getDesktopSensitivity());
         }
 
@@ -151,7 +151,7 @@ public class DoABarrelRollClient {
         PITCH_SMOOTHER.clear();
         YAW_SMOOTHER.clear();
         ROLL_SMOOTHER.clear();
-        mouseTurnVec = Vec2d.ZERO;
+        mouseTurnVec = new Vector2d();
         lastLookUpdate = GlfwUtil.getTime();
         throttle = 0;
     }
