@@ -36,7 +36,7 @@ dependencies {
         exclude group: "net.fabricmc.fabric-api"
     }
 
-    modImplementation("dev.isxander:Controlify:${project.controlify_version}") {
+    modImplementation("dev.isxander:controlify:${project.controlify_version}:fabric-1.19.4") {
         exclude group: "net.fabricmc.fabric-api"
     }
 

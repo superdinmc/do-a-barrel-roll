@@ -1,11 +1,10 @@
 package nl.enjarai.doabarrelroll.compat.controlify;
 
 import dev.isxander.controlify.api.ControlifyApi;
+import dev.isxander.controlify.api.bind.BindingSupplier;
 import dev.isxander.controlify.api.bind.ControlifyBindingsApi;
 import dev.isxander.controlify.api.entrypoint.ControlifyEntrypoint;
-import dev.isxander.controlify.bindings.BindingSupplier;
 import dev.isxander.controlify.bindings.GamepadBinds;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
@@ -13,7 +12,6 @@ import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.api.event.ThrustEvents;
 import nl.enjarai.doabarrelroll.config.ModConfig;
-import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 
 public class ControlifyCompat implements ControlifyEntrypoint {
@@ -30,13 +28,13 @@ public class ControlifyCompat implements ControlifyEntrypoint {
         var controller = ControlifyApi.get().currentController();
         var sensitivity = ModConfig.INSTANCE.getControllerSensitivity();
 
-        if (PITCH_UP.get(controller) == null) return rotationDelta;
+        if (PITCH_UP.onController(controller) == null) return rotationDelta;
 
         double multiplier = rotationDelta.getRenderDelta() * 1200;
 
-        float pitchAxis = PITCH_DOWN.get(controller).state() - PITCH_UP.get(controller).state();
-        float yawAxis = YAW_RIGHT.get(controller).state() - YAW_LEFT.get(controller).state();
-        float rollAxis = ROLL_RIGHT.get(controller).state() - ROLL_LEFT.get(controller).state();
+        float pitchAxis = PITCH_DOWN.onController(controller).state() - PITCH_UP.onController(controller).state();
+        float yawAxis = YAW_RIGHT.onController(controller).state() - YAW_LEFT.onController(controller).state();
+        float rollAxis = ROLL_RIGHT.onController(controller).state() - ROLL_LEFT.onController(controller).state();
 
         pitchAxis *= multiplier * sensitivity.pitch;
         yawAxis *= multiplier * sensitivity.yaw;
@@ -46,8 +44,13 @@ public class ControlifyCompat implements ControlifyEntrypoint {
     }
 
     public static double getThrustModifier() {
-        float forward = THRUST_FORWARD.get(ControlifyApi.get().currentController()).state();
-        float backward = THRUST_BACKWARD.get(ControlifyApi.get().currentController()).state();
+        if (ControlifyApi.get().getCurrentController().isEmpty()) {
+            return 0;
+        }
+        var controller = ControlifyApi.get().getCurrentController().get();
+
+        float forward = THRUST_FORWARD.onController(controller).state();
+        float backward = THRUST_BACKWARD.onController(controller).state();
         return forward - backward;
     }
 
