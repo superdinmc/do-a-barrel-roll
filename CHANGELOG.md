@@ -1,1 +1,1 @@
-- Removed a transitive dependency creating conflicts with some mods using owo-lib
+- Updated Controlify compatibility

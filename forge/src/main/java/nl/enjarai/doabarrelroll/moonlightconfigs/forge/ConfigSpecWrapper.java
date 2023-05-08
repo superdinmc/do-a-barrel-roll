@@ -33,7 +33,7 @@ public class ConfigSpecWrapper extends ConfigSpec {
 
     private final ModConfig modConfig;
 
-    public ConfigSpecWrapper(Identifier name, ForgeConfigSpec spec, ConfigType type, boolean synced, @javax.annotation.Nullable Runnable onChange) {
+    public ConfigSpecWrapper(Identifier name, ForgeConfigSpec spec, ConfigType type, boolean synced, @Nullable Runnable onChange) {
         super(name, FMLPaths.CONFIGDIR.get(), type, synced, onChange);
         this.spec = spec;
 
