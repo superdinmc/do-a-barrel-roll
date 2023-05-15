@@ -3,6 +3,7 @@ package nl.enjarai.doabarrelroll.flight;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.SmoothUtil;
 import net.minecraft.util.math.MathHelper;
+import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
@@ -73,5 +74,23 @@ public class RotationModifiers {
         DoABarrelRollClient.throttle = MathHelper.clamp(DoABarrelRollClient.throttle, 0, ModConfig.INSTANCE.getMaxThrust());
 
         return rotationInstant;
+    }
+
+    public static ConfiguresRotation fixNaN(String name) {
+        return rotationInstant -> {
+            if (Double.isNaN(rotationInstant.getPitch())) {
+                rotationInstant = new RotationInstant(0, rotationInstant.getYaw(), rotationInstant.getRoll(), rotationInstant.getRenderDelta());
+                DoABarrelRoll.LOGGER.warn("NaN found in pitch for " + name + ", setting to 0 as fallback");
+            }
+            if (Double.isNaN(rotationInstant.getYaw())) {
+                rotationInstant = new RotationInstant(rotationInstant.getPitch(), 0, rotationInstant.getRoll(), rotationInstant.getRenderDelta());
+                DoABarrelRoll.LOGGER.warn("NaN found in yaw for " + name + ", setting to 0 as fallback");
+            }
+            if (Double.isNaN(rotationInstant.getRoll())) {
+                rotationInstant = new RotationInstant(rotationInstant.getPitch(), rotationInstant.getYaw(), 0, rotationInstant.getRenderDelta());
+                DoABarrelRoll.LOGGER.warn("NaN found in roll for " + name + ", setting to 0 as fallback");
+            }
+            return rotationInstant;
+        };
     }
 }

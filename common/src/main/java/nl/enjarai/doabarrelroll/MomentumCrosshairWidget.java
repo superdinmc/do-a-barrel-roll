@@ -12,10 +12,11 @@ public class MomentumCrosshairWidget {
         int color = 0xffffffff;
         int centerX = scaledWidth / 2;
         int centerY = scaledHeight / 2 - 1;
-        var turnVec = mouseTurnVec.mul(50);
-        var lineVec = turnVec.add(turnVec.negate().normalize().mul(Math.min(turnVec.length(), 10f)));
+        mouseTurnVec.mul(50);
+        var lineVec = new Vector2d(mouseTurnVec).add(
+                new Vector2d(mouseTurnVec).negate().normalize().mul(Math.min(mouseTurnVec.length(), 10f)));
 
-        if (!lineVec.equals(new Vector2d())) {
+        if (!lineVec.equals(new Vector2d()) && mouseTurnVec.lengthSquared() > 10f * 10f) {
 
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.ONE_MINUS_DST_COLOR, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
@@ -36,6 +37,6 @@ public class MomentumCrosshairWidget {
         }
 
         // change the position of the crosshair, which is rendered up the stack
-        matrices.translate((int) turnVec.x, (int) turnVec.y, 0);
+        matrices.translate((int) mouseTurnVec.x, (int) mouseTurnVec.y, 0);
     }
 }

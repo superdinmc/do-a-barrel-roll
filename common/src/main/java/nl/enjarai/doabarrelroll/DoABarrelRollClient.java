@@ -71,21 +71,20 @@ public class DoABarrelRollClient {
         if (ModConfig.INSTANCE.getMomentumBasedMouse()) {
 
             // add the mouse movement to the current vector and normalize if needed
-            Vector2d turnVec = mouseTurnVec.add(new Vector2d(cursorDeltaX, cursorDeltaY).mul(1f / 300));
-            if (turnVec.lengthSquared() > 1) {
-                turnVec = turnVec.normalize();
+            mouseTurnVec.add(new Vector2d(cursorDeltaX, cursorDeltaY).mul(1f / 300));
+            if (mouseTurnVec.lengthSquared() > 1.0) {
+                mouseTurnVec.normalize();
             }
-            mouseTurnVec = turnVec;
 
             // enlarge the vector and apply it to the camera
             var delta = getDelta();
-            var readyTurnVec = mouseTurnVec.mul(1200 * (float) delta);
+            var readyTurnVec = new Vector2d(mouseTurnVec).mul(1200 * (float) delta);
             changeElytraLook(readyTurnVec.y, readyTurnVec.x, 0, ModConfig.INSTANCE.getDesktopSensitivity(), delta);
 
         } else {
 
             // if we are not using a momentum based mouse, we can reset it and apply the values directly
-            mouseTurnVec = new Vector2d();
+            mouseTurnVec.zero();
             changeElytraLook(cursorDeltaY, cursorDeltaX, 0, ModConfig.INSTANCE.getDesktopSensitivity());
         }
 
@@ -143,7 +142,7 @@ public class DoABarrelRollClient {
                 || !ModConfig.INSTANCE.getShowMomentumWidget()
         ) return;
 
-        MomentumCrosshairWidget.render(matrices, scaledWidth, scaledHeight, mouseTurnVec);
+        MomentumCrosshairWidget.render(matrices, scaledWidth, scaledHeight, new Vector2d(mouseTurnVec));
     }
 
 
@@ -151,7 +150,7 @@ public class DoABarrelRollClient {
         PITCH_SMOOTHER.clear();
         YAW_SMOOTHER.clear();
         ROLL_SMOOTHER.clear();
-        mouseTurnVec = new Vector2d();
+        mouseTurnVec.zero();
         lastLookUpdate = GlfwUtil.getTime();
         throttle = 0;
     }
@@ -195,9 +194,13 @@ public class DoABarrelRollClient {
 
         ElytraMath.changeElytraLookDirectly(player,
                 RollEvents.lateCameraModifiers(
-                        RollEvents.earlyCameraModifiers(rotDelta, currentRotation).applySensitivity(sensitivity),
+                        RollEvents.earlyCameraModifiers(rotDelta
+                                        .useModifier(RotationModifiers.fixNaN("INPUT")), currentRotation)
+                                .useModifier(RotationModifiers.fixNaN("EARLY_CAMERA_MODIFIERS"))
+                                .applySensitivity(sensitivity)
+                                .useModifier(RotationModifiers.fixNaN("SENSITIVITY")),
                         currentRotation
-                )
+                ).useModifier(RotationModifiers.fixNaN("LATE_CAMERA_MODIFIERS"))
         );
     }
 
