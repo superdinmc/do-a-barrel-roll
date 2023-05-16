@@ -15,6 +15,7 @@ import nl.enjarai.doabarrelroll.ModKeybindings;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.fabric.net.HandshakeClientFabric;
 import nl.enjarai.doabarrelroll.fabric.net.RollSyncClient;
+import nl.enjarai.doabarrelroll.util.StarFoxUtil;
 import org.slf4j.Logger;
 
 public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunchEntrypoint, CicadaEntrypoint {
@@ -34,6 +35,8 @@ public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunc
             ModKeybindings.clientTick(client);
 
             RollSyncClient.sendUpdate();
+
+            StarFoxUtil.clientTick(client);
         });
     }
 

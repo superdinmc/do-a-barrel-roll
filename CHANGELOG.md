@@ -1,1 +1,1 @@
-- Fixed a critical issue with the "momentum based mouse" option which could softlock worlds.
+Try naming an elytra "Arwing".

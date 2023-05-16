@@ -6,6 +6,7 @@ import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.fabric.net.HandshakeServerFabric;
 import nl.enjarai.doabarrelroll.config.SyncedModConfigServer;
 import nl.enjarai.doabarrelroll.fabric.net.RollSyncServer;
+import nl.enjarai.doabarrelroll.util.StarFoxUtil;
 
 public class DoABarrelRollFabric implements ModInitializer {
     @Override
@@ -20,5 +21,8 @@ public class DoABarrelRollFabric implements ModInitializer {
 
         // Init server and client common code.
         DoABarrelRoll.init();
+
+        // Init barrel rollery.
+        StarFoxUtil.register();
     }
 }

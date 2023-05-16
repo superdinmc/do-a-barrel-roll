@@ -1,6 +1,9 @@
 package nl.enjarai.doabarrelroll.util;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -22,20 +25,40 @@ public class StarFoxUtil {
     private static final Random random = Random.create();
     private static final Identifier barrelRollSoundId = DoABarrelRoll.id("do_a_barrel_roll");
     private static final SoundEvent barrelRollSound = SoundEvent.of(barrelRollSoundId);
+    private static final Identifier barrelRollTexture1 = DoABarrelRoll.id("textures/gui/barrel_roll_1.png");
+    private static final Identifier barrelRollTexture2 = DoABarrelRoll.id("textures/gui/barrel_roll_2.png");
     private static final double rollTol = 90.0;
 
     // Tracks the roll direction. 0 = no roll, 1 = right, -1 = left
     private static double rollTracker = 0;
+    private static int barrelRollTimer = 0;
 
     public static void register() {
         Registry.register(Registries.SOUND_EVENT, barrelRollSoundId, barrelRollSound);
 
         StarFox64Events.DOES_A_BARREL_ROLL.register(StarFoxUtil::playBarrelRollSound);
+        StarFox64Events.DOES_A_BARREL_ROLL.register(player -> barrelRollTimer = 30);
 
         RollEvents.LATE_CAMERA_MODIFIERS.register((rotationDelta, currentRotation) -> {
             trackRoll(rotationDelta, currentRotation);
             return rotationDelta;
         }, 999999);
+    }
+
+    public static void clientTick(MinecraftClient client) {
+        if (barrelRollTimer > 0) {
+            barrelRollTimer--;
+        }
+    }
+
+    public static void renderPeppy(MatrixStack matrices, float tickDelta, int scaledWidth, int scaledHeight) {
+        if (barrelRollTimer > 0) {
+            int x = scaledWidth / 2 - 75;
+            int y = scaledHeight - 90;
+            int texture = barrelRollTimer % 2 == 0 ? 1 : 2;
+            RenderSystem.setShaderTexture(0, texture == 1 ? barrelRollTexture1 : barrelRollTexture2);
+            DrawableHelper.drawTexture(matrices, x, y, 0, 0, 160, 160, 160, 160);
+        }
     }
 
     private static void trackRoll(RotationInstant rotationDelta, RotationInstant currentRotation) {

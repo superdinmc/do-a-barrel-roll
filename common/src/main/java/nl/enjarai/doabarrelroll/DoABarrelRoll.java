@@ -20,6 +20,5 @@ public class DoABarrelRoll {
     }
 
     public static void init() {
-        StarFoxUtil.register();
     }
 }
