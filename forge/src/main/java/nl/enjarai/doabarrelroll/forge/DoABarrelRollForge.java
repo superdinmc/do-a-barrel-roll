@@ -13,6 +13,7 @@ public class DoABarrelRollForge {
     public DoABarrelRollForge() {
         if (FMLLoader.getDist().isClient()) {
             DoABarrelRollClient.init();
+            DoABarrelRoll.init();
 
             ModConfig.touch();
         }

@@ -4,6 +4,7 @@ import net.minecraft.util.Identifier;
 import nl.enjarai.doabarrelroll.api.net.HandshakeServer;
 import nl.enjarai.doabarrelroll.config.SyncedModConfigServer;
 import nl.enjarai.doabarrelroll.util.ProperLogger;
+import nl.enjarai.doabarrelroll.util.StarFoxUtil;
 import org.slf4j.Logger;
 
 public class DoABarrelRoll {
@@ -16,5 +17,9 @@ public class DoABarrelRoll {
 
     public static Identifier id(String path) {
         return new Identifier(MODID, path);
+    }
+
+    public static void init() {
+        StarFoxUtil.register();
     }
 }
