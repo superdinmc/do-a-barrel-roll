@@ -1,1 +1,1 @@
-Try naming an elytra "Arwing".
+- Refactored config internals, YACL is now a *required* dependency.

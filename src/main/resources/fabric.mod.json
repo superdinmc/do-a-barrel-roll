@@ -57,10 +57,16 @@
 		"fabric": "*",
 		"cicada": "*",
 		"cardinal-components-base": "*",
-		"cardinal-components-entity": "*"
+		"cardinal-components-entity": "*",
+		"yet_another_config_lib": "*"
 	},
 
 	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.discord": "https://discord.gg/WcYsDDQtyR"
+			}
+		},
 		"cardinal-components": [
 			"do_a_barrel_roll:roll"
 		],

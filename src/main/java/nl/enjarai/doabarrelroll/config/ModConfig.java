@@ -1,261 +1,348 @@
 package nl.enjarai.doabarrelroll.config;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import dev.isxander.yacl.api.ConfigCategory;
+import dev.isxander.yacl.api.Option;
+import dev.isxander.yacl.api.OptionGroup;
+import dev.isxander.yacl.api.YetAnotherConfigLib;
+import dev.isxander.yacl.gui.controllers.TickBoxController;
+import dev.isxander.yacl.gui.controllers.cycling.EnumController;
+import dev.isxander.yacl.gui.controllers.slider.DoubleSliderController;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
-import nl.enjarai.doabarrelroll.config.builder.ConfigBuilder;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 
-public class ModConfig {
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 
-    public static ModConfig INSTANCE = new ModConfig();
+public class ModConfig {
+    public static final Gson GSON = new GsonBuilder()
+            .setPrettyPrinting()
+            .create();
+    public static final Path CONFIG_FILE = FabricLoader.getInstance()
+            .getConfigDir().resolve("do_a_barrel_roll-client.json");
+    public static ModConfig INSTANCE = loadConfigFile(CONFIG_FILE.toFile());
 
     public static void touch() {
         // touch the grass
     }
 
-    private final ConfigBuilder.Value<Boolean> MOD_ENABLED;
+    General general = new General();
+    static class General {
+        boolean mod_enabled = true;
 
-    private final ConfigBuilder.Value<Boolean> SWITCH_ROLL_AND_YAW;
-    private final ConfigBuilder.Value<Boolean> MOMENTUM_BASED_MOUSE;
-    private final ConfigBuilder.Value<Boolean> SHOW_MOMENTUM_WIDGET;
-    private final ConfigBuilder.Value<Boolean> INVERT_PITCH;
-    private final ConfigBuilder.Value<ActivationBehaviour> ACTIVATION_BEHAVIOUR;
-
-    private final ConfigBuilder.Value<Boolean> ENABLE_BANKING;
-    private final ConfigBuilder.Value<Double> BANKING_STRENGTH;
-
-    private final ConfigBuilder.Value<Boolean> ENABLE_THRUST;
-    private final ConfigBuilder.Value<Double> MAX_THRUST;
-    private final ConfigBuilder.Value<Double> THRUST_ACCELERATION;
-    private final ConfigBuilder.Value<Boolean> THRUST_PARTICLES;
-
-    private final ConfigBuilder.Value<Boolean> SMOOTHING_ENABLED;
-    private final ConfigBuilder.Value<Double> SMOOTHING_PITCH;
-    private final ConfigBuilder.Value<Double> SMOOTHING_YAW;
-    private final ConfigBuilder.Value<Double> SMOOTHING_ROLL;
-
-    private final ConfigBuilder.Value<Double> DESKTOP_SENSITIVITY_PITCH;
-    private final ConfigBuilder.Value<Double> DESKTOP_SENSITIVITY_YAW;
-    private final ConfigBuilder.Value<Double> DESKTOP_SENSITIVITY_ROLL;
-
-    private final ConfigBuilder.Value<Double> CONTROLLER_SENSITIVITY_PITCH;
-    private final ConfigBuilder.Value<Double> CONTROLLER_SENSITIVITY_YAW;
-    private final ConfigBuilder.Value<Double> CONTROLLER_SENSITIVITY_ROLL;
-
-
-    private ModConfig() {
-        ConfigBuilder builder = new ConfigBuilder();
-
-        builder.push("general");
-        {
-            MOD_ENABLED = builder.entry("mod_enabled", true);
-
-            builder.push("controls");
-            {
-                SWITCH_ROLL_AND_YAW = builder.entry("switch_roll_and_yaw", false).withDescription();
-                INVERT_PITCH = builder.entry("invert_pitch", false);
-                MOMENTUM_BASED_MOUSE = builder.entry("momentum_based_mouse", false).withDescription();
-                SHOW_MOMENTUM_WIDGET = builder.entry("show_momentum_widget", true).withDescription();
-                ACTIVATION_BEHAVIOUR = builder.entry("activation_behaviour", ActivationBehaviour.VANILLA).withDescription();
-            }
-            builder.pop();
-
-            builder.push("banking");
-            {
-                ENABLE_BANKING = builder.entry("enable_banking", true).withDescription();
-                BANKING_STRENGTH = builder.entry("banking_strength", 20.0, 0.0, 100.0);
-            }
-            builder.pop();
-
-            builder.push("thrust");
-            {
-                ENABLE_THRUST = builder.entry("enable_thrust", false).withDescription();
-                MAX_THRUST = builder.entry("max_thrust", 2.0, 0.1, 10.0).withDescription();
-                THRUST_ACCELERATION = builder.entry("thrust_acceleration", 0.01, 0.1, 1.0).withDescription();
-                THRUST_PARTICLES = builder.entry("thrust_particles", true);
-            }
-            builder.pop();
+        Controls controls = new Controls();
+        static class Controls {
+            boolean switch_roll_and_yaw = false;
+            boolean invert_pitch = false;
+            boolean momentum_based_mouse = false;
+            boolean show_momentum_widget = true;
+            ActivationBehaviour activation_behaviour = ActivationBehaviour.VANILLA;
         }
-        builder.pop();
 
-
-        builder.push("sensitivity");
-        {
-            builder.push("smoothing");
-            {
-                SMOOTHING_ENABLED = builder.entry("smoothing_enabled", true);
-                SMOOTHING_PITCH = builder.entry("smoothing_pitch", 1.0, 0.0, 2.0);
-                SMOOTHING_YAW = builder.entry("smoothing_yaw", 0.4, 0.0, 2.0);
-                SMOOTHING_ROLL = builder.entry("smoothing_roll", 1.0, 0.0, 2.0);
-            }
-            builder.pop();
-
-            builder.push("desktop");
-            {
-                DESKTOP_SENSITIVITY_PITCH = builder.entry("pitch", 1.0, 0.0, 2.0);
-                DESKTOP_SENSITIVITY_YAW = builder.entry("yaw", 0.4, 0.0, 2.0);
-                DESKTOP_SENSITIVITY_ROLL = builder.entry("roll", 1.0, 0.0, 2.0);
-            }
-            builder.pop();
-
-            builder.push("controller");
-            {
-                CONTROLLER_SENSITIVITY_PITCH = builder.entry("pitch", 1.0, 0.0, 2.0).withDescription();
-                CONTROLLER_SENSITIVITY_YAW = builder.entry("yaw", 0.6, 0.0, 2.0).withDescription();
-                CONTROLLER_SENSITIVITY_ROLL = builder.entry("roll", 1.0, 0.0, 2.0).withDescription();
-            }
-            builder.pop();
+        Banking banking = new Banking();
+        static class Banking {
+            boolean enable_banking = true;
+            double banking_strength = 20.0;
         }
-        builder.pop();
+
+        Thrust thrust = new Thrust();
+        static class Thrust {
+            boolean enable_thrust = false;
+            double max_thrust = 2.0;
+            double thrust_acceleration = 0.1;
+            boolean thrust_particles = true;
+        }
+    }
+
+    SensitivityConfig sensitivity = new SensitivityConfig();
+    static class SensitivityConfig {
+        Smoothing smoothing = new Smoothing();
+        static class Smoothing {
+            boolean smoothing_enabled = true;
+            double smoothing_pitch = 1.0;
+            double smoothing_yaw = 0.4;
+            double smoothing_roll = 1.0;
+        }
+
+        Sensitivity desktop = new Sensitivity();
+        Sensitivity controller = new Sensitivity();
+    }
+
+
+    public Screen generateConfigScreen(Screen parent) {
+        return YetAnotherConfigLib.createBuilder()
+                .title(getText("title"))
+                .category(ConfigCategory.createBuilder()
+                        .name(getText("general"))
+                        .option(getBooleanOption("general", "mod_enabled", false)
+                                .binding(true, () -> general.mod_enabled, value -> general.mod_enabled = value)
+                                .build())
+                        .group(OptionGroup.createBuilder()
+                                .name(getText("controls"))
+                                .option(getBooleanOption("controls", "switch_roll_and_yaw", true)
+                                        .binding(false, () -> general.controls.switch_roll_and_yaw, value -> general.controls.switch_roll_and_yaw = value)
+                                        .build())
+                                .option(getBooleanOption("controls", "invert_pitch", false)
+                                        .binding(false, () -> general.controls.invert_pitch, value -> general.controls.invert_pitch = value)
+                                        .build())
+                                .option(getBooleanOption("controls", "momentum_based_mouse", true)
+                                        .binding(false, () -> general.controls.momentum_based_mouse, value -> general.controls.momentum_based_mouse = value)
+                                        .build())
+                                .option(getBooleanOption("controls", "show_momentum_widget", true)
+                                        .binding(true, () -> general.controls.show_momentum_widget, value -> general.controls.show_momentum_widget = value)
+                                        .build())
+                                .option(getOption(ActivationBehaviour.class, "controls", "activation_behaviour", true)
+                                        .controller(EnumController::new)
+                                        .binding(ActivationBehaviour.VANILLA, () -> general.controls.activation_behaviour, value -> general.controls.activation_behaviour = value)
+                                        .build())
+                                .build())
+                        .group(OptionGroup.createBuilder()
+                                .name(getText("banking"))
+                                .option(getBooleanOption("banking", "enable_banking", true)
+                                        .binding(true, () -> general.banking.enable_banking, value -> general.banking.enable_banking = value)
+                                        .build())
+                                .option(getOption(Double.class, "banking", "banking_strength", false)
+                                        .controller(option -> new DoubleSliderController(option, 0.0, 100.0, 1.0))
+                                        .binding(20.0, () -> general.banking.banking_strength, value -> general.banking.banking_strength = value)
+                                        .build())
+                                .build())
+                        .group(OptionGroup.createBuilder()
+                                .name(getText("thrust"))
+                                .option(getBooleanOption("thrust", "enable_thrust", true)
+                                        .binding(false, () -> general.thrust.enable_thrust, value -> general.thrust.enable_thrust = value)
+                                        .build())
+                                .option(getOption(Double.class, "thrust", "max_thrust", true)
+                                        .controller(option -> new DoubleSliderController(option, 0.1, 10.0, 0.1))
+                                        .binding(2.0, () -> general.thrust.max_thrust, value -> general.thrust.max_thrust = value)
+                                        .build())
+                                .option(getOption(Double.class, "thrust", "thrust_acceleration", true)
+                                        .controller(option -> new DoubleSliderController(option, 0.1, 1.0, 0.1))
+                                        .binding(0.1, () -> general.thrust.thrust_acceleration, value -> general.thrust.thrust_acceleration = value)
+                                        .build())
+                                .option(getBooleanOption("thrust", "thrust_particles", false)
+                                        .binding(true, () -> general.thrust.thrust_particles, value -> general.thrust.thrust_particles = value)
+                                        .build())
+                                .build())
+                        .build())
+                .category(ConfigCategory.createBuilder()
+                        .name(getText("sensitivity"))
+                        .group(OptionGroup.createBuilder()
+                                .name(getText("smoothing"))
+                                .option(getBooleanOption("smoothing", "smoothing_enabled", false)
+                                        .binding(true, () -> sensitivity.smoothing.smoothing_enabled, value -> sensitivity.smoothing.smoothing_enabled = value)
+                                        .build())
+                                .option(getOption(Double.class, "smoothing", "smoothing_pitch", false)
+                                        .controller(option -> new DoubleSliderController(option, 0.1, 5.0, 0.1))
+                                        .binding(1.0, () -> sensitivity.smoothing.smoothing_pitch, value -> sensitivity.smoothing.smoothing_pitch = value)
+                                        .build())
+                                .option(getOption(Double.class, "smoothing", "smoothing_yaw", false)
+                                        .controller(option -> new DoubleSliderController(option, 0.1, 5.0, 0.1))
+                                        .binding(0.4, () -> sensitivity.smoothing.smoothing_yaw, value -> sensitivity.smoothing.smoothing_yaw = value)
+                                        .build())
+                                .option(getOption(Double.class, "smoothing", "smoothing_roll", false)
+                                        .controller(option -> new DoubleSliderController(option, 0.1, 5.0, 0.1))
+                                        .binding(1.0, () -> sensitivity.smoothing.smoothing_roll, value -> sensitivity.smoothing.smoothing_roll = value)
+                                        .build())
+                                .build())
+                        .group(OptionGroup.createBuilder()
+                                .name(getText("desktop"))
+                                .option(getOption(Double.class, "desktop", "pitch", false)
+                                        .controller(option -> new DoubleSliderController(option, 0.1, 10.0, 0.1))
+                                        .binding(1.0, () -> sensitivity.desktop.pitch, value -> sensitivity.desktop.pitch = value)
+                                        .build())
+                                .option(getOption(Double.class, "desktop", "yaw", false)
+                                        .controller(option -> new DoubleSliderController(option, 0.1, 10.0, 0.1))
+                                        .binding(0.4, () -> sensitivity.desktop.yaw, value -> sensitivity.desktop.yaw = value)
+                                        .build())
+                                .option(getOption(Double.class, "desktop", "roll", false)
+                                        .controller(option -> new DoubleSliderController(option, 0.1, 10.0, 0.1))
+                                        .binding(1.0, () -> sensitivity.desktop.roll, value -> sensitivity.desktop.roll = value)
+                                        .build())
+                                .build())
+                        .group(OptionGroup.createBuilder()
+                                .name(getText("controller"))
+                                .collapsed(!(FabricLoader.getInstance().isModLoaded("controlify") || FabricLoader.getInstance().isModLoaded("midnightcontrols")))
+                                .tooltip(getText("controller.description"))
+                                .option(getOption(Double.class, "controller", "pitch", false)
+                                        .controller(option -> new DoubleSliderController(option, 0.1, 10.0, 0.1))
+                                        .binding(1.0, () -> sensitivity.controller.pitch, value -> sensitivity.controller.pitch = value)
+                                        .build())
+                                .option(getOption(Double.class, "controller", "yaw", false)
+                                        .controller(option -> new DoubleSliderController(option, 0.1, 10.0, 0.1))
+                                        .binding(0.4, () -> sensitivity.controller.yaw, value -> sensitivity.controller.yaw = value)
+                                        .build())
+                                .option(getOption(Double.class, "controller", "roll", false)
+                                        .controller(option -> new DoubleSliderController(option, 0.1, 10.0, 0.1))
+                                        .binding(1.0, () -> sensitivity.controller.roll, value -> sensitivity.controller.roll = value)
+                                        .build())
+                                .build())
+                        .build())
+                .build()
+                .generateScreen(parent);
+    }
+
+    private <T> Option.Builder<T> getOption(Class<T> clazz, String category, String key, boolean description) {
+        Option.Builder<T> builder = Option.createBuilder(clazz)
+                .name(getText(category, key));
+        if (description) {
+            builder.tooltip(getText(category, key + ".description"));
+        }
+        return builder;
+    }
+
+    private Option.Builder<Boolean> getBooleanOption(String category, String key, boolean description) {
+        return getOption(Boolean.class, category, key, description)
+                .controller(TickBoxController::new);
+    }
+
+    private Text getText(String category, String key) {
+        return Text.translatable("config.do_a_barrel_roll." + category + "." + key);
+    }
+
+    private Text getText(String key) {
+        return Text.translatable("config.do_a_barrel_roll." + key);
     }
 
 
     public boolean getModEnabled() {
-        return MOD_ENABLED.get();
+        return general.mod_enabled;
     }
 
     public boolean getSwitchRollAndYaw() {
-        return SWITCH_ROLL_AND_YAW.get();
+        return general.controls.switch_roll_and_yaw;
     } //= false;
 
     public boolean getMomentumBasedMouse() {
-        return MOMENTUM_BASED_MOUSE.get();
+        return general.controls.momentum_based_mouse;
     } //= false;
 
     public boolean getShowMomentumWidget() {
-        return SHOW_MOMENTUM_WIDGET.get();
+        return general.controls.show_momentum_widget;
     } //= true;
 
     public boolean getInvertPitch() {
-        return INVERT_PITCH.get();
+        return general.controls.invert_pitch;
     } //= false;
 
     public ActivationBehaviour getActivationBehaviour() {
-        return ACTIVATION_BEHAVIOUR.get();
+        return general.controls.activation_behaviour;
     } //= ActivationBehaviour.VANILLA;
 
     public boolean getEnableBanking() {
-        return ENABLE_BANKING.get();
+        return general.banking.enable_banking;
     }// = true;
 
     public double getBankingStrength() {
-        return BANKING_STRENGTH.get();
+        return general.banking.banking_strength;
     }// = 20;
 
     public boolean getEnableThrust() {
-        return ENABLE_THRUST.get() && DoABarrelRollClient.HANDSHAKE_CLIENT
+        return general.thrust.enable_thrust && DoABarrelRollClient.HANDSHAKE_CLIENT
                 .getConfig().map(SyncedModConfig::allowThrusting).orElse(true);
     }
 
     public double getMaxThrust() {
-        return MAX_THRUST.get();
+        return general.thrust.max_thrust;
     }
 
     public double getThrustAcceleration() {
-        return THRUST_ACCELERATION.get();
+        return general.thrust.thrust_acceleration;
     }
 
     public boolean getThrustParticles() {
-        return THRUST_PARTICLES.get();
+        return general.thrust.thrust_particles;
     }
 
     public boolean getSmoothingEnabled() {
-        return SMOOTHING_ENABLED.get();
+        return sensitivity.smoothing.smoothing_enabled;
     }
 
     public Sensitivity getSmoothing() {
         return new Sensitivity(
-                SMOOTHING_PITCH.get(),
-                SMOOTHING_YAW.get(),
-                SMOOTHING_ROLL.get()
+                sensitivity.smoothing.smoothing_pitch,
+                sensitivity.smoothing.smoothing_yaw,
+                sensitivity.smoothing.smoothing_roll
         );
     }
 
     public Sensitivity getDesktopSensitivity() {
-        return new Sensitivity(
-                DESKTOP_SENSITIVITY_PITCH.get(),
-                DESKTOP_SENSITIVITY_YAW.get(),
-                DESKTOP_SENSITIVITY_ROLL.get()
-        );
+        return sensitivity.desktop;
     }
 
     public Sensitivity getControllerSensitivity() {
-        return new Sensitivity(
-                CONTROLLER_SENSITIVITY_PITCH.get(),
-                CONTROLLER_SENSITIVITY_YAW.get(),
-                CONTROLLER_SENSITIVITY_ROLL.get()
-        );
+        return sensitivity.controller;
     }
 
     public void setModEnabled(boolean enabled) {
-        MOD_ENABLED.accept(enabled);
+        general.mod_enabled = enabled;
     }
 
     public void setSwitchRollAndYaw(boolean enabled) {
-        SWITCH_ROLL_AND_YAW.accept(enabled);
+        general.controls.switch_roll_and_yaw = enabled;
     }
 
     public void setMomentumBasedMouse(boolean enabled) {
-        MOMENTUM_BASED_MOUSE.accept(enabled);
+        general.controls.momentum_based_mouse = enabled;
     }
 
     public void setShowMomentumWidget(boolean enabled) {
-        SHOW_MOMENTUM_WIDGET.accept(enabled);
+        general.controls.show_momentum_widget = enabled;
     }
 
     public void setInvertPitch(boolean enabled) {
-        INVERT_PITCH.accept(enabled);
+        general.controls.invert_pitch = enabled;
     }
 
     public void setActivationBehaviour(ActivationBehaviour behaviour) {
-        ACTIVATION_BEHAVIOUR.accept(behaviour);
+        general.controls.activation_behaviour = behaviour;
     }
 
     public void setEnableBanking(boolean enabled) {
-        ENABLE_BANKING.accept(enabled);
+        general.banking.enable_banking = enabled;
     }
 
     public void setBankingStrength(double strength) {
-        BANKING_STRENGTH.accept(strength);
+        general.banking.banking_strength = strength;
     }
 
     public void setEnableThrust(boolean enabled) {
-        ENABLE_THRUST.accept(enabled);
+        general.thrust.enable_thrust = enabled;
     }
 
     public void setMaxThrust(double thrust) {
-        MAX_THRUST.accept(thrust);
+        general.thrust.max_thrust = thrust;
     }
 
     public void setThrustAcceleration(double acceleration) {
-        THRUST_ACCELERATION.accept(acceleration);
+        general.thrust.thrust_acceleration = acceleration;
     }
 
     public void setThrustParticles(boolean enabled) {
-        THRUST_PARTICLES.accept(enabled);
+        general.thrust.thrust_particles = enabled;
     }
 
     public void setSmoothingEnabled(boolean enabled) {
-        SMOOTHING_ENABLED.accept(enabled);
+        sensitivity.smoothing.smoothing_enabled = enabled;
     }
 
     public void setDesktopSensitivity(Sensitivity sensitivity) {
-        DESKTOP_SENSITIVITY_PITCH.accept(sensitivity.pitch);
-        DESKTOP_SENSITIVITY_YAW.accept(sensitivity.yaw);
-        DESKTOP_SENSITIVITY_ROLL.accept(sensitivity.roll);
+        this.sensitivity.desktop = sensitivity;
     }
 
     public void setControllerSensitivity(Sensitivity sensitivity) {
-        CONTROLLER_SENSITIVITY_PITCH.accept(sensitivity.pitch);
-        CONTROLLER_SENSITIVITY_YAW.accept(sensitivity.yaw);
-        CONTROLLER_SENSITIVITY_ROLL.accept(sensitivity.roll);
+        this.sensitivity.controller = sensitivity;
     }
 
     public void save() {
-        SPEC.save();
+        saveConfigFile(CONFIG_FILE.toFile());
     }
 
     public RotationInstant configureRotation(RotationInstant rotationInstant) {
@@ -276,7 +363,7 @@ public class ModConfig {
     }
 
     public void notifyPlayerOfServerConfig(SyncedModConfig serverConfig) {
-        if (!serverConfig.allowThrusting() && ENABLE_THRUST.get()) {
+        if (!serverConfig.allowThrusting() && general.thrust.enable_thrust) {
             MinecraftClient.getInstance().getToastManager().add(SystemToast.create(
                     MinecraftClient.getInstance(),
                     SystemToast.Type.TUTORIAL_HINT,
@@ -284,13 +371,56 @@ public class ModConfig {
                     Text.translatable("toast.do_a_barrel_roll.thrusting_disabled_by_server")
             ));
         }
-        if (serverConfig.forceEnabled() && !MOD_ENABLED.get()) {
+        if (serverConfig.forceEnabled() && !general.mod_enabled) {
             MinecraftClient.getInstance().getToastManager().add(SystemToast.create(
                     MinecraftClient.getInstance(),
                     SystemToast.Type.TUTORIAL_HINT,
                     Text.translatable("toast.do_a_barrel_roll"),
                     Text.translatable("toast.do_a_barrel_roll.mod_forced_enabled_by_server")
             ));
+        }
+    }
+
+    /**
+     * Loads config file.
+     *
+     * @param file file to load the config file from.
+     * @return ConfigManager object
+     */
+    private static ModConfig loadConfigFile(File file) {
+        ModConfig config = null;
+
+        if (file.exists()) {
+            // An existing config is present, we should use its values
+            try (BufferedReader fileReader = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)
+            )) {
+                // Parses the config file and puts the values into config object
+                config = GSON.fromJson(fileReader, ModConfig.class);
+            } catch (IOException e) {
+                throw new RuntimeException("Problem occurred when trying to load config: ", e);
+            }
+        }
+        // gson.fromJson() can return null if file is empty
+        if (config == null) {
+            config = new ModConfig();
+        }
+
+        // Saves the file in order to write new fields if they were added
+        config.saveConfigFile(file);
+        return config;
+    }
+
+    /**
+     * Saves the config to the given file.
+     *
+     * @param file file to save config to
+     */
+    private void saveConfigFile(File file) {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
+            GSON.toJson(this, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
