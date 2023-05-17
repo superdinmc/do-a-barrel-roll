@@ -1,19 +1,12 @@
 package nl.enjarai.doabarrelroll.config;
 
 
-import dev.architectury.injectables.targets.ArchitecturyTarget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
-import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
+import nl.enjarai.doabarrelroll.config.builder.ConfigBuilder;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
-import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigBuilder;
-import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigSpec;
-import nl.enjarai.doabarrelroll.moonlightconfigs.ConfigType;
-import nl.enjarai.doabarrelroll.util.Value;
-
-import java.util.Objects;
 
 public class ModConfig {
 
@@ -23,77 +16,68 @@ public class ModConfig {
         // touch the grass
     }
 
-    private final Value<Boolean> MOD_ENABLED;
+    private final ConfigBuilder.Value<Boolean> MOD_ENABLED;
 
-    private final Value<Boolean> SWITCH_ROLL_AND_YAW;
-    private final Value<Boolean> MOMENTUM_BASED_MOUSE;
-    private final Value<Boolean> SHOW_MOMENTUM_WIDGET;
-    private final Value<Boolean> INVERT_PITCH;
-    private final Value<ActivationBehaviour> ACTIVATION_BEHAVIOUR;
+    private final ConfigBuilder.Value<Boolean> SWITCH_ROLL_AND_YAW;
+    private final ConfigBuilder.Value<Boolean> MOMENTUM_BASED_MOUSE;
+    private final ConfigBuilder.Value<Boolean> SHOW_MOMENTUM_WIDGET;
+    private final ConfigBuilder.Value<Boolean> INVERT_PITCH;
+    private final ConfigBuilder.Value<ActivationBehaviour> ACTIVATION_BEHAVIOUR;
 
-    private final Value<Boolean> ENABLE_BANKING;
-    private final Value<Double> BANKING_STRENGTH;
+    private final ConfigBuilder.Value<Boolean> ENABLE_BANKING;
+    private final ConfigBuilder.Value<Double> BANKING_STRENGTH;
 
-    private final Value<Boolean> ENABLE_THRUST;
-    private final Value<Double> MAX_THRUST;
-    private final Value<Double> THRUST_ACCELERATION;
-    private final Value<Boolean> THRUST_PARTICLES;
+    private final ConfigBuilder.Value<Boolean> ENABLE_THRUST;
+    private final ConfigBuilder.Value<Double> MAX_THRUST;
+    private final ConfigBuilder.Value<Double> THRUST_ACCELERATION;
+    private final ConfigBuilder.Value<Boolean> THRUST_PARTICLES;
 
-    private final Value<Boolean> SMOOTHING_ENABLED;
-    private final Value<Double> SMOOTHING_PITCH;
-    private final Value<Double> SMOOTHING_YAW;
-    private final Value<Double> SMOOTHING_ROLL;
+    private final ConfigBuilder.Value<Boolean> SMOOTHING_ENABLED;
+    private final ConfigBuilder.Value<Double> SMOOTHING_PITCH;
+    private final ConfigBuilder.Value<Double> SMOOTHING_YAW;
+    private final ConfigBuilder.Value<Double> SMOOTHING_ROLL;
 
-    private final Value<Double> DESKTOP_SENSITIVITY_PITCH;
-    private final Value<Double> DESKTOP_SENSITIVITY_YAW;
-    private final Value<Double> DESKTOP_SENSITIVITY_ROLL;
+    private final ConfigBuilder.Value<Double> DESKTOP_SENSITIVITY_PITCH;
+    private final ConfigBuilder.Value<Double> DESKTOP_SENSITIVITY_YAW;
+    private final ConfigBuilder.Value<Double> DESKTOP_SENSITIVITY_ROLL;
 
-    private final Value<Double> CONTROLLER_SENSITIVITY_PITCH;
-    private final Value<Double> CONTROLLER_SENSITIVITY_YAW;
-    private final Value<Double> CONTROLLER_SENSITIVITY_ROLL;
+    private final ConfigBuilder.Value<Double> CONTROLLER_SENSITIVITY_PITCH;
+    private final ConfigBuilder.Value<Double> CONTROLLER_SENSITIVITY_YAW;
+    private final ConfigBuilder.Value<Double> CONTROLLER_SENSITIVITY_ROLL;
 
 
     private ModConfig() {
-        ConfigBuilder builder = ConfigBuilder.create(DoABarrelRoll.id("client"), ConfigType.CLIENT);
+        ConfigBuilder builder = new ConfigBuilder();
 
         builder.push("general");
         {
-            MOD_ENABLED = builder.define("mod_enabled", true);
+            MOD_ENABLED = builder.entry("mod_enabled", true);
 
             builder.push("controls");
             {
-                SWITCH_ROLL_AND_YAW = builder.withDescription().define("switch_roll_and_yaw", false);
-                INVERT_PITCH = builder.define("invert_pitch", false);
-                MOMENTUM_BASED_MOUSE = builder.withDescription().define("momentum_based_mouse", false);
-                SHOW_MOMENTUM_WIDGET = builder.withDescription().define("show_momentum_widget", true);
-                ACTIVATION_BEHAVIOUR = builder.withDescription().define("activation_behaviour", ActivationBehaviour.VANILLA);
+                SWITCH_ROLL_AND_YAW = builder.entry("switch_roll_and_yaw", false).withDescription();
+                INVERT_PITCH = builder.entry("invert_pitch", false);
+                MOMENTUM_BASED_MOUSE = builder.entry("momentum_based_mouse", false).withDescription();
+                SHOW_MOMENTUM_WIDGET = builder.entry("show_momentum_widget", true).withDescription();
+                ACTIVATION_BEHAVIOUR = builder.entry("activation_behaviour", ActivationBehaviour.VANILLA).withDescription();
             }
             builder.pop();
 
             builder.push("banking");
             {
-                ENABLE_BANKING = builder.withDescription().define("enable_banking", true);
-                BANKING_STRENGTH = builder.define("banking_strength", 20.0, 0.0, 100.0);
+                ENABLE_BANKING = builder.entry("enable_banking", true).withDescription();
+                BANKING_STRENGTH = builder.entry("banking_strength", 20.0, 0.0, 100.0);
             }
             builder.pop();
 
-            if (!Objects.equals(ArchitecturyTarget.getCurrentTarget(), "forge")) {
-                builder.push("thrust");
-                {
-                    ENABLE_THRUST = builder.withDescription().define("enable_thrust", false);
-                    MAX_THRUST = builder.withDescription().define("max_thrust", 2.0, 0.1, 10.0);
-                    THRUST_ACCELERATION = builder.withDescription().define("thrust_acceleration", 0.01, 0.1, 1.0);
-                    THRUST_PARTICLES = builder.define("thrust_particles", true);
-                }
-                builder.pop();
-
-            } else {
-                ENABLE_THRUST = Value.of(false);
-                MAX_THRUST = Value.of(2.0);
-                THRUST_ACCELERATION = Value.of(0.1);
-                THRUST_PARTICLES = Value.of(true);
+            builder.push("thrust");
+            {
+                ENABLE_THRUST = builder.entry("enable_thrust", false).withDescription();
+                MAX_THRUST = builder.entry("max_thrust", 2.0, 0.1, 10.0).withDescription();
+                THRUST_ACCELERATION = builder.entry("thrust_acceleration", 0.01, 0.1, 1.0).withDescription();
+                THRUST_PARTICLES = builder.entry("thrust_particles", true);
             }
-
+            builder.pop();
         }
         builder.pop();
 
@@ -102,40 +86,30 @@ public class ModConfig {
         {
             builder.push("smoothing");
             {
-                SMOOTHING_ENABLED = builder.define("smoothing_enabled", true);
-                SMOOTHING_PITCH = builder.define("smoothing_pitch", 1.0, 0.0, 2.0);
-                SMOOTHING_YAW = builder.define("smoothing_yaw", 0.4, 0.0, 2.0);
-                SMOOTHING_ROLL = builder.define("smoothing_roll", 1.0, 0.0, 2.0);
+                SMOOTHING_ENABLED = builder.entry("smoothing_enabled", true);
+                SMOOTHING_PITCH = builder.entry("smoothing_pitch", 1.0, 0.0, 2.0);
+                SMOOTHING_YAW = builder.entry("smoothing_yaw", 0.4, 0.0, 2.0);
+                SMOOTHING_ROLL = builder.entry("smoothing_roll", 1.0, 0.0, 2.0);
             }
             builder.pop();
 
             builder.push("desktop");
             {
-                DESKTOP_SENSITIVITY_PITCH = builder.define("pitch", 1.0, 0.0, 2.0);
-                DESKTOP_SENSITIVITY_YAW = builder.define("yaw", 0.4, 0.0, 2.0);
-                DESKTOP_SENSITIVITY_ROLL = builder.define("roll", 1.0, 0.0, 2.0);
+                DESKTOP_SENSITIVITY_PITCH = builder.entry("pitch", 1.0, 0.0, 2.0);
+                DESKTOP_SENSITIVITY_YAW = builder.entry("yaw", 0.4, 0.0, 2.0);
+                DESKTOP_SENSITIVITY_ROLL = builder.entry("roll", 1.0, 0.0, 2.0);
             }
             builder.pop();
 
-            if (!Objects.equals(ArchitecturyTarget.getCurrentTarget(), "forge")) {
-                builder.push("controller");
-                {
-                    CONTROLLER_SENSITIVITY_PITCH = builder.withDescription().define("pitch", 1.0, 0.0, 2.0);
-                    CONTROLLER_SENSITIVITY_YAW = builder.withDescription().define("yaw", 0.6, 0.0, 2.0);
-                    CONTROLLER_SENSITIVITY_ROLL = builder.withDescription().define("roll", 1.0, 0.0, 2.0);
-                }
-                builder.pop();
-
-            } else {
-                CONTROLLER_SENSITIVITY_PITCH = Value.of(1.0);
-                CONTROLLER_SENSITIVITY_YAW = Value.of(0.6);
-                CONTROLLER_SENSITIVITY_ROLL = Value.of(1.0);
+            builder.push("controller");
+            {
+                CONTROLLER_SENSITIVITY_PITCH = builder.entry("pitch", 1.0, 0.0, 2.0).withDescription();
+                CONTROLLER_SENSITIVITY_YAW = builder.entry("yaw", 0.6, 0.0, 2.0).withDescription();
+                CONTROLLER_SENSITIVITY_ROLL = builder.entry("roll", 1.0, 0.0, 2.0).withDescription();
             }
+            builder.pop();
         }
         builder.pop();
-
-
-        SPEC = builder.buildAndRegister();
     }
 
 
