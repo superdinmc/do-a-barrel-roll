@@ -1,0 +1,72 @@
+{
+	"schemaVersion": 1,
+	"id": "do_a_barrel_roll",
+	"version": "${version}",
+	
+	"name": "Do a Barrel Roll",
+	"description": "Microsoft flight simulator for Minecraft elytras.",
+	"authors": [
+		"enjarai"
+	],
+	"contributors": [
+		"MehVahdJukaar"
+	],
+	"contact": {
+		"homepage": "https://enjarai.nl",
+		"sources": "https://github.com/enjarai/do-a-barrel-roll",
+		"issues": "https://github.com/enjarai/do-a-barrel-roll/issues"
+	},
+	
+	"license": "GPL-3.0",
+	"icon": "assets/do_a_barrel_roll/icon.png",
+
+	"entrypoints": {
+		"client": [
+			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
+		],
+		"main": [
+			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabric"
+		],
+		"modmenu": [
+			"nl.enjarai.doabarrelroll.compat.modmenu.ModMenuIntegration"
+		],
+		"preLaunch": [
+			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
+		],
+		"cicada": [
+			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
+		],
+		"cardinal-components": [
+			"nl.enjarai.doabarrelroll.data.Components"
+		],
+		"controlify": [
+			"nl.enjarai.doabarrelroll.compat.controlify.ControlifyCompat"
+		]
+	},
+	
+	"environment": "*",
+	"mixins": [
+		"do-a-barrel-roll.mixins.json",
+		"do-a-barrel-roll.compat.midnightcontrols.mixins.json",
+		"do-a-barrel-roll.compat.cameraoverhaul.mixins.json",
+		"do-a-barrel-roll.compat.controlify.mixins.json"
+	],
+
+	"depends": {
+		"minecraft": ">=1.19.4- <1.19.5-",
+		"fabric": "*",
+		"cicada": "*",
+		"cardinal-components-base": "*",
+		"cardinal-components-entity": "*"
+	},
+
+	"custom": {
+		"cardinal-components": [
+			"do_a_barrel_roll:roll"
+		],
+		"projects": {
+			"modrinth": "6FtRfnLg",
+			"curseforge": 663658
+		}
+	}
+}
