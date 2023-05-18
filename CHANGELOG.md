@@ -1,1 +1,2 @@
+- Forge support is now deprecated.
 - Refactored config internals, YACL is now a *required* dependency.

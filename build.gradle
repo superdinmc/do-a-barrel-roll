@@ -98,7 +98,7 @@ base {
     archivesName = project.archives_base_name
 }
 
-version = "${rootProject.mod_version}+${rootProject.minecraft_version}"
+version = "${rootProject.mod_version}+${rootProject.minecraft_version}-fabric"
 
 processResources {
     inputs.property "version", project.version

@@ -66,27 +66,10 @@ jobs:
         with:
           ref: ${{ inputs.branch }}
       - name: Download Artifacts
+        id: download
         uses: actions/download-artifact@v2
         with:
           name: ${{ inputs.branch }}
-
-      - name: Check For Fabric Jar
-        uses: actions/github-script@v5
-        id: fabric_release
-        with:
-          result-encoding: string
-          script: |
-            const fs = require("fs")
-            return fs.readdirSync("./").filter(e => !e.endsWith("dev.jar") && !e.endsWith("sources.jar") && !e.endsWith("shadow.jar") && e.endsWith(".jar") && e.includes("fabric"))[0] || false;
-
-      - name: Check For Forge Jar
-        uses: actions/github-script@v5
-        id: forge_release
-        with:
-          result-encoding: string
-          script: |
-            const fs = require("fs")
-            return fs.readdirSync("./").filter(e => !e.endsWith("dev.jar") && !e.endsWith("sources.jar") && !e.endsWith("shadow.jar") && e.endsWith(".jar") && e.includes("forge"))[0] || false;
 
       - name: Extract Mod Version
         uses: actions/github-script@v5
@@ -107,60 +90,24 @@ jobs:
           script: |
             return process.env.GV.split(/\s/)[0]
 
-      - name: Run Publish Forge
-        if: ${{ steps.forge_release.outputs.result != 'false' }}
-        uses: Kir-Antipov/mc-publish@v3.2
-        with:
-          modrinth-id: 6FtRfnLg
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          #          dependencies: ""
-          curseforge-id: 663658
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-          name: '${{ steps.mod_version.outputs.result }} for Forge ${{ steps.game_version.outputs.result }}'
-          version: '${{ steps.mod_version.outputs.result }}+${{ steps.game_version.outputs.result }}-forge'
-
-          files: ./${{ steps.forge_release.outputs.result }}
-          version-type: release
-
-          loaders: forge
-          game-versions: ${{ inputs.game_vers }}
-
-          modrinth-featured: false
-          changelog-file: CHANGELOG.md
-
-          java: ${{ inputs.java_vers }}
-          retry-attempts: 5
-          retry-delay: 60000
-
       - name: Run Publish Fabric
         if: ${{ steps.fabric_release.outputs.result != 'false' }}
         uses: Kir-Antipov/mc-publish@v3.2
         with:
-          modrinth-id: 6FtRfnLg
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          dependencies: |
-            fabric-api | depends | *
-          curseforge-id: 663658
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
           name: '${{ steps.mod_version.outputs.result }} for Fabric ${{ steps.game_version.outputs.result }}'
           version: '${{ steps.mod_version.outputs.result }}+${{ steps.game_version.outputs.result }}-fabric'
 
-          files: ./${{ steps.fabric_release.outputs.result }}
-          version-type: release
+          dependencies: |
+            fabric-api | depends | *
+            yacl | depends | *
+            cardinal-components | includes | *
 
-          loaders: fabric
-          game-versions: ${{ inputs.game_vers }}
+          files-primary: '${{ steps.download.outputs.download-path }}/!(*-@(dev\|sources\|javadoc)).jar'
+          files-secondary: '${{ steps.download.outputs.download-path }}/*-@(dev\|sources\|javadoc).jar'
 
           modrinth-featured: false
           changelog-file: CHANGELOG.md
-
-          java: ${{ inputs.java_vers }}
-          retry-attempts: 5
-          retry-delay: 60000
-
