@@ -1,2 +1,3 @@
-- Forge support is now deprecated.
+- Added a simple artificial horizon widget which can be toggled in the config.
 - Refactored config internals, YACL is now a *required* dependency.
+- Forge support is now deprecated.

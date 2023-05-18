@@ -17,6 +17,8 @@ import nl.enjarai.doabarrelroll.config.SyncedModConfig;
 import nl.enjarai.doabarrelroll.flight.ElytraMath;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
+import nl.enjarai.doabarrelroll.render.HorizonLineWidget;
+import nl.enjarai.doabarrelroll.render.MomentumCrosshairWidget;
 import nl.enjarai.doabarrelroll.util.MixinHooks;
 import org.joml.Vector2d;
 
@@ -136,13 +138,20 @@ public class DoABarrelRollClient {
         }
     }
 
-    public static void onRenderCrosshair(MatrixStack matrices, int scaledWidth, int scaledHeight) {
-        if (!isFallFlying()
-                || !ModConfig.INSTANCE.getMomentumBasedMouse()
-                || !ModConfig.INSTANCE.getShowMomentumWidget()
-        ) return;
+    public static void onRenderCrosshair(MatrixStack matrices, float tickDelta, int scaledWidth, int scaledHeight) {
+        if (!isFallFlying()) return;
 
-        MomentumCrosshairWidget.render(matrices, scaledWidth, scaledHeight, new Vector2d(mouseTurnVec));
+        var player = MinecraftClient.getInstance().player;
+        if (player != null) {
+            if (ModConfig.INSTANCE.getShowHorizon()) {
+                HorizonLineWidget.render(matrices, scaledWidth, scaledHeight,
+                        ElytraMath.getRoll(player.getYaw(tickDelta), left), player.getPitch(tickDelta));
+            }
+
+            if (ModConfig.INSTANCE.getMomentumBasedMouse() && ModConfig.INSTANCE.getShowMomentumWidget()) {
+                MomentumCrosshairWidget.render(matrices, scaledWidth, scaledHeight, new Vector2d(mouseTurnVec));
+            }
+        }
     }
 
 

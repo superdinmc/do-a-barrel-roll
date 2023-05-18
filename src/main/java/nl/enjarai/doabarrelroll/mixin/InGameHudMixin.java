@@ -1,5 +1,7 @@
 package nl.enjarai.doabarrelroll.mixin;
 
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
@@ -22,9 +24,9 @@ public abstract class InGameHudMixin extends DrawableHelper {
             method = "renderCrosshair",
             at = @At(value = "HEAD")
     )
-    private void doABarrelRoll$renderCrosshairHead(MatrixStack matrices, CallbackInfo ci) {
+    private void doABarrelRoll$renderCrosshairHead(MatrixStack matrices, CallbackInfo ci, @Share("tickDelta") LocalFloatRef tickDeltaRef) {
         matrices.push();
-        DoABarrelRollClient.onRenderCrosshair(matrices, scaledWidth, scaledHeight);
+        DoABarrelRollClient.onRenderCrosshair(matrices, tickDeltaRef.get(), scaledWidth, scaledHeight);
     }
 
     @Inject(
@@ -42,7 +44,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
                     target = "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F"
             )
     )
-    private void doABarrelRoll$renderPeppy(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
+    private void doABarrelRoll$renderPeppy(MatrixStack matrices, float tickDelta, CallbackInfo ci, @Share("tickDelta") LocalFloatRef tickDeltaRef) {
+        tickDeltaRef.set(tickDelta);
         StarFoxUtil.renderPeppy(matrices, tickDelta, scaledWidth, scaledHeight);
     }
 }

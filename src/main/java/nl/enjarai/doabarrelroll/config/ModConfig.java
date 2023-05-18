@@ -47,6 +47,11 @@ public class ModConfig {
             ActivationBehaviour activation_behaviour = ActivationBehaviour.VANILLA;
         }
 
+        Hud hud = new Hud();
+        static class Hud {
+            boolean show_horizon = false;
+        }
+
         Banking banking = new Banking();
         static class Banking {
             boolean enable_banking = true;
@@ -96,12 +101,18 @@ public class ModConfig {
                                 .option(getBooleanOption("controls", "momentum_based_mouse", true)
                                         .binding(false, () -> general.controls.momentum_based_mouse, value -> general.controls.momentum_based_mouse = value)
                                         .build())
-                                .option(getBooleanOption("controls", "show_momentum_widget", true)
-                                        .binding(true, () -> general.controls.show_momentum_widget, value -> general.controls.show_momentum_widget = value)
-                                        .build())
                                 .option(getOption(ActivationBehaviour.class, "controls", "activation_behaviour", true)
                                         .controller(EnumController::new)
                                         .binding(ActivationBehaviour.VANILLA, () -> general.controls.activation_behaviour, value -> general.controls.activation_behaviour = value)
+                                        .build())
+                                .build())
+                        .group(OptionGroup.createBuilder()
+                                .name(getText("hud"))
+                                .option(getBooleanOption("hud", "show_horizon", true)
+                                        .binding(false, () -> general.hud.show_horizon, value -> general.hud.show_horizon = value)
+                                        .build())
+                                .option(getBooleanOption("controls", "show_momentum_widget", true)
+                                        .binding(true, () -> general.controls.show_momentum_widget, value -> general.controls.show_momentum_widget = value)
                                         .build())
                                 .build())
                         .group(OptionGroup.createBuilder()
@@ -116,6 +127,7 @@ public class ModConfig {
                                 .build())
                         .group(OptionGroup.createBuilder()
                                 .name(getText("thrust"))
+                                .collapsed(true)
                                 .option(getBooleanOption("thrust", "enable_thrust", true)
                                         .binding(false, () -> general.thrust.enable_thrust, value -> general.thrust.enable_thrust = value)
                                         .build())
@@ -236,6 +248,10 @@ public class ModConfig {
         return general.controls.activation_behaviour;
     } //= ActivationBehaviour.VANILLA;
 
+    public boolean getShowHorizon() {
+        return general.hud.show_horizon;
+    }
+
     public boolean getEnableBanking() {
         return general.banking.enable_banking;
     }// = true;
@@ -303,6 +319,10 @@ public class ModConfig {
 
     public void setActivationBehaviour(ActivationBehaviour behaviour) {
         general.controls.activation_behaviour = behaviour;
+    }
+
+    public void setShowHorizon(boolean enabled) {
+        general.hud.show_horizon = enabled;
     }
 
     public void setEnableBanking(boolean enabled) {
