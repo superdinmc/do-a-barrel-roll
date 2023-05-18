@@ -51,6 +51,7 @@
 		"do-a-barrel-roll.compat.cameraoverhaul.mixins.json",
 		"do-a-barrel-roll.compat.controlify.mixins.json"
 	],
+	"accessWidener": "do-a-barrel-roll.accesswidener",
 
 	"depends": {
 		"minecraft": ">=1.19.4- <1.19.5-",
