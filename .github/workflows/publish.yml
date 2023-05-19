@@ -106,7 +106,7 @@ jobs:
             yacl | depends | *
             cardinal-components | includes | *
 
-          files-primary: '${{ steps.download.outputs.download-path }}/!(*-@(dev\|sources\|javadoc)).jar'
+          files: '${{ steps.download.outputs.download-path }}/!(*-@(dev|sources)).jar'
 
           modrinth-featured: false
           changelog-file: CHANGELOG.md
