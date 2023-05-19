@@ -101,10 +101,10 @@ base {
 version = "${rootProject.mod_version}+${rootProject.minecraft_version}-fabric"
 
 processResources {
-    inputs.property "version", project.version
+    inputs.property "version", "${rootProject.mod_version}+${rootProject.minecraft_version}"
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        expand "version": "${rootProject.mod_version}+${rootProject.minecraft_version}"
     }
 }
 

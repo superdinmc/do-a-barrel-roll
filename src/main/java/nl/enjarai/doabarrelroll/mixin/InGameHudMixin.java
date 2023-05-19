@@ -21,6 +21,14 @@ public abstract class InGameHudMixin extends DrawableHelper {
     @Shadow private int scaledHeight;
 
     @Inject(
+            method = "render",
+            at = @At("HEAD")
+    )
+    private void doABarrelRoll$captureTickDelta(MatrixStack matrices, float tickDelta, CallbackInfo ci, @Share("tickDelta") LocalFloatRef tickDeltaRef) {
+        tickDeltaRef.set(tickDelta);
+    }
+
+    @Inject(
             method = "renderCrosshair",
             at = @At(value = "HEAD")
     )
@@ -44,8 +52,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
                     target = "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F"
             )
     )
-    private void doABarrelRoll$renderPeppy(MatrixStack matrices, float tickDelta, CallbackInfo ci, @Share("tickDelta") LocalFloatRef tickDeltaRef) {
-        tickDeltaRef.set(tickDelta);
+    private void doABarrelRoll$renderPeppy(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
         StarFoxUtil.renderPeppy(matrices, tickDelta, scaledWidth, scaledHeight);
     }
 }

@@ -19,9 +19,9 @@ jobs:
           is_append_body: true
 
   deploy_1_19_4:
-    uses: enjarai/do-a-barrel-roll/.github/workflows/publish.yml@main
+    uses: enjarai/do-a-barrel-roll/.github/workflows/publish.yml@1.19.4/dev
     with:
-      branch: main
+      branch: 1.19.4/dev
       game_vers: |
         1.19.4
       java_vers: 17
