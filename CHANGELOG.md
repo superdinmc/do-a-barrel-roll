@@ -1,3 +1,2 @@
-- Added a simple artificial horizon widget which can be toggled in the config.
-- Refactored config internals, YACL is now a *required* dependency.
-- Forge support is now deprecated.
+- Fixed an issue causing a crash on dedicated servers.
+- Removed the dependency on YACL for dedicated servers, as it's not needed there.

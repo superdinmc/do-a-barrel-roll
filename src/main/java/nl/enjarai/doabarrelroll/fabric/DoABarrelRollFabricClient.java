@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.MixinExtrasBootstrap;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 import nl.enjarai.cicada.api.conversation.ConversationManager;
 import nl.enjarai.cicada.api.util.CicadaEntrypoint;
@@ -23,6 +24,10 @@ public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunc
 
     @Override
     public void onInitializeClient() {
+        if (!FabricLoader.getInstance().isModLoaded("yet_another_config_lib")) {
+            throw new IllegalStateException("Do a Barrel Roll requires Yet Another Config Lib (YACL) to be installed!");
+        }
+
         DoABarrelRollClient.init();
 
         ModConfig.touch();
@@ -30,6 +35,9 @@ public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunc
 
         // Register keybindings on fabric
         ModKeybindings.FABRIC.forEach(KeyBindingHelper::registerKeyBinding);
+
+        // Init barrel rollery.
+        StarFoxUtil.register();
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             ModKeybindings.clientTick(client);

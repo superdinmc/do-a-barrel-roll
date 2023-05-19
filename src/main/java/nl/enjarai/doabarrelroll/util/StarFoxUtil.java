@@ -19,8 +19,6 @@ import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.api.event.StarFox64Events;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class StarFoxUtil {
     private static final Random random = Random.create();
     private static final Identifier barrelRollSoundId = DoABarrelRoll.id("do_a_barrel_roll");

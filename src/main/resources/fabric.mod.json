@@ -58,8 +58,7 @@
 		"fabric": "*",
 		"cicada": "*",
 		"cardinal-components-base": "*",
-		"cardinal-components-entity": "*",
-		"yet_another_config_lib": "*"
+		"cardinal-components-entity": "*"
 	},
 
 	"custom": {

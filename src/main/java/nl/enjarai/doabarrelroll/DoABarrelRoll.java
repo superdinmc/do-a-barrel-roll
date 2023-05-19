@@ -4,7 +4,6 @@ import net.minecraft.util.Identifier;
 import nl.enjarai.doabarrelroll.api.net.HandshakeServer;
 import nl.enjarai.doabarrelroll.config.SyncedModConfigServer;
 import nl.enjarai.doabarrelroll.util.ProperLogger;
-import nl.enjarai.doabarrelroll.util.StarFoxUtil;
 import org.slf4j.Logger;
 
 public class DoABarrelRoll {
