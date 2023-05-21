@@ -9,6 +9,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
+import nl.enjarai.doabarrelroll.api.event.RollGroup;
 import nl.enjarai.doabarrelroll.api.net.HandshakeClient;
 import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
 import nl.enjarai.doabarrelroll.config.ModConfig;
@@ -30,6 +31,7 @@ public class DoABarrelRollClient {
     public static final SmoothUtil PITCH_SMOOTHER = new SmoothUtil();
     public static final SmoothUtil YAW_SMOOTHER = new SmoothUtil();
     public static final SmoothUtil ROLL_SMOOTHER = new SmoothUtil();
+    public static final RollGroup FALL_FLYING_GROUP = RollGroup.of(DoABarrelRoll.id("fall_flying"));
     private static double lastLookUpdate;
     private static double lastLerpUpdate;
     public static double landingLerp = 1;
@@ -37,21 +39,19 @@ public class DoABarrelRollClient {
     public static Vector2d mouseTurnVec = new Vector2d();
     public static double throttle = 0;
 
-    // TODO triple jump to activate???
-
     public static void init() {
-        RollEvents.SHOULD_ROLL_CHECK.register(DoABarrelRollClient::isFallFlying);
+        FALL_FLYING_GROUP.trueIf(DoABarrelRollClient::isFallFlying);
 
         // Keyboard modifiers
         RollEvents.EARLY_CAMERA_MODIFIERS.register((rotationDelta, currentRotation) -> rotationDelta
                 .useModifier(RotationModifiers::manageThrottle, ModConfig.INSTANCE::getEnableThrust)
                 .useModifier(RotationModifiers.strafeButtons(1800)),
-                10, DoABarrelRollClient::isFallFlying);
+                10, FALL_FLYING_GROUP);
 
         // Mouse modifiers, including swapping axes
         RollEvents.EARLY_CAMERA_MODIFIERS.register((rotationDelta, currentRotation) -> rotationDelta
                 .useModifier(ModConfig.INSTANCE::configureRotation),
-                20, DoABarrelRollClient::isFallFlying);
+                20, FALL_FLYING_GROUP);
 
         // Generic movement modifiers, banking and such
         RollEvents.LATE_CAMERA_MODIFIERS.register((rotationDelta, currentRotation) -> rotationDelta
@@ -60,7 +60,7 @@ public class DoABarrelRollClient {
                         ModConfig.INSTANCE.getSmoothing()
                 ), ModConfig.INSTANCE::getSmoothingEnabled)
                 .useModifier(RotationModifiers::banking, ModConfig.INSTANCE::getEnableBanking),
-                10, DoABarrelRollClient::isFallFlying);
+                10, FALL_FLYING_GROUP);
     }
 
     public static boolean updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY) {
