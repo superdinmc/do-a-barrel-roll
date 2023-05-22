@@ -8,13 +8,19 @@
     "GameRendererMixin",
     "InGameHudMixin",
     "LivingEntityMixin",
-    "MouseMixin",
     "PlayerEntityMixin",
-    "PlayerEntityRendererMixin"
+    "PlayerEntityRendererMixin",
+    "roll.CameraMixin",
+    "roll.MouseMixin",
+    "roll.entity.AbstractClientPlayerEntityMixin",
+    "roll.entity.ClientPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "mixins": [
+    "roll.entity.EntityMixin",
+    "roll.entity.LivingEntityMixin",
+    "roll.entity.PlayerEntityMixin"
   ]
 }

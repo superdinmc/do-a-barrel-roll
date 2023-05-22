@@ -7,6 +7,7 @@ import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
+import nl.enjarai.doabarrelroll.api.RollEntity;
 import nl.enjarai.doabarrelroll.data.Components;
 import nl.enjarai.doabarrelroll.flight.ElytraMath;
 import org.joml.Quaternionf;
@@ -41,7 +42,7 @@ public abstract class PlayerEntityRendererMixin {
     )
     private Quaternionf doABarrelRoll$modifyRoll(Quaternionf original) {
         if (
-                !DoABarrelRollClient.isRolling() ||
+                !((RollEntity) player).doABarrelRoll$isRolling() ||
                 !(player instanceof ClientPlayerEntity) // ||
                 // !player.equals(MinecraftClient.getInstance().getCameraEntity())
         ) return original;

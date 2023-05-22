@@ -20,12 +20,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity {
-
-    @Shadow public abstract Either<PlayerEntity.SleepFailureReason, Unit> trySleep(BlockPos pos);
-
     protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
     }
+
+    @Shadow
+    public abstract Either<PlayerEntity.SleepFailureReason, Unit> trySleep(BlockPos pos);
 
     @SuppressWarnings("ConstantConditions")
     @Inject(

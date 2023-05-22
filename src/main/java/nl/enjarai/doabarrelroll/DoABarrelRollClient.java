@@ -22,6 +22,7 @@ import nl.enjarai.doabarrelroll.render.HorizonLineWidget;
 import nl.enjarai.doabarrelroll.render.MomentumCrosshairWidget;
 import nl.enjarai.doabarrelroll.util.MixinHooks;
 import org.joml.Vector2d;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 public class DoABarrelRollClient {
     public static final HandshakeClient<SyncedModConfig> HANDSHAKE_CLIENT = new HandshakeClient<>(
@@ -34,9 +35,7 @@ public class DoABarrelRollClient {
     public static final RollGroup FALL_FLYING_GROUP = RollGroup.of(DoABarrelRoll.id("fall_flying"));
     private static double lastLookUpdate;
     private static double lastLerpUpdate;
-    public static double landingLerp = 1;
     public static Vec3d left;
-    public static Vector2d mouseTurnVec = new Vector2d();
     public static double throttle = 0;
 
     public static void init() {
@@ -63,79 +62,9 @@ public class DoABarrelRollClient {
                 10, FALL_FLYING_GROUP);
     }
 
-    public static boolean updateMouse(ClientPlayerEntity player, double cursorDeltaX, double cursorDeltaY) {
-
-        if (!isRolling()) return true;
-
-        // reset the landing animation when flying
-        landingLerp = 0;
-
-        if (ModConfig.INSTANCE.getMomentumBasedMouse()) {
-
-            // add the mouse movement to the current vector and normalize if needed
-            mouseTurnVec.add(new Vector2d(cursorDeltaX, cursorDeltaY).mul(1f / 300));
-            if (mouseTurnVec.lengthSquared() > 1.0) {
-                mouseTurnVec.normalize();
-            }
-
-            // enlarge the vector and apply it to the camera
-            var delta = getDelta();
-            var readyTurnVec = new Vector2d(mouseTurnVec).mul(1200 * (float) delta);
-            changeElytraLook(readyTurnVec.y, readyTurnVec.x, 0, ModConfig.INSTANCE.getDesktopSensitivity(), delta);
-
-        } else {
-
-            // if we are not using a momentum based mouse, we can reset it and apply the values directly
-            mouseTurnVec.zero();
-            changeElytraLook(cursorDeltaY, cursorDeltaX, 0, ModConfig.INSTANCE.getDesktopSensitivity());
-        }
-
-        return false;
-    }
-
     public static void onWorldRender(MinecraftClient client, float tickDelta, MatrixStack matrix) {
 
-        double time = GlfwUtil.getTime();
-        double lerpDelta = time - lastLerpUpdate;
-        lastLerpUpdate = time;
 
-        if (!isRolling()) {
-
-            landingLerp = MathHelper.lerp(MathHelper.clamp(lerpDelta * 2, 0, 1), landingLerp, 1);
-
-            // round the lerp off when done to hopefully avoid world flickering
-            if (landingLerp > 0.9) landingLerp = 1;
-
-            clearValues();
-
-            if (client.player != null) {
-                left = left.lerp(ElytraMath.getAssumedLeft(client.player.getYaw()), landingLerp);
-            }
-
-        } else {
-
-            if (client.isPaused()) {
-
-                // keep updating the last look update time when paused to prevent large jumps after unpausing
-                lastLookUpdate = GlfwUtil.getTime();
-
-            } else {
-
-                // update the camera rotation every frame to keep it smooth
-                changeElytraLook(0, 0, 0, ModConfig.INSTANCE.getDesktopSensitivity());
-
-            }
-        }
-
-        if (client.player != null && landingLerp < 1) {
-
-            // calculate the camera angle and apply it
-            double angle = -Math.acos(MathHelper.clamp(left.dotProduct(ElytraMath.getAssumedLeft(client.player.getYaw())), -1, 1)) * ElytraMath.TODEG;
-            if (left.getY() < 0) angle *= -1;
-            if (client.options.getPerspective().isFrontView()) angle *= -1;
-            matrix.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) angle));
-
-        }
     }
 
     public static void onRenderCrosshair(MatrixStack matrices, float tickDelta, int scaledWidth, int scaledHeight) {
@@ -149,17 +78,16 @@ public class DoABarrelRollClient {
             }
 
             if (ModConfig.INSTANCE.getMomentumBasedMouse() && ModConfig.INSTANCE.getShowMomentumWidget()) {
-                MomentumCrosshairWidget.render(matrices, scaledWidth, scaledHeight, new Vector2d(mouseTurnVec));
+//                MomentumCrosshairWidget.render(matrices, scaledWidth, scaledHeight, new Vector2d(mouseTurnVec)); TODO
             }
         }
     }
-
 
     private static void clearValues() {
         PITCH_SMOOTHER.clear();
         YAW_SMOOTHER.clear();
         ROLL_SMOOTHER.clear();
-        mouseTurnVec.zero();
+//        mouseTurnVec.zero();
         lastLookUpdate = GlfwUtil.getTime();
         throttle = 0;
     }
@@ -185,33 +113,10 @@ public class DoABarrelRollClient {
      * Only use if you <b>haven't</b> called {@link DoABarrelRollClient#getDelta()} before this.
      */
     public static void changeElytraLook(double pitch, double yaw, double roll, Sensitivity sensitivity) {
-        changeElytraLook(pitch, yaw, roll, sensitivity, getDelta());
+//        changeElytraLook(pitch, yaw, roll, sensitivity, getDelta());
     }
 
-    public static void changeElytraLook(double pitch, double yaw, double roll, Sensitivity sensitivity, double delta) {
-        var player = MinecraftClient.getInstance().player;
-        if (player == null) return;
 
-        var rotDelta = new RotationInstant(pitch, yaw, roll, delta);
-        var currentRoll = ElytraMath.getRoll(player.getYaw(), DoABarrelRollClient.left);
-        var currentRotation = new RotationInstant(
-                player.getPitch(),
-                player.getYaw(),
-                currentRoll,
-                0
-        );
-
-        ElytraMath.changeElytraLookDirectly(player,
-                RollEvents.lateCameraModifiers(
-                        RollEvents.earlyCameraModifiers(rotDelta
-                                        .useModifier(RotationModifiers.fixNaN("INPUT")), currentRotation)
-                                .useModifier(RotationModifiers.fixNaN("EARLY_CAMERA_MODIFIERS"))
-                                .applySensitivity(sensitivity)
-                                .useModifier(RotationModifiers.fixNaN("SENSITIVITY")),
-                        currentRotation
-                ).useModifier(RotationModifiers.fixNaN("LATE_CAMERA_MODIFIERS"))
-        );
-    }
 
     public static boolean isFallFlying() {
         if (!HANDSHAKE_CLIENT.getConfig().map(SyncedModConfig::forceEnabled).orElse(false)) {
@@ -228,9 +133,5 @@ public class DoABarrelRollClient {
 
         var player = MinecraftClient.getInstance().player;
         return player != null && player.isFallFlying();
-    }
-
-    public static boolean isRolling() {
-        return RollEvents.shouldRoll();
     }
 }

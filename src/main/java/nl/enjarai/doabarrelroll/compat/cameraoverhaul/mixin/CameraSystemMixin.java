@@ -12,7 +12,8 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public abstract class CameraSystemMixin {
 
     private boolean allowModifications() {
-        return !DoABarrelRollClient.isRolling();
+//        return !DoABarrelRollClient.isRolling(); // TODO
+        return true;
     }
 
     @Dynamic

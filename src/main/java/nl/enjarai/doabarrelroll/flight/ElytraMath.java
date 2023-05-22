@@ -13,38 +13,6 @@ public class ElytraMath {
 
     public static void changeElytraLookDirectly(ClientPlayerEntity player, RotationInstant rotation) {
 
-        var pitch = rotation.getPitch();
-        var yaw = rotation.getYaw();
-        var roll = rotation.getRoll();
-
-        Vec3d facing = player.getRotationVecClient();
-        DoABarrelRollClient.left = DoABarrelRollClient.left.subtract(facing.multiply(DoABarrelRollClient.left.dotProduct(facing))).normalize();
-
-        // pitch
-        facing = rotateAxisAngle(facing, DoABarrelRollClient.left, -0.15 * pitch * TORAD);
-
-        // yaw
-        Vec3d up = facing.crossProduct(DoABarrelRollClient.left);
-        facing = rotateAxisAngle(facing, up, 0.15 * yaw * TORAD);
-        DoABarrelRollClient.left = rotateAxisAngle(DoABarrelRollClient.left, up, 0.15 * yaw * TORAD);
-
-        // roll
-        DoABarrelRollClient.left = rotateAxisAngle(DoABarrelRollClient.left, facing, 0.15 * roll * TORAD);
-
-
-        double deltaY = -Math.asin(facing.getY()) * TODEG - player.getPitch();
-        double deltaX = -Math.atan2(facing.getX(), facing.getZ()) * TODEG - player.getYaw();
-
-        player.changeLookDirection(deltaX / 0.15, deltaY / 0.15);
-
-        // fix hand spasm when wrapping yaw value
-        if (player.getYaw() < -90 && player.renderYaw > 90) {
-            player.renderYaw -= 360;
-            player.lastRenderYaw -= 360;
-        } else if (player.getYaw() > 90 && player.renderYaw < -90) {
-            player.renderYaw += 360;
-            player.lastRenderYaw += 360;
-        }
     }
 
     public static Vec3d getAssumedLeft(float yaw) {
@@ -78,11 +46,15 @@ public class ElytraMath {
         y += (tmp1 - tmp2) * v.getZ();
 
         return new Vec3d(x, y, z);
+
+        // The above function explained simply does the following:
+        // 1. Rotate the vector around the axis so that the axis is the y axis
     }
 
     public static double getRoll(float yaw, Vec3d left) {
-        double angle = -Math.acos(MathHelper.clamp(left.dotProduct(getAssumedLeft(yaw)), -1, 1)) * TODEG;
-        if (left.getY() < 0) angle *= -1;
-        return angle;
+//        double angle = -Math.acos(MathHelper.clamp(left.dotProduct(getAssumedLeft(yaw)), -1, 1)) * TODEG;
+//        if (left.getY() < 0) angle *= -1;
+//        return angle; TODO
+        return 0;
     }
 }
