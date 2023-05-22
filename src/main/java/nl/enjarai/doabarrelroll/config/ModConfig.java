@@ -197,6 +197,7 @@ public class ModConfig {
                                         .build())
                                 .build())
                         .build())
+                .save(this::save)
                 .build()
                 .generateScreen(parent);
     }

@@ -1,2 +1,1 @@
-- Fixed an issue causing a crash on dedicated servers.
-- Removed the dependency on YACL for dedicated servers, as it's not needed there.
+- Fixed the config not actually saving to disk.
