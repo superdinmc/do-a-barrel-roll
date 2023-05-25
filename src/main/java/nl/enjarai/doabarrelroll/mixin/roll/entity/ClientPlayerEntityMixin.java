@@ -16,6 +16,7 @@ import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,6 +27,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static java.lang.Math.asin;
 import static java.lang.Math.atan2;
+import static nl.enjarai.doabarrelroll.flight.ElytraMath.TODEG;
+import static nl.enjarai.doabarrelroll.flight.ElytraMath.TORAD;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntityMixin {
@@ -91,34 +94,12 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 		doABarrelRoll$changeElytraLook((float) rotDelta.getPitch(), (float) rotDelta.getYaw(), (float) rotDelta.getRoll());
 	}
 
-	private static final float TORAD = (float) (Math.PI / 180);
-	private static final float TODEG = (float) (180 / Math.PI);
-
 	@Override
 	public void doABarrelRoll$changeElytraLook(float pitch, float yaw, float roll) {
 		var currentPitch = getPitch();
 		var currentYaw = getYaw();
 		var currentRoll = doABarrelRoll$getRoll();
 
-		var matrix = new Matrix4f();
-
-
-		matrix.rotateX(-currentPitch * TORAD);
-		matrix.rotateY((currentYaw + 180f) * TORAD);
-		matrix.rotateZ(currentRoll * TORAD);
-//
-		matrix.rotateX(-pitch * TORAD * 0.15f);
-		matrix.rotateY(yaw * TORAD * 0.15f);
-		matrix.rotateZ(roll * TORAD * 0.15f);
-//		matrix.mul(new Matrix3f(matrix).identity());
-//
-		var angles = new Vector3f();
-//
-		matrix.getEulerAnglesXYZ(angles);
-//
-		var newPitch = TODEG * -angles.x - currentPitch;
-		var newYaw = (TODEG * angles.y - 180f) - currentYaw;
-		var newRoll = TODEG * angles.z - currentRoll;
 
 //		var pitchYaw = new Vector2f(yaw, pitch);
 //		var rollMatrix = new Matrix2f();
@@ -157,9 +138,24 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 //		var deltaPitch = (float) Math.toDegrees(deltaRotation.() - rotation.getPitch());
 //
 //
-//		var tempVec = new Vector3f();
-		var facing = getRotationVecClient().toVector3f();
-//		DoABarrelRollClient.left = DoABarrelRollClient.left.subtract(facing.multiply(DoABarrelRollClient.left.dotProduct(facing))).normalize();
+		var facing = new Vector3d(getRotationVecClient().toVector3f());
+		var left = new Vector3d(-1, 0, 0);
+		left.rotateZ(currentRoll * TORAD);
+		left.rotateY(-currentYaw * TORAD);
+
+//		left.sub(new Vector3d(facing).mul(left.dot(facing))).normalize();
+
+		// Pitch
+		facing.rotateAxis(-0.15 * pitch * TORAD, left.x, left.y, left.z);
+
+		// Yaw
+		var up = facing.cross(left, new Vector3d());
+		facing.rotateAxis(0.15 * yaw * TORAD, up.x, up.y, up.z);
+		left.rotateAxis(0.15 * yaw * TORAD, up.x, up.y, up.z);
+
+		// Roll
+		left.rotateAxis(0.15 * roll * TORAD, facing.x, facing.y, facing.z);
+
 //
 //		// pitch
 //		facing = rotateAxisAngle(facing, DoABarrelRollClient.left, -0.15 * pitch * TORAD);
@@ -173,13 +169,27 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 //		DoABarrelRollClient.left = rotateAxisAngle(DoABarrelRollClient.left, facing, 0.15 * roll * TORAD);
 //
 //
-//		double deltaY = -Math.asin(facing.getY()) * TODEG - player.getPitch();
-//		double   = -Math.atan2(facing.getX(), facing.getZ()) * TODEG - player.getYaw();
+//		var normalPitch
+
+		System.out.println("angles: " + facing.angle(left) * TODEG + ", " + facing.angle(up) * TODEG + ", " + up.angle(left) * TODEG);
+
+		double newPitch = -Math.asin(facing.y) * TODEG;
+		double newYaw = -Math.atan2(facing.x, facing.z) * TODEG;
+
+		var normalLeft = new Vector3d(-1, 0, 0).rotateY(-newYaw * TORAD);
+		double newRoll = left.angle(normalLeft) * TODEG; // new Vector3d(-Math.cos(newYaw * TORAD), 0, -Math.sin(newYaw * TORAD))
+//		double newRoll = -Math.acos(MathHelper.clamp(left.dot(-Math.cos(newYaw), 0, -Math.sin(newYaw)), -1, 1)) * TODEG;
+		if (left.y > 0) newRoll *= -1;
+
+		double deltaY = newPitch - currentPitch;
+		double deltaX = newYaw - currentYaw;
+		double deltaRoll = newRoll - currentRoll;
 
 //		var up = new Vector3f(facing).cross(tempVec.set(facing).rotateY((float) (Math.PI / 2)));
 
 		// Apply vanilla pitch and yaw
-		changeLookDirection(newYaw / 0.15f, newPitch / 0.15f);
+		changeLookDirection(deltaX / 0.15, deltaY / 0.15);
+
 //		float deltaPitch = (float) (newPitch - currentPitch);
 //		float deltaYaw = (float) (newYaw - currentYaw);
 //		setPitch(getPitch() + deltaPitch);
@@ -193,8 +203,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 //		}
 
 		// Apply roll
-		var deltaRoll = newRoll;
-		doABarrelRoll$setRoll(doABarrelRoll$getRoll() + deltaRoll);
+		doABarrelRoll$setRoll((float) (doABarrelRoll$getRoll() + deltaRoll));
 		prevRoll += deltaRoll;
 
 		// fix hand spasm when wrapping yaw value

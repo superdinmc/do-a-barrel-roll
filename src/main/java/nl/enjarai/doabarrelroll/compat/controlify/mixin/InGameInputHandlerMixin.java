@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class InGameInputHandlerMixin {
     @Shadow @Final private MinecraftClient minecraft;
 
-    @SuppressWarnings("DataFlowIssue")
     @Inject(
             method = "processPlayerLook",
             at = @At("HEAD"),
@@ -23,7 +22,7 @@ public abstract class InGameInputHandlerMixin {
             remap = false
     )
     private void doABarrelRoll$cancelDefaultLookHandling(CallbackInfo ci) {
-        if (((RollEntity) minecraft.player).doABarrelRoll$isRolling()) {
+        if (minecraft.player instanceof RollEntity rollEntity && rollEntity.doABarrelRoll$isRolling()) {
             ci.cancel();
         }
     }
