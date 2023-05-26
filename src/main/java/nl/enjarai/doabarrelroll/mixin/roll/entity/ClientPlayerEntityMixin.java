@@ -100,107 +100,40 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 		var currentYaw = getYaw();
 		var currentRoll = doABarrelRoll$getRoll();
 
-
-//		var pitchYaw = new Vector2f(yaw, pitch);
-//		var rollMatrix = new Matrix2f();
-//		rollMatrix.rotate((float) (currentRoll * TORAD));
-//		pitchYaw.mul(rollMatrix);
-
-//
-//		System.out.println("currentYaw: " + currentYaw);
-//
-//		var rotation = new Quaterniond();
-//		rotation.rotateX(-currentPitch * TORAD);
-//		rotation.rotateY(currentYaw * TORAD);
-//		rotation.rotateZ(currentRoll * TORAD);
-//
-//		var deltaRotation = new Quaterniond();
-//		deltaRotation.rotateX(0.15 * -pitch * TORAD);
-//		deltaRotation.rotateY(0.15 * yaw * TORAD);
-//		deltaRotation.rotateZ(0.15 * roll * TORAD);
-//		//		deltaRotation.rotateX(0.15 * pitch * TORAD);
-//
-//		rotation.mul(deltaRotation);
-//
-//		var matrix = rotation.get(new Matrix3d());
-//		var angles = matrix.getEulerAnglesXYZ(new Vector3d());
-//
-//		double newPitch = TODEG * -angles.x - currentPitch;
-//		double newYaw = TODEG * angles.y - currentYaw;
-//		double newRoll = TODEG * angles.z - currentRoll;
-//
-		// ===============
-
-//		double newPitch = TODEG * Math.asin(2 * (deltaRotation.w * deltaRotation.x - deltaRotation.y * deltaRotation.z));
-//		double newYaw = TODEG * Math.atan2(2 * (deltaRotation.w * deltaRotation.y + deltaRotation.x * deltaRotation.z), 1 - 2 * (deltaRotation.y * deltaRotation.y + deltaRotation.x * deltaRotation.x));
-//		double newRoll = TODEG * Math.atan2(2 * (deltaRotation.w * deltaRotation.z + deltaRotation.x * deltaRotation.y), 1 - 2 * (deltaRotation.z * deltaRotation.z + deltaRotation.x * deltaRotation.x));
-
-//		var deltaPitch = (float) Math.toDegrees(deltaRotation.() - rotation.getPitch());
-//
-//
+		// Convert pitch, yaw, and roll to a facing and left vector
 		var facing = new Vector3d(getRotationVecClient().toVector3f());
-		var left = new Vector3d(-1, 0, 0);
-		left.rotateZ(currentRoll * TORAD);
-		left.rotateY(-currentYaw * TORAD);
+		var left = new Vector3d(1, 0, 0);
+		left.rotateZ(-currentRoll * TORAD);
+		left.rotateX(-currentPitch * TORAD);
+		left.rotateY(-(currentYaw + 180) * TORAD);
 
-//		left.sub(new Vector3d(facing).mul(left.dot(facing))).normalize();
 
-		// Pitch
+		// Apply pitch
 		facing.rotateAxis(-0.15 * pitch * TORAD, left.x, left.y, left.z);
 
-		// Yaw
+		// Apply yaw
 		var up = facing.cross(left, new Vector3d());
 		facing.rotateAxis(0.15 * yaw * TORAD, up.x, up.y, up.z);
 		left.rotateAxis(0.15 * yaw * TORAD, up.x, up.y, up.z);
 
-		// Roll
+		// Apply roll
 		left.rotateAxis(0.15 * roll * TORAD, facing.x, facing.y, facing.z);
 
-//
-//		// pitch
-//		facing = rotateAxisAngle(facing, DoABarrelRollClient.left, -0.15 * pitch * TORAD);
-//
-//		// yaw
-//		Vec3d up = facing.crossProduct(DoABarrelRollClient.left);
-//		facing = rotateAxisAngle(facing, up, 0.15 * yaw * TORAD);
-//		DoABarrelRollClient.left = rotateAxisAngle(DoABarrelRollClient.left, up, 0.15 * yaw * TORAD); // TODO THIS THIS THIS
-//
-//		// roll
-//		DoABarrelRollClient.left = rotateAxisAngle(DoABarrelRollClient.left, facing, 0.15 * roll * TORAD);
-//
-//
-//		var normalPitch
 
-		System.out.println("angles: " + facing.angle(left) * TODEG + ", " + facing.angle(up) * TODEG + ", " + up.angle(left) * TODEG);
-
+		// Extract new pitch, yaw, and roll
 		double newPitch = -Math.asin(facing.y) * TODEG;
 		double newYaw = -Math.atan2(facing.x, facing.z) * TODEG;
 
-		var normalLeft = new Vector3d(-1, 0, 0).rotateY(-newYaw * TORAD);
-		double newRoll = left.angle(normalLeft) * TODEG; // new Vector3d(-Math.cos(newYaw * TORAD), 0, -Math.sin(newYaw * TORAD))
-//		double newRoll = -Math.acos(MathHelper.clamp(left.dot(-Math.cos(newYaw), 0, -Math.sin(newYaw)), -1, 1)) * TODEG;
-		if (left.y > 0) newRoll *= -1;
+		var normalLeft = new Vector3d(1, 0, 0).rotateY(-(newYaw + 180) * TORAD);
+		double newRoll = -Math.atan2(left.cross(normalLeft, new Vector3d()).dot(facing), left.dot(normalLeft)) * TODEG;
 
+		// Calculate deltas
 		double deltaY = newPitch - currentPitch;
 		double deltaX = newYaw - currentYaw;
 		double deltaRoll = newRoll - currentRoll;
 
-//		var up = new Vector3f(facing).cross(tempVec.set(facing).rotateY((float) (Math.PI / 2)));
-
 		// Apply vanilla pitch and yaw
 		changeLookDirection(deltaX / 0.15, deltaY / 0.15);
-
-//		float deltaPitch = (float) (newPitch - currentPitch);
-//		float deltaYaw = (float) (newYaw - currentYaw);
-//		setPitch(getPitch() + deltaPitch);
-//		setYaw(getYaw() + deltaYaw);
-//		setPitch(MathHelper.clamp(getPitch(), -90.0f, 90.0f));
-//		prevPitch += deltaPitch;
-//		prevYaw += deltaYaw;
-//		prevPitch = MathHelper.clamp(prevPitch, -90.0f, 90.0f);
-//		if (getVehicle() != null) {
-//			getVehicle().onPassengerLookAround((Entity) (Object) this);
-//		}
 
 		// Apply roll
 		doABarrelRoll$setRoll((float) (doABarrelRoll$getRoll() + deltaRoll));
