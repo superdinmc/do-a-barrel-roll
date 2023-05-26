@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.BlockView;
 import nl.enjarai.doabarrelroll.api.RollCamera;
 import nl.enjarai.doabarrelroll.api.RollEntity;
@@ -23,16 +24,49 @@ public abstract class CameraMixin implements RollCamera {
     @Shadow private Entity focusedEntity;
 
     @Unique
+    private boolean isRolling;
+    @Unique
+    private float lastRollBack;
+    @Unique
+    private float rollBack;
+    @Unique
     private float roll;
     @Unique
     private final ThreadLocal<Float> tempRoll = new ThreadLocal<>();
 
     @Inject(
+            method = "updateEyeHeight",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/client/render/Camera;cameraY:F",
+                    ordinal = 0
+            )
+    )
+    private void doABarrelRoll$interpolateRollnt(CallbackInfo ci) {
+        if (!((RollEntity) focusedEntity).doABarrelRoll$isRolling()) {
+            lastRollBack = rollBack;
+            rollBack -= rollBack * 0.5f;
+        }
+    }
+
+    @Inject(
             method = "update",
             at = @At("HEAD")
     )
-    private void doABarrelRoll$captureTickDelta(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci, @Share("tickDelta") LocalFloatRef tickDeltaRef) {
+    private void doABarrelRoll$captureTickDeltaAndUpdate(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci, @Share("tickDelta") LocalFloatRef tickDeltaRef) {
         tickDeltaRef.set(tickDelta);
+        isRolling = ((RollEntity) focusedEntity).doABarrelRoll$isRolling();
+    }
+
+    @Inject(
+            method = "update",
+            at = @At("TAIL")
+    )
+    private void doABarrelRoll$updateRollBack(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
+        if (isRolling) {
+            rollBack = roll;
+            lastRollBack = roll;
+        }
     }
 
     @WrapWithCondition(
@@ -44,7 +78,11 @@ public abstract class CameraMixin implements RollCamera {
             )
     )
     private boolean doABarrelRoll$addRoll1(Camera thiz, float yaw, float pitch, @Share("tickDelta") LocalFloatRef tickDelta) {
-        tempRoll.set(((RollEntity) focusedEntity).doABarrelRoll$getRoll(tickDelta.get()));
+        if (isRolling) {
+            tempRoll.set(((RollEntity) focusedEntity).doABarrelRoll$getRoll(tickDelta.get()));
+        } else {
+            tempRoll.set(MathHelper.lerp(tickDelta.get(), lastRollBack, rollBack));
+        }
         return true;
     }
 

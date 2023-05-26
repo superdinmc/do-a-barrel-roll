@@ -40,31 +40,12 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	@Unique
 	private float roll;
 
-	@Unique
-	private float lastRoll;
-	@Unique
-	private float renderRoll;
-	@Unique
-	private float lastRenderRoll;
-
-	@Unique
-	private float landingLerp = 1;
-
-	@Inject(
-			method = "<init>",
-			at = @At("RETURN")
-	)
-	public void doABarrelRoll$init(MinecraftClient client, ClientWorld world, ClientPlayNetworkHandler networkHandler, StatHandler stats, ClientRecipeBook recipeBook, boolean lastSneaking, boolean lastSprinting, CallbackInfo ci) {
-//		DoABarrelRollClient.left = ElytraMath.getAssumedLeft(getYaw()); // TODO
-	}
-
 	@Override
 	protected void doABarrelRoll$baseTickTail(CallbackInfo ci) {
 		prevRoll = doABarrelRoll$getRoll();
 
-		if (doABarrelRoll$isRolling()) {
-			// reset the landing animation when flying
-			landingLerp = 0;
+		if (!doABarrelRoll$isRolling()) {
+			doABarrelRoll$setRoll(0.0f);
 		}
 	}
 

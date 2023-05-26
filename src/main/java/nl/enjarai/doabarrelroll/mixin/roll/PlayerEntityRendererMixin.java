@@ -1,4 +1,4 @@
-package nl.enjarai.doabarrelroll.mixin;
+package nl.enjarai.doabarrelroll.mixin.roll;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -41,15 +41,14 @@ public abstract class PlayerEntityRendererMixin {
             index = 0
     )
     private Quaternionf doABarrelRoll$modifyRoll(Quaternionf original) {
-        if (
-                !((RollEntity) player).doABarrelRoll$isRolling() ||
-                !(player instanceof ClientPlayerEntity) // ||
-                // !player.equals(MinecraftClient.getInstance().getCameraEntity())
-        ) return original;
+        var rollEntity = (RollEntity) player;
 
-        var roll = ElytraMath.getRoll(player.getYaw(), DoABarrelRollClient.left);
+        if (player instanceof ClientPlayerEntity && rollEntity.doABarrelRoll$isRolling()) {
+            var roll = rollEntity.doABarrelRoll$getRoll();
+            return RotationAxis.POSITIVE_Y.rotationDegrees(roll);
+        }
 
-        return RotationAxis.POSITIVE_Y.rotationDegrees((float) roll);
+        return original;
     }
 
     @Inject(

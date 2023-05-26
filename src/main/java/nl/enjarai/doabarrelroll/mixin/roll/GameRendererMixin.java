@@ -1,4 +1,4 @@
-package nl.enjarai.doabarrelroll.mixin;
+package nl.enjarai.doabarrelroll.mixin.roll;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
