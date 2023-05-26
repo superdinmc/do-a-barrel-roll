@@ -2,17 +2,10 @@ package nl.enjarai.doabarrelroll.mixin.roll;
 
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.network.ClientPlayerEntity;
-import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.api.RollEntity;
-import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.config.ModConfig;
-import nl.enjarai.doabarrelroll.config.Sensitivity;
-import nl.enjarai.doabarrelroll.flight.ElytraMath;
-import nl.enjarai.doabarrelroll.flight.RotationModifiers;
-import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 import org.joml.Vector2d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

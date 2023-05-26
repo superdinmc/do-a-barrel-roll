@@ -47,7 +47,7 @@ public abstract class LivingEntityMixin extends Entity {
                 world.addParticle(
                         ParticleTypes.CAMPFIRE_SIGNAL_SMOKE,
                         pPos.getX(), pPos.getY(), pPos.getZ(),
-                        random.nextGaussian() * 0.05, -velocity.y * 0.5, random.nextGaussian() * 0.05
+                        0, 0, 0
                 );
             }
         }

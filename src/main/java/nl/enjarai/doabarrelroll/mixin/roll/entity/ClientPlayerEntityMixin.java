@@ -1,11 +1,7 @@
 package nl.enjarai.doabarrelroll.mixin.roll.entity;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.recipebook.ClientRecipeBook;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.stat.StatHandler;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
@@ -14,19 +10,12 @@ import nl.enjarai.doabarrelroll.config.Sensitivity;
 import nl.enjarai.doabarrelroll.flight.ElytraMath;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static java.lang.Math.asin;
-import static java.lang.Math.atan2;
 import static nl.enjarai.doabarrelroll.flight.ElytraMath.TODEG;
 import static nl.enjarai.doabarrelroll.flight.ElytraMath.TORAD;
 

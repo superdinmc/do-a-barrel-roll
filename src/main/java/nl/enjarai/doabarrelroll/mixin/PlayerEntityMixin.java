@@ -1,19 +1,15 @@
 package nl.enjarai.doabarrelroll.mixin;
 
-import com.mojang.datafixers.util.Either;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Unit;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.util.MixinHooks;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -24,17 +20,10 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         super(entityType, world);
     }
 
-    @Shadow
-    public abstract Either<PlayerEntity.SleepFailureReason, Unit> trySleep(BlockPos pos);
-
     @SuppressWarnings("ConstantConditions")
     @Inject(
             method = "checkFallFlying()Z",
             at = @At("HEAD"),
-//            at = @At(
-//                    value = "INVOKE_ASSIGN",
-//                    target = "Lnet/minecraft/entity/player/PlayerEntity;getEquippedStack(Lnet/minecraft/entity/EquipmentSlot;)Lnet/minecraft/item/ItemStack;"
-//            ),
             cancellable = true
     )
     private void doABarrelRoll$interceptFallFlyingStart(CallbackInfoReturnable<Boolean> cir) {
