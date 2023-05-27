@@ -1,1 +1,1 @@
-- Fixed the config not actually saving to disk.
+- Disabled certain features in multiplayer if not explicitly allowed by the server.

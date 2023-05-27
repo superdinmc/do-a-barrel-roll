@@ -263,7 +263,7 @@ public class ModConfig {
 
     public boolean getEnableThrust() {
         return general.thrust.enable_thrust && DoABarrelRollClient.HANDSHAKE_CLIENT
-                .getConfig().map(SyncedModConfig::allowThrusting).orElse(true);
+                .getConfig().map(SyncedModConfig::allowThrusting).orElse(false);
     }
 
     public double getMaxThrust() {
