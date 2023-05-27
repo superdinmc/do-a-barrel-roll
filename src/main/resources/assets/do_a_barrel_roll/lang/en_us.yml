@@ -1,0 +1,103 @@
+config.do_a_barrel_roll:
+  title: §lDo a Barrel Roll
+  general:
+    .: General
+    mod_enabled: Mod Enabled
+  controls:
+    .: Controls
+    switch_roll_and_yaw: Switch Roll and Yaw
+    switch_roll_and_yaw.description: Switch the roll and yaw axis. not recommended, but might make flying easier for some people.
+    momentum_based_mouse: Use Momentum Based Mouse
+    momentum_based_mouse.description: Makes it easier to make continuous movements with the mouse. Takes some getting used to.
+    show_momentum_widget: Show Momentum Mouse Widget
+    show_momentum_widget.description: Turn the crosshair into a helpful widget when using the momentum based camera.
+    activation_behaviour:
+      .: Activation Behaviour
+      vanilla: Vanilla
+      triple_jump: Triple Jump
+      hybrid: Hybrid
+      hybrid_toggle: Hybrid Toggle
+      description: |
+        Configures how the Elytra is activated.
+        
+        §lVANILLA§r: Same as vanilla; jump in midair.
+        §lTRIPLE_JUMP§r: Requires you to jump twice in midair instead of once.
+        §lHYBRID§r: Jumping once in midair activates standard vanilla flight, jumping again after that enables the mod.
+        §lHYBRID_TOGGLE§r: Same as HYBRID, but jumping toggles the mod instead of just enabling it once.
+    invert_pitch: Invert Pitch
+  hud:
+    .: HUD
+    show_horizon: Show Horizon Widget
+    show_horizon.description: Show a simple artificial horizon widget around your crosshair.
+  banking:
+    .: Banking Options
+    enable_banking: Enable Banking
+    enable_banking.description: Banking slightly yaws the camera when rolling, creating a more realistic, plane-like feeling.
+    banking_strength: Banking Strength
+  thrust:
+    .: Thrusting Options
+    enable_thrust: Enable Thrusting
+    enable_thrust.description: |
+      Enables you to use the forward and back keys (W and S by default) 
+      to infinitely accelerate and decelerate respectively.
+      This is a very cheaty feature, and can be used to fly very fast.
+      §4This is very likely to flag anti cheat on just about any server.
+      Use at your own risk.
+    max_thrust: Max Thrusting Speed
+    max_thrust.description: |
+      The maximum speed that can be reached by thrusting. 
+      Setting this to anything above 2-3 might cause
+      problems with chunks not loading fast enough.
+    thrust_acceleration: Thrusting Acceleration
+    thrust_acceleration.description: |
+      The acceleration of thrusting. 
+      Higher values will make it easier to reach max speed.
+    thrust_particles: Show Thrusting Particles
+  sensitivity: Sensitivity
+  smoothing:
+    .: Smoothing
+    smoothing_enabled: Enable Smoothing
+    smoothing_pitch: Pitch
+    smoothing_yaw: Yaw
+    smoothing_roll: Roll
+  desktop:
+    .: Mouse and Keyboard Sensitivity
+    pitch: Pitch
+    yaw: Yaw
+    roll: Roll
+  controller:
+    .: Controller Sensitivity
+    description: Only applicable when Controlify is installed.
+    pitch: Pitch
+    yaw: Yaw
+    roll: Roll
+
+category.do_a_barrel_roll.do_a_barrel_roll: Do a Barrel Roll
+key.do_a_barrel_roll:
+  toggle_enabled:
+    .: Toggle Enabled
+    enable: §aEnabled §rDo a Barrel Roll
+    disable: §cDisabled §rDo a Barrel Roll
+    disallowed: §cYou cannot disable Do a Barrel Roll on this server
+  toggle_thrust:
+    .: Toggle Thrusting
+    enable: §aEnabled §rThrusting
+    disable: §cDisabled §rThrusting
+    disallowed: §cYou cannot use thrusting on this server
+
+toast.do_a_barrel_roll:
+  .: Do a Barrel Roll
+  thrusting_disabled_by_server: §cElytra thrusting is not allowed on this server, the feature will be forcibly disabled. Disable it in your client config to remove this message.
+  mod_forced_enabled_by_server: This mod is forcibly enabled by this server, client-side toggling and some activation behaviours will be disabled.
+
+controlify:
+  category.do_a_barrel_roll.do_a_barrel_roll: Do a Barrel Roll
+  bind.do_a_barrel_roll:
+    pitch_up: Pitch Up
+    pitch_down: Pitch Down
+    yaw_left: Yaw Left
+    yaw_right: Yaw Right
+    roll_left: Roll Left
+    roll_right: Roll Right
+    thrust_forward: Thrust Forward
+    thrust_backward: Thrust Backward
