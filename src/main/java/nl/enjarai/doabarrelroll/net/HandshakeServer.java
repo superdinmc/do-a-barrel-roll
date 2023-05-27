@@ -34,6 +34,9 @@ public class HandshakeServer<T extends SyncableConfig<T>> {
     public PacketByteBuf getConfigSyncBuf(ServerPlayerEntity player) {
         var buf = new PacketByteBuf(Unpooled.buffer());
 
+        // Protocol version
+        buf.writeInt(1);
+
         var config = configSupplier.get();
         var data = config.getTransferCodec().encodeStart(JsonOps.INSTANCE, config);
         try {
@@ -67,15 +70,34 @@ public class HandshakeServer<T extends SyncableConfig<T>> {
         var state = getHandshakeState(player);
 
         if (state == HandshakeState.SENT) {
-            if (buf.readBoolean()) {
-                syncStates.put(player, HandshakeState.ACCEPTED);
-                DoABarrelRoll.LOGGER.info("Client of {} accepted server config.", player.getName().getString());
-                return HandshakeState.ACCEPTED;
-            } else {
+            var protocolVersion = buf.readInt();
+            if (protocolVersion != 1) {
                 syncStates.put(player, HandshakeState.FAILED);
                 DoABarrelRoll.LOGGER.warn(
-                        "Client of {} failed to process server config, check client logs find what went wrong.",
-                        player.getName().getString());
+                        "Client of {} sent unknown protocol version, expected 1, got {}. Will attempt to proceed anyway.",
+                        player.getName().getString(),
+                        protocolVersion
+                );
+            }
+
+            try {
+                if (buf.readBoolean()) {
+                    syncStates.put(player, HandshakeState.ACCEPTED);
+                    DoABarrelRoll.LOGGER.info("Client of {} accepted server config.", player.getName().getString());
+                    return HandshakeState.ACCEPTED;
+                } else {
+                    syncStates.put(player, HandshakeState.FAILED);
+                    DoABarrelRoll.LOGGER.warn(
+                            "Client of {} failed to process server config, check client logs find what went wrong.",
+                            player.getName().getString());
+                    return HandshakeState.FAILED;
+                }
+            } catch (IndexOutOfBoundsException e) {
+                syncStates.put(player, HandshakeState.FAILED);
+                DoABarrelRoll.LOGGER.warn(
+                        "Client of {} sent invalid config reply.",
+                        player.getName().getString()
+                );
                 return HandshakeState.FAILED;
             }
         }

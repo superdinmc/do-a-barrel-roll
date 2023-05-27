@@ -29,8 +29,13 @@ public class HandshakeClient<T> {
     }
 
     public PacketByteBuf handleConfigSync(PacketByteBuf buf) {
-        var data = buf.readString();
+        var protocolVersion = buf.readInt();
+        if (protocolVersion != 1) {
+            DoABarrelRoll.LOGGER.warn("Received config with unknown protocol version: {}, will attempt to load anyway", protocolVersion);
+        }
+
         try {
+            var data = buf.readString();
             serverConfig = transferCodec.parse(JsonOps.INSTANCE, JsonParser.parseString(data))
                     .getOrThrow(false, DoABarrelRoll.LOGGER::error);
         } catch (RuntimeException e) {
@@ -44,6 +49,7 @@ public class HandshakeClient<T> {
         }
 
         var returnBuf = new PacketByteBuf(Unpooled.buffer());
+        returnBuf.writeInt(1);
         returnBuf.writeBoolean(serverConfig != null);
         return returnBuf;
     }
