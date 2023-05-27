@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.serialization.Codec;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.net.SyncableConfig;
@@ -23,7 +24,7 @@ public class SyncedModConfigServer implements SyncableConfig<SyncedModConfigServ
             .disableHtmlEscaping() // We'll be able to use custom chars without them being saved differently
             .create();
 
-    public boolean allowThrusting = true;
+    public boolean allowThrusting = false;
     public boolean forceEnabled = false;
     public boolean forceInstalled = false;
     public int installedTimeout = 20;

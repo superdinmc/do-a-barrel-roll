@@ -51,13 +51,15 @@ All the following configurations are valid:
 
 ![](img/do-a-barrel-roll.gif)
 
-## Disclaimer
+## Disclaimers
 
 This mod does not actually modify the flight physics themselves, 
 so in most cases it shouldn't trigger anticheat. 
 However, doing things like loop de loops looks to the server like rapid camera movement
 and may get you flagged.
 **Use at your own risk.**
+
+**Versions prior to 2.8.3 may not be suitable for use on multiplayer servers due to lax server-side restrictions**
 
 ## Credits
 
@@ -72,17 +74,18 @@ Mod icon by Mizeno.
 
 The mod includes a "thrusting" feature that is probably considered cheating by most servers, 
 as it lets users accelerate without using fireworks.
-If you want to completely ban players from using this feature on your server, you can either:
+**This is disabled by default on servers as of 2.8.3.**
+If you want to allow players to use this feature on your server, you can either:
 
-- Install the mod on your server and set `"allowThrusting"` to `false` in `config/do_a_barrel_roll-server.json`
+- Install the mod on your server and set `"allowThrusting"` to `true` in `config/do_a_barrel_roll-server.json`
 - Send a custom packet to the client at login on the `do_a_barrel_roll:config_sync` channel with one 
 string field containing the following JSON:
 ```json
 {
-  "allowThrusting": false
+  "allowThrusting": true
 }
 ```
 The client will respond with a boolean on the same channel to indicate success.
 
 This option will be respected by any clients using version 2.4.0 or later of the mod. 
-The Forge version does not currently support thrusting, so it will not be affected by this option.
+The Forge version does not support thrusting, so it will not be affected by this option.
