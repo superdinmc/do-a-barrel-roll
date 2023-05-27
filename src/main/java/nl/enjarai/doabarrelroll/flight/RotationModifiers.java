@@ -5,17 +5,18 @@ import net.minecraft.client.util.SmoothUtil;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
+import nl.enjarai.doabarrelroll.api.RollEntity;
+import nl.enjarai.doabarrelroll.api.event.RollContext;
+import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
-import nl.enjarai.doabarrelroll.flight.util.ConfiguresRotation;
-import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 
 public class RotationModifiers {
-    public static ConfiguresRotation strafeButtons(double power) {
-        return (rotationInstant) -> {
+    public static RollContext.ConfiguresRotation strafeButtons(double power) {
+        return (rotationInstant, context) -> {
             var client = MinecraftClient.getInstance();
 
-            var yawDelta = power * rotationInstant.getRenderDelta();
+            var yawDelta = power * context.getRenderDelta();
             var yaw = 0;
 
             if (client.options.leftKey.isPressed()) {
@@ -30,22 +31,22 @@ public class RotationModifiers {
         };
     }
 
-    public static ConfiguresRotation smoothing(SmoothUtil pitchSmoother, SmoothUtil yawSmoother, SmoothUtil rollSmoother, Sensitivity smoothness) {
-        return (rotationInstant) -> new RotationInstant(
-                pitchSmoother.smooth(rotationInstant.getPitch(), smoothness.pitch * rotationInstant.getRenderDelta()),
-                yawSmoother.smooth(rotationInstant.getYaw(), smoothness.yaw * rotationInstant.getRenderDelta()),
-                rollSmoother.smooth(rotationInstant.getRoll(), smoothness.roll * rotationInstant.getRenderDelta()),
-                rotationInstant.getRenderDelta()
+    public static RollContext.ConfiguresRotation smoothing(SmoothUtil pitchSmoother, SmoothUtil yawSmoother, SmoothUtil rollSmoother, Sensitivity smoothness) {
+        return (rotationInstant, context) -> RotationInstant.of(
+                pitchSmoother.smooth(rotationInstant.pitch(), smoothness.pitch * context.getRenderDelta()),
+                yawSmoother.smooth(rotationInstant.yaw(), smoothness.yaw * context.getRenderDelta()),
+                rollSmoother.smooth(rotationInstant.roll(), smoothness.roll * context.getRenderDelta())
         );
     }
 
-    public static RotationInstant banking(RotationInstant rotationInstant) {
+    public static RotationInstant banking(RotationInstant rotationInstant, RollContext context) {
         var client = MinecraftClient.getInstance();
         var player = client.player;
+        var rollPlayer = (RollEntity) player;
         if (player == null) return rotationInstant;
 
-        var delta = rotationInstant.getRenderDelta();
-        var currentRoll = ElytraMath.getRoll(player.getYaw(), DoABarrelRollClient.left) * ElytraMath.TORAD;
+        var delta = context.getRenderDelta();
+        var currentRoll = rollPlayer.doABarrelRoll$getRoll() * ElytraMath.TORAD;
         var strength = 10 * Math.cos(player.getPitch() * ElytraMath.TORAD) * ModConfig.INSTANCE.getBankingStrength();
 
         var dX = Math.sin(currentRoll) * strength;
@@ -58,10 +59,10 @@ public class RotationModifiers {
         return rotationInstant.addAbsolute(dX * delta, dY * delta, currentRoll);
     }
 
-    public static RotationInstant manageThrottle(RotationInstant rotationInstant) {
+    public static RotationInstant manageThrottle(RotationInstant rotationInstant, RollContext context) {
         var client = MinecraftClient.getInstance();
 
-        var delta = rotationInstant.getRenderDelta();
+        var delta = context.getRenderDelta();
 
         if (client.options.forwardKey.isPressed()) {
             DoABarrelRollClient.throttle += 0.1 * delta;
@@ -76,18 +77,18 @@ public class RotationModifiers {
         return rotationInstant;
     }
 
-    public static ConfiguresRotation fixNaN(String name) {
-        return rotationInstant -> {
-            if (Double.isNaN(rotationInstant.getPitch())) {
-                rotationInstant = new RotationInstant(0, rotationInstant.getYaw(), rotationInstant.getRoll(), rotationInstant.getRenderDelta());
+    public static RollContext.ConfiguresRotation fixNaN(String name) {
+        return (rotationInstant, context) -> {
+            if (Double.isNaN(rotationInstant.pitch())) {
+                rotationInstant = RotationInstant.of(0, rotationInstant.yaw(), rotationInstant.roll());
                 DoABarrelRoll.LOGGER.warn("NaN found in pitch for " + name + ", setting to 0 as fallback");
             }
-            if (Double.isNaN(rotationInstant.getYaw())) {
-                rotationInstant = new RotationInstant(rotationInstant.getPitch(), 0, rotationInstant.getRoll(), rotationInstant.getRenderDelta());
+            if (Double.isNaN(rotationInstant.yaw())) {
+                rotationInstant = RotationInstant.of(rotationInstant.pitch(), 0, rotationInstant.roll());
                 DoABarrelRoll.LOGGER.warn("NaN found in yaw for " + name + ", setting to 0 as fallback");
             }
-            if (Double.isNaN(rotationInstant.getRoll())) {
-                rotationInstant = new RotationInstant(rotationInstant.getPitch(), rotationInstant.getYaw(), 0, rotationInstant.getRenderDelta());
+            if (Double.isNaN(rotationInstant.roll())) {
+                rotationInstant = RotationInstant.of(rotationInstant.pitch(), rotationInstant.yaw(), 0);
                 DoABarrelRoll.LOGGER.warn("NaN found in roll for " + name + ", setting to 0 as fallback");
             }
             return rotationInstant;

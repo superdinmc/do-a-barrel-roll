@@ -9,10 +9,11 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
+import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.api.event.ThrustEvents;
+import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 import nl.enjarai.doabarrelroll.config.ModConfig;
-import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 
 public class ControlifyCompat implements ControlifyEntrypoint {
     public static BindingSupplier PITCH_UP;
@@ -24,13 +25,13 @@ public class ControlifyCompat implements ControlifyEntrypoint {
     public static BindingSupplier THRUST_FORWARD;
     public static BindingSupplier THRUST_BACKWARD;
 
-    private RotationInstant applyToRotation(RotationInstant rotationDelta) {
+    private RotationInstant applyToRotation(RotationInstant rotationDelta, RollContext context) {
         var controller = ControlifyApi.get().currentController();
         var sensitivity = ModConfig.INSTANCE.getControllerSensitivity();
 
         if (PITCH_UP.onController(controller) == null) return rotationDelta;
 
-        double multiplier = rotationDelta.getRenderDelta() * 1200;
+        double multiplier = context.getRenderDelta() * 1200;
 
         float pitchAxis = PITCH_DOWN.onController(controller).state() - PITCH_UP.onController(controller).state();
         float yawAxis = YAW_RIGHT.onController(controller).state() - YAW_LEFT.onController(controller).state();
@@ -54,8 +55,8 @@ public class ControlifyCompat implements ControlifyEntrypoint {
         return forward - backward;
     }
 
-    public static RotationInstant manageThrottle(RotationInstant rotationInstant) {
-        var delta = rotationInstant.getRenderDelta();
+    public static RotationInstant manageThrottle(RotationInstant rotationInstant, RollContext context) {
+        var delta = context.getRenderDelta();
 
         DoABarrelRollClient.throttle += getThrustModifier() * delta;
         DoABarrelRollClient.throttle = MathHelper.clamp(DoABarrelRollClient.throttle, 0, ModConfig.INSTANCE.getMaxThrust());
@@ -107,10 +108,10 @@ public class ControlifyCompat implements ControlifyEntrypoint {
                 .name(Text.translatable("controlify.bind.do_a_barrel_roll.thrust_backward"))
         );
 
-        RollEvents.EARLY_CAMERA_MODIFIERS.register((rotationDelta, currentRotation) -> rotationDelta
+        RollEvents.EARLY_CAMERA_MODIFIERS.register(context -> context
                 .useModifier(ControlifyCompat::manageThrottle, ModConfig.INSTANCE::getEnableThrust),
                 8, DoABarrelRollClient::isFallFlying);
-        RollEvents.LATE_CAMERA_MODIFIERS.register((rotationDelta, currentRotation) -> rotationDelta
+        RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context
                 .useModifier(this::applyToRotation),
                 5, DoABarrelRollClient::isFallFlying);
 

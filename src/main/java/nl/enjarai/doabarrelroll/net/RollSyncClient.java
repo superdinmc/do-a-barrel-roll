@@ -1,4 +1,4 @@
-package nl.enjarai.doabarrelroll.fabric.net;
+package nl.enjarai.doabarrelroll.net;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -14,7 +14,7 @@ public class RollSyncClient {
         var client = MinecraftClient.getInstance();
 
         if (client.player != null) {
-            double roll = ElytraMath.getRoll(client.player.getYaw(), DoABarrelRollClient.left);
+            double roll = 0; // TODO
             boolean rolling = ((RollEntity) client.player).doABarrelRoll$isRolling();
 
             if (roll != Components.ROLL.get(client.player).getRoll() ||

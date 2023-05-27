@@ -47,7 +47,6 @@
 	"environment": "*",
 	"mixins": [
 		"do-a-barrel-roll.mixins.json",
-		"do-a-barrel-roll.compat.midnightcontrols.mixins.json",
 		"do-a-barrel-roll.compat.cameraoverhaul.mixins.json",
 		"do-a-barrel-roll.compat.controlify.mixins.json"
 	],

@@ -1,4 +1,4 @@
-package nl.enjarai.doabarrelroll.api.net;
+package nl.enjarai.doabarrelroll.net;
 
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;

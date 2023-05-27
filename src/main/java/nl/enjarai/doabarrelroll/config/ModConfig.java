@@ -16,7 +16,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
-import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
+import nl.enjarai.doabarrelroll.api.event.RollContext;
+import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -197,6 +198,7 @@ public class ModConfig {
                                         .build())
                                 .build())
                         .build())
+                .save(this::save)
                 .build()
                 .generateScreen(parent);
     }
@@ -365,10 +367,10 @@ public class ModConfig {
         saveConfigFile(CONFIG_FILE.toFile());
     }
 
-    public RotationInstant configureRotation(RotationInstant rotationInstant) {
-        var pitch = rotationInstant.getPitch();
-        var yaw = rotationInstant.getYaw();
-        var roll = rotationInstant.getRoll();
+    public RotationInstant configureRotation(RotationInstant rotationInstant, RollContext context) {
+        var pitch = rotationInstant.pitch();
+        var yaw = rotationInstant.yaw();
+        var roll = rotationInstant.roll();
 
         if (!getSwitchRollAndYaw()) {
             var temp = yaw;
@@ -379,7 +381,7 @@ public class ModConfig {
             pitch = -pitch;
         }
 
-        return new RotationInstant(pitch, yaw, roll, rotationInstant.getRenderDelta());
+        return RotationInstant.of(pitch, yaw, roll);
     }
 
     public void notifyPlayerOfServerConfig(SyncedModConfig serverConfig) {

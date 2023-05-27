@@ -15,7 +15,7 @@ import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.ModKeybindings;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.fabric.net.HandshakeClientFabric;
-import nl.enjarai.doabarrelroll.fabric.net.RollSyncClient;
+import nl.enjarai.doabarrelroll.net.RollSyncClient;
 import nl.enjarai.doabarrelroll.util.StarFoxUtil;
 import org.slf4j.Logger;
 

@@ -1,8 +1,8 @@
 package nl.enjarai.doabarrelroll;
 
 import net.minecraft.util.Identifier;
-import nl.enjarai.doabarrelroll.api.net.HandshakeServer;
 import nl.enjarai.doabarrelroll.config.SyncedModConfigServer;
+import nl.enjarai.doabarrelroll.net.HandshakeServer;
 import nl.enjarai.doabarrelroll.util.ProperLogger;
 import org.slf4j.Logger;
 

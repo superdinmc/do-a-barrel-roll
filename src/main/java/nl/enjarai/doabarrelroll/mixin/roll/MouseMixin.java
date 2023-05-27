@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.network.ClientPlayerEntity;
 import nl.enjarai.doabarrelroll.api.RollEntity;
+import nl.enjarai.doabarrelroll.api.RollMouse;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import org.joml.Vector2d;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,7 +13,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(Mouse.class)
-public abstract class MouseMixin {
+public abstract class MouseMixin implements RollMouse {
     @Unique
     private final Vector2d mouseTurnVec = new Vector2d();
 
@@ -52,5 +53,10 @@ public abstract class MouseMixin {
 
         mouseTurnVec.zero();
         return true;
+    }
+
+    @Override
+    public Vector2d doABarrelRoll$getMouseTurnVec() {
+        return mouseTurnVec;
     }
 }

@@ -1,6 +1,7 @@
 package nl.enjarai.doabarrelroll.compat.cameraoverhaul.mixin;
 
-import nl.enjarai.doabarrelroll.DoABarrelRollClient;
+import net.minecraft.client.MinecraftClient;
+import nl.enjarai.doabarrelroll.api.RollEntity;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -10,10 +11,8 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 @Pseudo
 @Mixin(targets = "mirsario.cameraoverhaul.common.systems.CameraSystem")
 public abstract class CameraSystemMixin {
-
     private boolean allowModifications() {
-//        return !DoABarrelRollClient.isRolling(); // TODO
-        return true;
+        return !(MinecraftClient.getInstance().getCameraEntity() instanceof RollEntity rollEntity && rollEntity.doABarrelRoll$isRolling());
     }
 
     @Dynamic

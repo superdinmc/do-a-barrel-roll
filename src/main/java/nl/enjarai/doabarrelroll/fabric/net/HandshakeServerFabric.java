@@ -4,7 +4,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
-import nl.enjarai.doabarrelroll.api.net.HandshakeServer;
+import nl.enjarai.doabarrelroll.net.HandshakeServer;
+import nl.enjarai.doabarrelroll.net.RollSyncServer;
 
 public class HandshakeServerFabric {
     public static void init() {

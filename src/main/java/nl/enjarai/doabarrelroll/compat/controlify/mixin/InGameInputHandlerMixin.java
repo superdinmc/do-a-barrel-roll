@@ -2,7 +2,6 @@ package nl.enjarai.doabarrelroll.compat.controlify.mixin;
 
 import dev.isxander.controlify.ingame.InGameInputHandler;
 import net.minecraft.client.MinecraftClient;
-import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.api.RollEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,4 +1,4 @@
-package nl.enjarai.doabarrelroll.api.net;
+package nl.enjarai.doabarrelroll.net;
 
 import com.mojang.serialization.JsonOps;
 import io.netty.buffer.Unpooled;
@@ -6,7 +6,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
-import nl.enjarai.doabarrelroll.api.util.DelayedRunnable;
+import nl.enjarai.doabarrelroll.util.DelayedRunnable;
 
 import java.util.ArrayList;
 import java.util.Map;

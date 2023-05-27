@@ -4,12 +4,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
-import nl.enjarai.doabarrelroll.DoABarrelRollClient;
+import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
+import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
-import nl.enjarai.doabarrelroll.flight.ElytraMath;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
-import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
 import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -43,25 +42,26 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 		var player = MinecraftClient.getInstance().player;
 		if (player == null) return;
 
-		var rotDelta = new RotationInstant(pitch, yaw, roll, delta);
-		var currentRoll = ElytraMath.getRoll(player.getYaw(), DoABarrelRollClient.left);
-		var currentRotation = new RotationInstant(
+		var rotDelta = RotationInstant.of(pitch, yaw, roll);
+		var currentRoll = doABarrelRoll$getRoll();
+		var currentRotation = RotationInstant.of(
 				player.getPitch(),
 				player.getYaw(),
-				currentRoll,
-				0
+				currentRoll
 		);
+		var context = RollContext.of(currentRotation, rotDelta, delta);
 
-		rotDelta = RollEvents.lateCameraModifiers(
-				RollEvents.earlyCameraModifiers(rotDelta
-								.useModifier(RotationModifiers.fixNaN("INPUT")), currentRotation)
-						.useModifier(RotationModifiers.fixNaN("EARLY_CAMERA_MODIFIERS"))
-						.applySensitivity(sensitivity)
-						.useModifier(RotationModifiers.fixNaN("SENSITIVITY")),
-				currentRotation
-		).useModifier(RotationModifiers.fixNaN("LATE_CAMERA_MODIFIERS"));
+		context.useModifier(RotationModifiers.fixNaN("INPUT"));
+		RollEvents.earlyCameraModifiers(context);
+		context.useModifier(RotationModifiers.fixNaN("EARLY_CAMERA_MODIFIERS"));
+		context.useModifier((rotation, ctx) -> rotation.applySensitivity(sensitivity));
+		context.useModifier(RotationModifiers.fixNaN("SENSITIVITY"));
+		RollEvents.lateCameraModifiers(context);
+		context.useModifier(RotationModifiers.fixNaN("LATE_CAMERA_MODIFIERS"));
 
-		doABarrelRoll$changeElytraLook((float) rotDelta.getPitch(), (float) rotDelta.getYaw(), (float) rotDelta.getRoll());
+		rotDelta = context.getRotationDelta();
+
+		doABarrelRoll$changeElytraLook((float) rotDelta.pitch(), (float) rotDelta.yaw(), (float) rotDelta.roll());
 	}
 
 	@Override

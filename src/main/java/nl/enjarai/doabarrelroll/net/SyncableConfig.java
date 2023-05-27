@@ -1,4 +1,4 @@
-package nl.enjarai.doabarrelroll.api.net;
+package nl.enjarai.doabarrelroll.net;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.text.Text;

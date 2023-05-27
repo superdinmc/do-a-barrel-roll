@@ -17,7 +17,7 @@ import net.minecraft.util.math.random.Random;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.api.event.StarFox64Events;
-import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
+import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 
 public class StarFoxUtil {
     private static final Random random = Random.create();
@@ -37,9 +37,8 @@ public class StarFoxUtil {
         StarFox64Events.DOES_A_BARREL_ROLL.register(StarFoxUtil::playBarrelRollSound);
         StarFox64Events.DOES_A_BARREL_ROLL.register(player -> barrelRollTimer = 30);
 
-        RollEvents.LATE_CAMERA_MODIFIERS.register((rotationDelta, currentRotation) -> {
-            trackRoll(rotationDelta, currentRotation);
-            return rotationDelta;
+        RollEvents.LATE_CAMERA_MODIFIERS.register(context -> {
+            trackRoll(context.getRotationDelta(), context.getCurrentRotation());
         }, 999999);
     }
 
@@ -62,8 +61,8 @@ public class StarFoxUtil {
     private static void trackRoll(RotationInstant rotationDelta, RotationInstant currentRotation) {
         var player = MinecraftClient.getInstance().player;
         if (player != null && isFoxMcCloud(player)) {
-            double cRoll = currentRotation.getRoll();
-            double dRoll = rotationDelta.getRoll();
+            double cRoll = currentRotation.roll();
+            double dRoll = rotationDelta.roll();
 
             // If the player crosses the threshold in any direction, set the roll tracker to that direction
             if (cRoll < rollTol && cRoll + dRoll >= rollTol) {

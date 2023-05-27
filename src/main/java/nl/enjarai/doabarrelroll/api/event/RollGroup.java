@@ -1,8 +1,8 @@
 package nl.enjarai.doabarrelroll.api.event;
 
 import net.minecraft.util.Identifier;
+import nl.enjarai.doabarrelroll.impl.event.RollGroupImpl;
 
-import java.util.HashMap;
 import java.util.function.Supplier;
 
 /**
@@ -11,7 +11,7 @@ import java.util.function.Supplier;
  *
  * <p>Usually, you'll want to use {@link RollGroup#of(Identifier)} to get an instance of this class.
  * You can then use {@link RollGroup#trueIf(Supplier)}, {@link RollGroup#falseUnless(Supplier)} or
- * {@link RollGroup#register(RollCondition)} to add conditions.
+ * {@link Event#register(Object)} to add conditions.
  *
  * <p>It is usually recommended to store your instance in a static final field, so you can easily use it in your
  * event registrations.
@@ -36,47 +36,22 @@ import java.util.function.Supplier;
  * If a condition returns {@link BooleanFlow#FALSE}, the camera will not roll and no further conditions will be
  * checked. If a condition returns {@link BooleanFlow#PASS}, the next condition will be checked.
  */
-public class RollGroup extends Event<RollGroup.RollCondition> implements Supplier<Boolean> {
-    private static final HashMap<Identifier, RollGroup> instances = new HashMap<>();
-
+public interface RollGroup extends Supplier<Boolean>, Event<RollGroup.RollCondition> {
     /**
      * Gets the RollGroup instance for the given identifier.
      * If no instance exists, a new one is created and registered to {@link RollEvents#SHOULD_ROLL_CHECK}
      */
-    public static RollGroup of(Identifier id) {
-        return instances.computeIfAbsent(id, id2 -> new RollGroup());
+    static RollGroup of(Identifier id) {
+        return RollGroupImpl.instances.computeIfAbsent(id, id2 -> new RollGroupImpl());
     }
 
-    private RollGroup() {
-        RollEvents.SHOULD_ROLL_CHECK.register(this::get);
-    }
+    void trueIf(Supplier<Boolean> condition, int priority);
 
-    public void trueIf(Supplier<Boolean> condition, int priority) {
-        register(() -> condition.get() ? BooleanFlow.TRUE : BooleanFlow.PASS, priority);
-    }
+    void trueIf(Supplier<Boolean> condition);
 
-    public void trueIf(Supplier<Boolean> condition) {
-        trueIf(condition, 0);
-    }
+    void falseUnless(Supplier<Boolean> condition, int priority);
 
-    public void falseUnless(Supplier<Boolean> condition, int priority) {
-        register(() -> condition.get() ? BooleanFlow.PASS : BooleanFlow.FALSE, priority);
-    }
-
-    public void falseUnless(Supplier<Boolean> condition) {
-        falseUnless(condition, 0);
-    }
-
-    @Override
-    public Boolean get() {
-        for (var condition : getListeners()) {
-            var result = condition.shouldRoll();
-            if (result != BooleanFlow.PASS) {
-                return result == BooleanFlow.TRUE;
-            }
-        }
-        return false;
-    }
+    void falseUnless(Supplier<Boolean> condition);
 
     interface RollCondition {
         BooleanFlow shouldRoll();

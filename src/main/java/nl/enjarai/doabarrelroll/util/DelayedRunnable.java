@@ -1,4 +1,4 @@
-package nl.enjarai.doabarrelroll.api.util;
+package nl.enjarai.doabarrelroll.util;
 
 public class DelayedRunnable {
     private final Runnable runnable;

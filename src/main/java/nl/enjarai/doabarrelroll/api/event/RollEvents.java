@@ -1,12 +1,12 @@
 package nl.enjarai.doabarrelroll.api.event;
 
-import nl.enjarai.doabarrelroll.flight.util.RotationInstant;
+import nl.enjarai.doabarrelroll.impl.event.EventImpl;
 
 public interface RollEvents {
     /**
      * If any listener returns true, roll will be unlocked.
      */
-    Event<ShouldRollCheckEvent> SHOULD_ROLL_CHECK = new Event<>();
+    Event<ShouldRollCheckEvent> SHOULD_ROLL_CHECK = new EventImpl<>();
 
     interface ShouldRollCheckEvent {
         boolean shouldRoll();
@@ -25,30 +25,26 @@ public interface RollEvents {
     /**
      * Modifiers registered here will be applied <b>before</b> sensitivity. So will be affected by it.
      */
-    Event<CameraModifiersEvent> EARLY_CAMERA_MODIFIERS = new Event<>();
+    Event<CameraModifiersEvent> EARLY_CAMERA_MODIFIERS = new EventImpl<>();
 
-    static RotationInstant earlyCameraModifiers(RotationInstant rotationDelta, RotationInstant currentRotation) {
+    static void earlyCameraModifiers(RollContext context) {
         for (var listener : EARLY_CAMERA_MODIFIERS.getListeners()) {
-            rotationDelta = listener.applyCameraModifiers(rotationDelta, currentRotation);
+            listener.applyCameraModifiers(context);
         }
-
-        return rotationDelta;
     }
 
     /**
      * Modifiers registered here will be applied <b>after</b> sensitivity. So will not be affected by it.
      */
-    Event<CameraModifiersEvent> LATE_CAMERA_MODIFIERS = new Event<>();
+    Event<CameraModifiersEvent> LATE_CAMERA_MODIFIERS = new EventImpl<>();
 
-    static RotationInstant lateCameraModifiers(RotationInstant rotationDelta, RotationInstant currentRotation) {
+    static void lateCameraModifiers(RollContext context) {
         for (var listener : LATE_CAMERA_MODIFIERS.getListeners()) {
-            rotationDelta = listener.applyCameraModifiers(rotationDelta, currentRotation);
+            listener.applyCameraModifiers(context);
         }
-
-        return rotationDelta;
     }
 
     interface CameraModifiersEvent {
-        RotationInstant applyCameraModifiers(RotationInstant rotationDelta, RotationInstant currentRotation);
+        void applyCameraModifiers(RollContext context);
     }
 }
