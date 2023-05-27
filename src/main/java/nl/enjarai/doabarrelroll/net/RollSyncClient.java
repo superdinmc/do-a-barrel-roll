@@ -2,32 +2,43 @@ package nl.enjarai.doabarrelroll.net;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.api.RollEntity;
-import nl.enjarai.doabarrelroll.data.Components;
-import nl.enjarai.doabarrelroll.flight.ElytraMath;
 
 public class RollSyncClient {
-    public static void sendUpdate() {
-        var client = MinecraftClient.getInstance();
+    public static void sendUpdate(RollEntity entity) {
+        if (DoABarrelRollClient.HANDSHAKE_CLIENT.hasConnected()) {
+            boolean rolling = entity.doABarrelRoll$isRolling();
+            float roll = entity.doABarrelRoll$getRoll();
 
-        if (client.player != null) {
-            double roll = 0; // TODO
-            boolean rolling = ((RollEntity) client.player).doABarrelRoll$isRolling();
+            var buf = PacketByteBufs.create();
+            buf.writeBoolean(rolling);
+            buf.writeFloat(roll);
 
-            if (roll != Components.ROLL.get(client.player).getRoll() ||
-                    rolling != Components.ROLL.get(client.player).isFallFlying()) {
-                Components.ROLL.get(client.player).setRoll(roll);
-                Components.ROLL.get(client.player).setFallFlying(rolling);
-
-                var buf = PacketByteBufs.create();
-                buf.writeDouble(roll);
-                buf.writeBoolean(rolling);
-
-                ClientPlayNetworking.send(DoABarrelRoll.ROLL_CHANNEL, buf);
-            }
+            ClientPlayNetworking.send(DoABarrelRoll.ROLL_CHANNEL, buf);
         }
+    }
+
+    public static void startListening() {
+        ClientPlayNetworking.registerReceiver(DoABarrelRoll.ROLL_CHANNEL, (client, handler1, buf, responseSender) -> {
+            if (client.world == null) {
+                return;
+            }
+
+            int entityId = buf.readInt();
+            var isRolling = buf.readBoolean();
+            var roll = buf.readFloat();
+
+            var entity = client.world.getEntityById(entityId);
+            if (entity == null) {
+                return;
+            }
+            var rollEntity = (RollEntity) entity;
+
+            rollEntity.doABarrelRoll$setRolling(isRolling);
+            rollEntity.doABarrelRoll$setRoll(MathHelper.wrapDegrees(roll));
+        });
     }
 }

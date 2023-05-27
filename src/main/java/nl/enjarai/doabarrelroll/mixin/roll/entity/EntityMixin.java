@@ -31,6 +31,10 @@ public abstract class EntityMixin implements RollEntity {
     }
 
     @Override
+    public void doABarrelRoll$setRolling(boolean rolling) {
+    }
+
+    @Override
     public float doABarrelRoll$getRoll() {
         return 0;
     }
@@ -38,5 +42,9 @@ public abstract class EntityMixin implements RollEntity {
     @Override
     public float doABarrelRoll$getRoll(float tickDelta) {
         return 0;
+    }
+
+    @Override
+    public void doABarrelRoll$setRoll(float roll) {
     }
 }

@@ -9,7 +9,11 @@ public interface RollEntity {
 
     boolean doABarrelRoll$isRolling();
 
+    void doABarrelRoll$setRolling(boolean rolling);
+
     float doABarrelRoll$getRoll();
 
     float doABarrelRoll$getRoll(float tickDelta);
+
+    void doABarrelRoll$setRoll(float roll);
 }

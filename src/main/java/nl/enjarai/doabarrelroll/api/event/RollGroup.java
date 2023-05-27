@@ -31,10 +31,10 @@ import java.util.function.Supplier;
  * }
  * }</pre>
  *
- * <p>The conditions are checked in order of priority, and the first condition that returns {@link BooleanFlow#TRUE}
- * will cause the camera to roll. If no condition returns {@link BooleanFlow#TRUE}, the camera will not roll.
- * If a condition returns {@link BooleanFlow#FALSE}, the camera will not roll and no further conditions will be
- * checked. If a condition returns {@link BooleanFlow#PASS}, the next condition will be checked.
+ * <p>The conditions are checked in order of priority, and the first condition that returns {@link TriState#TRUE}
+ * will cause the camera to roll. If no condition returns {@link TriState#TRUE}, the camera will not roll.
+ * If a condition returns {@link TriState#FALSE}, the camera will not roll and no further conditions will be
+ * checked. If a condition returns {@link TriState#PASS}, the next condition will be checked.
  */
 public interface RollGroup extends Supplier<Boolean>, Event<RollGroup.RollCondition> {
     /**
@@ -54,6 +54,6 @@ public interface RollGroup extends Supplier<Boolean>, Event<RollGroup.RollCondit
     void falseUnless(Supplier<Boolean> condition);
 
     interface RollCondition {
-        BooleanFlow shouldRoll();
+        TriState shouldRoll();
     }
 }

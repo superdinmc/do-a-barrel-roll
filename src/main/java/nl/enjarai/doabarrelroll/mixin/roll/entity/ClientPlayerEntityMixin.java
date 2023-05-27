@@ -2,17 +2,18 @@ package nl.enjarai.doabarrelroll.mixin.roll.entity;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
+import nl.enjarai.doabarrelroll.net.RollSyncClient;
 import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static nl.enjarai.doabarrelroll.flight.ElytraMath.TODEG;
@@ -24,17 +25,31 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	@Shadow public float lastRenderYaw;
 
 	@Unique
-	private float prevRoll;
+	private boolean lastSentIsRolling;
 	@Unique
-	private float roll;
+	private float lastSentRoll;
+
+	@Inject(
+			method = "sendMovementPackets",
+			at = @At("TAIL")
+	)
+	private void doABarrelRoll$sendRollPacket(CallbackInfo ci) {
+		var isRolling = doABarrelRoll$isRolling();
+		var rollDiff = doABarrelRoll$getRoll() - lastSentRoll;
+		if (isRolling != lastSentIsRolling || rollDiff != 0.0f) {
+			RollSyncClient.sendUpdate(this);
+
+			lastSentIsRolling = isRolling;
+			lastSentRoll = doABarrelRoll$getRoll();
+		}
+	}
 
 	@Override
 	protected void doABarrelRoll$baseTickTail(CallbackInfo ci) {
-		prevRoll = doABarrelRoll$getRoll();
+		// Update rolling status
+		doABarrelRoll$setRolling(RollEvents.shouldRoll());
 
-		if (!doABarrelRoll$isRolling()) {
-			doABarrelRoll$setRoll(0.0f);
-		}
+		super.doABarrelRoll$baseTickTail(ci);
 	}
 
 	@Override
@@ -117,31 +132,5 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 			renderYaw += 360;
 			lastRenderYaw += 360;
 		}
-	}
-
-	@Override
-	public boolean doABarrelRoll$isRolling() {
-		return RollEvents.shouldRoll();
-	}
-
-	@Override
-	public float doABarrelRoll$getRoll() {
-		return roll;
-	}
-
-	@Override
-	public float doABarrelRoll$getRoll(float tickDelta) {
-		if (tickDelta == 1.0f) {
-			return doABarrelRoll$getRoll();
-		}
-		return MathHelper.lerp(tickDelta, prevRoll, doABarrelRoll$getRoll());
-	}
-
-	public void doABarrelRoll$setRoll(float roll) {
-		if (!Float.isFinite(roll)) {
-			Util.error("Invalid entity rotation: " + roll + ", discarding.");
-			return;
-		}
-		this.roll = roll;
 	}
 }

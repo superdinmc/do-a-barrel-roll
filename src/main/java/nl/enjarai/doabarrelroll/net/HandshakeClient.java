@@ -14,6 +14,7 @@ public class HandshakeClient<T> {
     private final Codec<T> transferCodec;
     private final Consumer<T> updateCallback;
     private T serverConfig = null;
+    private boolean hasConnected = false;
 
     public HandshakeClient(Codec<T> transferCodec, Consumer<T> updateCallback) {
         this.transferCodec = transferCodec;
@@ -26,6 +27,10 @@ public class HandshakeClient<T> {
      */
     public Optional<T> getConfig() {
         return Optional.ofNullable(serverConfig);
+    }
+
+    public boolean hasConnected() {
+        return hasConnected;
     }
 
     public PacketByteBuf handleConfigSync(PacketByteBuf buf) {
@@ -45,6 +50,7 @@ public class HandshakeClient<T> {
 
         if (serverConfig != null) {
             updateCallback.accept(serverConfig);
+            hasConnected = true;
             DoABarrelRoll.LOGGER.info("Received config from server");
         }
 
@@ -56,5 +62,6 @@ public class HandshakeClient<T> {
 
     public void reset() {
         serverConfig = null;
+        hasConnected = false;
     }
 }

@@ -10,13 +10,13 @@ import nl.enjarai.doabarrelroll.net.RollSyncServer;
 public class HandshakeServerFabric {
     public static void init() {
         ServerPlayConnectionEvents.INIT.register((handler, server) -> {
-            ServerPlayNetworking.registerReceiver(handler, DoABarrelRoll.SYNC_CHANNEL, (server1, player, handler1, buf, responseSender) -> {
+            ServerPlayNetworking.registerReceiver(handler, DoABarrelRoll.HANDSHAKE_CHANNEL, (server1, player, handler1, buf, responseSender) -> {
                 if (DoABarrelRoll.HANDSHAKE_SERVER.clientReplied(player, buf) == HandshakeServer.HandshakeState.ACCEPTED) {
                     RollSyncServer.startListening(handler1);
                 }
             });
 
-            ServerPlayNetworking.send(handler.getPlayer(), DoABarrelRoll.SYNC_CHANNEL,
+            ServerPlayNetworking.send(handler.getPlayer(), DoABarrelRoll.HANDSHAKE_CHANNEL,
                     DoABarrelRoll.HANDSHAKE_SERVER.getConfigSyncBuf(handler.getPlayer()));
 
             DoABarrelRoll.HANDSHAKE_SERVER.configSentToClient(handler.getPlayer());

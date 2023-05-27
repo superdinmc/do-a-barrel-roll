@@ -20,6 +20,7 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "roll.EntityTrackerEntryMixin",
     "roll.entity.EntityMixin",
     "roll.entity.LivingEntityMixin",
     "roll.entity.PlayerEntityMixin"

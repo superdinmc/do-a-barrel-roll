@@ -1,6 +1,6 @@
 package nl.enjarai.doabarrelroll.api.event;
 
-public enum BooleanFlow {
+public enum TriState {
     TRUE,
     FALSE,
     PASS

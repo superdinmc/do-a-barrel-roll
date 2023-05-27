@@ -15,7 +15,6 @@ import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.ModKeybindings;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.fabric.net.HandshakeClientFabric;
-import nl.enjarai.doabarrelroll.net.RollSyncClient;
 import nl.enjarai.doabarrelroll.util.StarFoxUtil;
 import org.slf4j.Logger;
 
@@ -41,8 +40,6 @@ public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunc
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             ModKeybindings.clientTick(client);
-
-            RollSyncClient.sendUpdate();
 
             StarFoxUtil.clientTick(client);
         });

@@ -36,9 +36,6 @@
 		"cicada": [
 			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
 		],
-		"cardinal-components": [
-			"nl.enjarai.doabarrelroll.data.Components"
-		],
 		"controlify": [
 			"nl.enjarai.doabarrelroll.compat.controlify.ControlifyCompat"
 		]
@@ -55,9 +52,7 @@
 	"depends": {
 		"minecraft": ">=1.19.4- <1.19.5-",
 		"fabric": "*",
-		"cicada": "*",
-		"cardinal-components-base": "*",
-		"cardinal-components-entity": "*"
+		"cicada": "*"
 	},
 
 	"custom": {
@@ -66,9 +61,6 @@
 				"modmenu.discord": "https://discord.gg/WcYsDDQtyR"
 			}
 		},
-		"cardinal-components": [
-			"do_a_barrel_roll:roll"
-		],
 		"projects": {
 			"modrinth": "6FtRfnLg",
 			"curseforge": 663658

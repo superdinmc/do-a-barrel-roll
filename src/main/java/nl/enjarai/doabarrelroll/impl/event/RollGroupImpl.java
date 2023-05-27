@@ -1,9 +1,9 @@
 package nl.enjarai.doabarrelroll.impl.event;
 
 import net.minecraft.util.Identifier;
-import nl.enjarai.doabarrelroll.api.event.BooleanFlow;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.api.event.RollGroup;
+import nl.enjarai.doabarrelroll.api.event.TriState;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
@@ -17,7 +17,7 @@ public class RollGroupImpl extends EventImpl<RollGroup.RollCondition> implements
 
     @Override
     public void trueIf(Supplier<Boolean> condition, int priority) {
-        register(() -> condition.get() ? BooleanFlow.TRUE : BooleanFlow.PASS, priority);
+        register(() -> condition.get() ? TriState.TRUE : TriState.PASS, priority);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class RollGroupImpl extends EventImpl<RollGroup.RollCondition> implements
 
     @Override
     public void falseUnless(Supplier<Boolean> condition, int priority) {
-        register(() -> condition.get() ? BooleanFlow.PASS : BooleanFlow.FALSE, priority);
+        register(() -> condition.get() ? TriState.PASS : TriState.FALSE, priority);
     }
 
     @Override
@@ -39,8 +39,8 @@ public class RollGroupImpl extends EventImpl<RollGroup.RollCondition> implements
     public Boolean get() {
         for (var condition : getListeners()) {
             var result = condition.shouldRoll();
-            if (result != BooleanFlow.PASS) {
-                return result == BooleanFlow.TRUE;
+            if (result != TriState.PASS) {
+                return result == TriState.TRUE;
             }
         }
         return false;
