@@ -51,13 +51,15 @@ All the following configurations are valid:
 
 ![](img/do-a-barrel-roll.gif)
 
-## Disclaimer
+## Disclaimers
 
 This mod does not actually modify the flight physics themselves, 
 so in most cases it shouldn't trigger anticheat. 
 However, doing things like loop de loops looks to the server like rapid camera movement
 and may get you flagged.
 **Use at your own risk.**
+
+**Versions prior to 2.8.3 may not be suitable for use on multiplayer servers due to lax server-side restrictions**
 
 ## Credits
 
