@@ -2,8 +2,8 @@ package nl.enjarai.doabarrelroll;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.SmoothUtil;
-import net.minecraft.client.util.math.MatrixStack;
 import nl.enjarai.doabarrelroll.api.RollEntity;
 import nl.enjarai.doabarrelroll.api.RollMouse;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
@@ -59,9 +59,10 @@ public class DoABarrelRollClient {
         });
     }
 
-    public static void onRenderCrosshair(MatrixStack matrices, float tickDelta, int scaledWidth, int scaledHeight) {
+    public static void onRenderCrosshair(DrawContext context, float tickDelta, int scaledWidth, int scaledHeight) {
         if (!isFallFlying()) return;
 
+        var matrices = context.getMatrices();
         var entity = MinecraftClient.getInstance().getCameraEntity();
         var rollEntity = ((RollEntity) entity);
         if (entity != null) {

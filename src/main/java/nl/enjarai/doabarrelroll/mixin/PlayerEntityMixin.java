@@ -29,7 +29,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     private void doABarrelRoll$interceptFallFlyingStart(CallbackInfoReturnable<Boolean> cir) {
         // We do the same checks the original method does, but leave out the one about already fallFlying.
         // This is needed for the hybrid mode.
-        if (this.onGround || this.isTouchingWater() || this.hasStatusEffect(StatusEffects.LEVITATION)) {
+        if (this.isOnGround() || this.isTouchingWater() || this.hasStatusEffect(StatusEffects.LEVITATION)) {
             return;
         }
 

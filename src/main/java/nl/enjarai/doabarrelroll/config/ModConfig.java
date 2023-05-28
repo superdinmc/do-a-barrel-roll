@@ -3,13 +3,14 @@ package nl.enjarai.doabarrelroll.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dev.isxander.yacl.api.ConfigCategory;
-import dev.isxander.yacl.api.Option;
-import dev.isxander.yacl.api.OptionGroup;
-import dev.isxander.yacl.api.YetAnotherConfigLib;
+import dev.isxander.yacl.api.*;
+import dev.isxander.yacl.api.controller.DoubleSliderControllerBuilder;
+import dev.isxander.yacl.api.controller.EnumControllerBuilder;
+import dev.isxander.yacl.api.controller.TickBoxControllerBuilder;
 import dev.isxander.yacl.gui.controllers.TickBoxController;
 import dev.isxander.yacl.gui.controllers.cycling.EnumController;
 import dev.isxander.yacl.gui.controllers.slider.DoubleSliderController;
+import dev.isxander.yacl.impl.controller.DoubleSliderControllerBuilderImpl;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -103,7 +104,8 @@ public class ModConfig {
                                         .binding(false, () -> general.controls.momentum_based_mouse, value -> general.controls.momentum_based_mouse = value)
                                         .build())
                                 .option(getOption(ActivationBehaviour.class, "controls", "activation_behaviour", true)
-                                        .controller(EnumController::new)
+                                        .controller(option1 -> EnumControllerBuilder.create(option1)
+                                                .enumClass(ActivationBehaviour.class))
                                         .binding(ActivationBehaviour.VANILLA, () -> general.controls.activation_behaviour, value -> general.controls.activation_behaviour = value)
                                         .build())
                                 .build())
@@ -122,7 +124,7 @@ public class ModConfig {
                                         .binding(true, () -> general.banking.enable_banking, value -> general.banking.enable_banking = value)
                                         .build())
                                 .option(getOption(Double.class, "banking", "banking_strength", false)
-                                        .controller(option -> new DoubleSliderController(option, 0.0, 100.0, 1.0))
+                                        .controller(option -> getDoubleSlider(option, 0.0, 100.0, 1.0))
                                         .binding(20.0, () -> general.banking.banking_strength, value -> general.banking.banking_strength = value)
                                         .build())
                                 .build())
@@ -133,11 +135,11 @@ public class ModConfig {
                                         .binding(false, () -> general.thrust.enable_thrust, value -> general.thrust.enable_thrust = value)
                                         .build())
                                 .option(getOption(Double.class, "thrust", "max_thrust", true)
-                                        .controller(option -> new DoubleSliderController(option, 0.1, 10.0, 0.1))
+                                        .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
                                         .binding(2.0, () -> general.thrust.max_thrust, value -> general.thrust.max_thrust = value)
                                         .build())
                                 .option(getOption(Double.class, "thrust", "thrust_acceleration", true)
-                                        .controller(option -> new DoubleSliderController(option, 0.1, 1.0, 0.1))
+                                        .controller(option -> getDoubleSlider(option, 0.1, 1.0, 0.1))
                                         .binding(0.1, () -> general.thrust.thrust_acceleration, value -> general.thrust.thrust_acceleration = value)
                                         .build())
                                 .option(getBooleanOption("thrust", "thrust_particles", false)
@@ -153,47 +155,49 @@ public class ModConfig {
                                         .binding(true, () -> sensitivity.smoothing.smoothing_enabled, value -> sensitivity.smoothing.smoothing_enabled = value)
                                         .build())
                                 .option(getOption(Double.class, "smoothing", "smoothing_pitch", false)
-                                        .controller(option -> new DoubleSliderController(option, 0.1, 5.0, 0.1))
+                                        .controller(option -> getDoubleSlider(option, 0.1, 5.0, 0.1))
                                         .binding(1.0, () -> sensitivity.smoothing.smoothing_pitch, value -> sensitivity.smoothing.smoothing_pitch = value)
                                         .build())
                                 .option(getOption(Double.class, "smoothing", "smoothing_yaw", false)
-                                        .controller(option -> new DoubleSliderController(option, 0.1, 5.0, 0.1))
+                                        .controller(option -> getDoubleSlider(option, 0.1, 5.0, 0.1))
                                         .binding(0.4, () -> sensitivity.smoothing.smoothing_yaw, value -> sensitivity.smoothing.smoothing_yaw = value)
                                         .build())
                                 .option(getOption(Double.class, "smoothing", "smoothing_roll", false)
-                                        .controller(option -> new DoubleSliderController(option, 0.1, 5.0, 0.1))
+                                        .controller(option -> getDoubleSlider(option, 0.1, 5.0, 0.1))
                                         .binding(1.0, () -> sensitivity.smoothing.smoothing_roll, value -> sensitivity.smoothing.smoothing_roll = value)
                                         .build())
                                 .build())
                         .group(OptionGroup.createBuilder()
                                 .name(getText("desktop"))
                                 .option(getOption(Double.class, "desktop", "pitch", false)
-                                        .controller(option -> new DoubleSliderController(option, 0.1, 10.0, 0.1))
+                                        .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
                                         .binding(1.0, () -> sensitivity.desktop.pitch, value -> sensitivity.desktop.pitch = value)
                                         .build())
                                 .option(getOption(Double.class, "desktop", "yaw", false)
-                                        .controller(option -> new DoubleSliderController(option, 0.1, 10.0, 0.1))
+                                        .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
                                         .binding(0.4, () -> sensitivity.desktop.yaw, value -> sensitivity.desktop.yaw = value)
                                         .build())
                                 .option(getOption(Double.class, "desktop", "roll", false)
-                                        .controller(option -> new DoubleSliderController(option, 0.1, 10.0, 0.1))
+                                        .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
                                         .binding(1.0, () -> sensitivity.desktop.roll, value -> sensitivity.desktop.roll = value)
                                         .build())
                                 .build())
                         .group(OptionGroup.createBuilder()
                                 .name(getText("controller"))
                                 .collapsed(!(FabricLoader.getInstance().isModLoaded("controlify") || FabricLoader.getInstance().isModLoaded("midnightcontrols")))
-                                .tooltip(getText("controller.description"))
+                                .description(OptionDescription.createBuilder()
+                                        .description(getText("controller.description"))
+                                        .build())
                                 .option(getOption(Double.class, "controller", "pitch", false)
-                                        .controller(option -> new DoubleSliderController(option, 0.1, 10.0, 0.1))
+                                        .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
                                         .binding(1.0, () -> sensitivity.controller.pitch, value -> sensitivity.controller.pitch = value)
                                         .build())
                                 .option(getOption(Double.class, "controller", "yaw", false)
-                                        .controller(option -> new DoubleSliderController(option, 0.1, 10.0, 0.1))
+                                        .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
                                         .binding(0.4, () -> sensitivity.controller.yaw, value -> sensitivity.controller.yaw = value)
                                         .build())
                                 .option(getOption(Double.class, "controller", "roll", false)
-                                        .controller(option -> new DoubleSliderController(option, 0.1, 10.0, 0.1))
+                                        .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
                                         .binding(1.0, () -> sensitivity.controller.roll, value -> sensitivity.controller.roll = value)
                                         .build())
                                 .build())
@@ -204,17 +208,25 @@ public class ModConfig {
     }
 
     private <T> Option.Builder<T> getOption(Class<T> clazz, String category, String key, boolean description) {
-        Option.Builder<T> builder = Option.createBuilder(clazz)
+        Option.Builder<T> builder = Option.<T>createBuilder()
                 .name(getText(category, key));
         if (description) {
-            builder.tooltip(getText(category, key + ".description"));
+            builder.description(OptionDescription.createBuilder()
+                    .description(getText(category, key + ".description"))
+                    .build());
         }
         return builder;
     }
 
     private Option.Builder<Boolean> getBooleanOption(String category, String key, boolean description) {
         return getOption(Boolean.class, category, key, description)
-                .controller(TickBoxController::new);
+                .controller(TickBoxControllerBuilder::create);
+    }
+
+    private DoubleSliderControllerBuilder getDoubleSlider(Option<Double> option, double min, double max, double step) {
+        return new DoubleSliderControllerBuilderImpl(option)
+                .range(min, max)
+                .step(step);
     }
 
     private Text getText(String category, String key) {

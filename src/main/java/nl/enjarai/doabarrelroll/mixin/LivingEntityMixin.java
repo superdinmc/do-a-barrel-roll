@@ -42,9 +42,9 @@ public abstract class LivingEntityMixin extends Entity {
 
         if (ModConfig.INSTANCE.getThrustParticles()) {
             int particleDensity = (int) MathHelper.clamp(DoABarrelRollClient.throttle * 10, 0, 10);
-            if (DoABarrelRollClient.throttle > 0.1 && world.getTime() % (11 - particleDensity) == 0) {
+            if (DoABarrelRollClient.throttle > 0.1 && getWorld().getTime() % (11 - particleDensity) == 0) {
                 var pPos = getPos().add(velocity.multiply(0.5).negate());
-                world.addParticle(
+                getWorld().addParticle(
                         ParticleTypes.CAMPFIRE_SIGNAL_SMOKE,
                         pPos.getX(), pPos.getY(), pPos.getZ(),
                         0, 0, 0

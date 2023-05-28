@@ -1,7 +1,6 @@
 package nl.enjarai.doabarrelroll.mixin.roll;
 
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
-import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalDoubleRef;
 import net.minecraft.client.MinecraftClient;

@@ -2,7 +2,6 @@ package nl.enjarai.doabarrelroll.mixin.roll.entity;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.util.GlfwUtil;
 import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;

@@ -25,7 +25,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
             at = @At("RETURN")
     )
     public void doABarrelRoll$resetJump(CallbackInfo ci) {
-        if (onGround) {
+        if (isOnGround()) {
             MixinHooks.secondJump = false;
             MixinHooks.thirdJump = false;
         }

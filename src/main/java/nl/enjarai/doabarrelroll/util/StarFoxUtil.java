@@ -1,9 +1,7 @@
 package nl.enjarai.doabarrelroll.util;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -48,13 +46,13 @@ public class StarFoxUtil {
         }
     }
 
-    public static void renderPeppy(MatrixStack matrices, float tickDelta, int scaledWidth, int scaledHeight) {
+    public static void renderPeppy(DrawContext context, float tickDelta, int scaledWidth, int scaledHeight) {
         if (barrelRollTimer > 0) {
             int x = scaledWidth / 2 - 75;
             int y = scaledHeight - 90;
             int texture = barrelRollTimer % 2 == 0 ? 1 : 2;
-            RenderSystem.setShaderTexture(0, texture == 1 ? barrelRollTexture1 : barrelRollTexture2);
-            DrawableHelper.drawTexture(matrices, x, y, 0, 0, 160, 160, 160, 160);
+            context.drawTexture(texture == 1 ? barrelRollTexture1 : barrelRollTexture2,
+                    x, y, 0, 0, 160, 160, 160, 160);
         }
     }
 
@@ -93,7 +91,7 @@ public class StarFoxUtil {
     }
 
     public static void playBarrelRollSound(PlayerEntity player) {
-        player.world.playSoundFromEntity(
+        player.getWorld().playSoundFromEntity(
                 player, player, barrelRollSound, SoundCategory.PLAYERS,
                 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F
         );
