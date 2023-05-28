@@ -18,7 +18,7 @@ public abstract class EntityMixin implements RollEntity {
     @Shadow public abstract Vec3d getRotationVecClient();
 
     @Override
-    public void doABarrelRoll$changeElytraLook(double pitch, double yaw, double roll, Sensitivity sensitivity, double delta) {
+    public void doABarrelRoll$changeElytraLook(double pitch, double yaw, double roll, Sensitivity sensitivity, double mouseDelta) {
     }
 
     @Override

@@ -2,6 +2,7 @@ package nl.enjarai.doabarrelroll.mixin.roll.entity;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.util.GlfwUtil;
 import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
@@ -53,7 +54,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	}
 
 	@Override
-	public void doABarrelRoll$changeElytraLook(double pitch, double yaw, double roll, Sensitivity sensitivity, double delta) {
+	public void doABarrelRoll$changeElytraLook(double pitch, double yaw, double roll, Sensitivity sensitivity, double mouseDelta) {
 		var player = MinecraftClient.getInstance().player;
 		if (player == null) return;
 
@@ -64,7 +65,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 				player.getYaw(),
 				currentRoll
 		);
-		var context = RollContext.of(currentRotation, rotDelta, delta);
+		var context = RollContext.of(currentRotation, rotDelta, mouseDelta);
 
 		context.useModifier(RotationModifiers.fixNaN("INPUT"));
 		RollEvents.earlyCameraModifiers(context);
@@ -121,8 +122,8 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 		changeLookDirection(deltaX / 0.15, deltaY / 0.15);
 
 		// Apply roll
-		doABarrelRoll$setRoll((float) (doABarrelRoll$getRoll() + deltaRoll));
-		prevRoll += deltaRoll;
+		this.roll += deltaRoll;
+		this.prevRoll += deltaRoll;
 
 		// fix hand spasm when wrapping yaw value
 		if (getYaw() < -90 && renderYaw > 90) {

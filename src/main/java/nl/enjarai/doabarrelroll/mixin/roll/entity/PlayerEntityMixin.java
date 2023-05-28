@@ -14,7 +14,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
     @Unique
     protected float prevRoll;
     @Unique
-    private float roll;
+    protected float roll;
 
     @Override
     protected void doABarrelRoll$baseTickTail(CallbackInfo ci) {
