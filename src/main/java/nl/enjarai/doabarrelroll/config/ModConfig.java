@@ -7,16 +7,17 @@ import dev.isxander.yacl.api.*;
 import dev.isxander.yacl.api.controller.DoubleSliderControllerBuilder;
 import dev.isxander.yacl.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl.api.controller.TickBoxControllerBuilder;
-import dev.isxander.yacl.gui.controllers.TickBoxController;
-import dev.isxander.yacl.gui.controllers.cycling.EnumController;
-import dev.isxander.yacl.gui.controllers.slider.DoubleSliderController;
 import dev.isxander.yacl.impl.controller.DoubleSliderControllerBuilderImpl;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.toast.SystemToast;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
+import nl.enjarai.doabarrelroll.ModKeybindings;
 import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 
@@ -45,6 +46,7 @@ public class ModConfig {
             boolean switch_roll_and_yaw = false;
             boolean invert_pitch = false;
             boolean momentum_based_mouse = false;
+            double momentum_mouse_deadzone = 0.2;
             boolean show_momentum_widget = true;
             ActivationBehaviour activation_behaviour = ActivationBehaviour.VANILLA;
         }
@@ -89,21 +91,33 @@ public class ModConfig {
                 .title(getText("title"))
                 .category(ConfigCategory.createBuilder()
                         .name(getText("general"))
-                        .option(getBooleanOption("general", "mod_enabled", false)
+                        .option(getBooleanOption("general", "mod_enabled", false, false)
+                                .description(OptionDescription.createBuilder()
+                                        .description(Text.translatable("config.do_a_barrel_roll.general.mod_enabled.description",
+                                                KeyBindingHelper.getBoundKeyOf(ModKeybindings.TOGGLE_ENABLED).getLocalizedText()))
+                                        .build())
                                 .binding(true, () -> general.mod_enabled, value -> general.mod_enabled = value)
                                 .build())
                         .group(OptionGroup.createBuilder()
                                 .name(getText("controls"))
-                                .option(getBooleanOption("controls", "switch_roll_and_yaw", true)
+                                .option(getBooleanOption("controls", "switch_roll_and_yaw", true, false)
                                         .binding(false, () -> general.controls.switch_roll_and_yaw, value -> general.controls.switch_roll_and_yaw = value)
                                         .build())
-                                .option(getBooleanOption("controls", "invert_pitch", false)
+                                .option(getBooleanOption("controls", "invert_pitch", true, false)
                                         .binding(false, () -> general.controls.invert_pitch, value -> general.controls.invert_pitch = value)
                                         .build())
-                                .option(getBooleanOption("controls", "momentum_based_mouse", true)
+                                .option(getBooleanOption("controls", "momentum_based_mouse", true, false)
                                         .binding(false, () -> general.controls.momentum_based_mouse, value -> general.controls.momentum_based_mouse = value)
                                         .build())
-                                .option(getOption(ActivationBehaviour.class, "controls", "activation_behaviour", true)
+                                .option(getOption(Double.class, "controls", "momentum_mouse_deadzone", true, false)
+                                        .controller(option -> getDoubleSlider(option, 0.0, 1.0, 0.01))
+                                        .binding(0.2, () -> general.controls.momentum_mouse_deadzone, value -> general.controls.momentum_mouse_deadzone = value)
+                                        .build())
+                                .option(getOption(ActivationBehaviour.class, "controls", "activation_behaviour", false, false)
+                                        .description(behaviour -> OptionDescription.createBuilder()
+                                                .description(getText("controls", "activation_behaviour.description")
+                                                        .append(getText("controls", "activation_behaviour.description." + behaviour.name().toLowerCase())))
+                                                .build())
                                         .controller(option1 -> EnumControllerBuilder.create(option1)
                                                 .enumClass(ActivationBehaviour.class))
                                         .binding(ActivationBehaviour.VANILLA, () -> general.controls.activation_behaviour, value -> general.controls.activation_behaviour = value)
@@ -111,19 +125,19 @@ public class ModConfig {
                                 .build())
                         .group(OptionGroup.createBuilder()
                                 .name(getText("hud"))
-                                .option(getBooleanOption("hud", "show_horizon", true)
+                                .option(getBooleanOption("hud", "show_horizon", true, true)
                                         .binding(false, () -> general.hud.show_horizon, value -> general.hud.show_horizon = value)
                                         .build())
-                                .option(getBooleanOption("controls", "show_momentum_widget", true)
+                                .option(getBooleanOption("controls", "show_momentum_widget", true, true)
                                         .binding(true, () -> general.controls.show_momentum_widget, value -> general.controls.show_momentum_widget = value)
                                         .build())
                                 .build())
                         .group(OptionGroup.createBuilder()
                                 .name(getText("banking"))
-                                .option(getBooleanOption("banking", "enable_banking", true)
+                                .option(getBooleanOption("banking", "enable_banking", true, false)
                                         .binding(true, () -> general.banking.enable_banking, value -> general.banking.enable_banking = value)
                                         .build())
-                                .option(getOption(Double.class, "banking", "banking_strength", false)
+                                .option(getOption(Double.class, "banking", "banking_strength", false, false)
                                         .controller(option -> getDoubleSlider(option, 0.0, 100.0, 1.0))
                                         .binding(20.0, () -> general.banking.banking_strength, value -> general.banking.banking_strength = value)
                                         .build())
@@ -131,18 +145,18 @@ public class ModConfig {
                         .group(OptionGroup.createBuilder()
                                 .name(getText("thrust"))
                                 .collapsed(true)
-                                .option(getBooleanOption("thrust", "enable_thrust", true)
+                                .option(getBooleanOption("thrust", "enable_thrust", true, false)
                                         .binding(false, () -> general.thrust.enable_thrust, value -> general.thrust.enable_thrust = value)
                                         .build())
-                                .option(getOption(Double.class, "thrust", "max_thrust", true)
+                                .option(getOption(Double.class, "thrust", "max_thrust", true, false)
                                         .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
                                         .binding(2.0, () -> general.thrust.max_thrust, value -> general.thrust.max_thrust = value)
                                         .build())
-                                .option(getOption(Double.class, "thrust", "thrust_acceleration", true)
+                                .option(getOption(Double.class, "thrust", "thrust_acceleration", true, false)
                                         .controller(option -> getDoubleSlider(option, 0.1, 1.0, 0.1))
                                         .binding(0.1, () -> general.thrust.thrust_acceleration, value -> general.thrust.thrust_acceleration = value)
                                         .build())
-                                .option(getBooleanOption("thrust", "thrust_particles", false)
+                                .option(getBooleanOption("thrust", "thrust_particles", false, false)
                                         .binding(true, () -> general.thrust.thrust_particles, value -> general.thrust.thrust_particles = value)
                                         .build())
                                 .build())
@@ -151,33 +165,33 @@ public class ModConfig {
                         .name(getText("sensitivity"))
                         .group(OptionGroup.createBuilder()
                                 .name(getText("smoothing"))
-                                .option(getBooleanOption("smoothing", "smoothing_enabled", false)
+                                .option(getBooleanOption("smoothing", "smoothing_enabled", false, false)
                                         .binding(true, () -> sensitivity.smoothing.smoothing_enabled, value -> sensitivity.smoothing.smoothing_enabled = value)
                                         .build())
-                                .option(getOption(Double.class, "smoothing", "smoothing_pitch", false)
+                                .option(getOption(Double.class, "smoothing", "smoothing_pitch", false, false)
                                         .controller(option -> getDoubleSlider(option, 0.1, 5.0, 0.1))
                                         .binding(1.0, () -> sensitivity.smoothing.smoothing_pitch, value -> sensitivity.smoothing.smoothing_pitch = value)
                                         .build())
-                                .option(getOption(Double.class, "smoothing", "smoothing_yaw", false)
+                                .option(getOption(Double.class, "smoothing", "smoothing_yaw", false, false)
                                         .controller(option -> getDoubleSlider(option, 0.1, 5.0, 0.1))
                                         .binding(0.4, () -> sensitivity.smoothing.smoothing_yaw, value -> sensitivity.smoothing.smoothing_yaw = value)
                                         .build())
-                                .option(getOption(Double.class, "smoothing", "smoothing_roll", false)
+                                .option(getOption(Double.class, "smoothing", "smoothing_roll", false, false)
                                         .controller(option -> getDoubleSlider(option, 0.1, 5.0, 0.1))
                                         .binding(1.0, () -> sensitivity.smoothing.smoothing_roll, value -> sensitivity.smoothing.smoothing_roll = value)
                                         .build())
                                 .build())
                         .group(OptionGroup.createBuilder()
                                 .name(getText("desktop"))
-                                .option(getOption(Double.class, "desktop", "pitch", false)
+                                .option(getOption(Double.class, "desktop", "pitch", false, false)
                                         .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
                                         .binding(1.0, () -> sensitivity.desktop.pitch, value -> sensitivity.desktop.pitch = value)
                                         .build())
-                                .option(getOption(Double.class, "desktop", "yaw", false)
+                                .option(getOption(Double.class, "desktop", "yaw", false, false)
                                         .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
                                         .binding(0.4, () -> sensitivity.desktop.yaw, value -> sensitivity.desktop.yaw = value)
                                         .build())
-                                .option(getOption(Double.class, "desktop", "roll", false)
+                                .option(getOption(Double.class, "desktop", "roll", false, false)
                                         .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
                                         .binding(1.0, () -> sensitivity.desktop.roll, value -> sensitivity.desktop.roll = value)
                                         .build())
@@ -188,15 +202,15 @@ public class ModConfig {
                                 .description(OptionDescription.createBuilder()
                                         .description(getText("controller.description"))
                                         .build())
-                                .option(getOption(Double.class, "controller", "pitch", false)
+                                .option(getOption(Double.class, "controller", "pitch", false, false)
                                         .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
                                         .binding(1.0, () -> sensitivity.controller.pitch, value -> sensitivity.controller.pitch = value)
                                         .build())
-                                .option(getOption(Double.class, "controller", "yaw", false)
+                                .option(getOption(Double.class, "controller", "yaw", false, false)
                                         .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
                                         .binding(0.4, () -> sensitivity.controller.yaw, value -> sensitivity.controller.yaw = value)
                                         .build())
-                                .option(getOption(Double.class, "controller", "roll", false)
+                                .option(getOption(Double.class, "controller", "roll", false, false)
                                         .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
                                         .binding(1.0, () -> sensitivity.controller.roll, value -> sensitivity.controller.roll = value)
                                         .build())
@@ -207,19 +221,22 @@ public class ModConfig {
                 .generateScreen(parent);
     }
 
-    private <T> Option.Builder<T> getOption(Class<T> clazz, String category, String key, boolean description) {
+    private <T> Option.Builder<T> getOption(Class<T> clazz, String category, String key, boolean description, boolean image) {
         Option.Builder<T> builder = Option.<T>createBuilder()
                 .name(getText(category, key));
+        var descBuilder = OptionDescription.createBuilder();
         if (description) {
-            builder.description(OptionDescription.createBuilder()
-                    .description(getText(category, key + ".description"))
-                    .build());
+            descBuilder.description(getText(category, key + ".description"));
         }
+        if (image) {
+            descBuilder.image(DoABarrelRoll.id("textures/gui/config/images/" + category + "/" + key + ".png"), 480, 275);
+        }
+        builder.description(descBuilder.build());
         return builder;
     }
 
-    private Option.Builder<Boolean> getBooleanOption(String category, String key, boolean description) {
-        return getOption(Boolean.class, category, key, description)
+    private Option.Builder<Boolean> getBooleanOption(String category, String key, boolean description, boolean image) {
+        return getOption(Boolean.class, category, key, description, image)
                 .controller(TickBoxControllerBuilder::create);
     }
 
@@ -229,11 +246,11 @@ public class ModConfig {
                 .step(step);
     }
 
-    private Text getText(String category, String key) {
+    private MutableText getText(String category, String key) {
         return Text.translatable("config.do_a_barrel_roll." + category + "." + key);
     }
 
-    private Text getText(String key) {
+    private MutableText getText(String key) {
         return Text.translatable("config.do_a_barrel_roll." + key);
     }
 
@@ -249,6 +266,10 @@ public class ModConfig {
     public boolean getMomentumBasedMouse() {
         return general.controls.momentum_based_mouse;
     } //= false;
+
+    public double getMomentumMouseDeadzone() {
+        return general.controls.momentum_mouse_deadzone;
+    }
 
     public boolean getShowMomentumWidget() {
         return general.controls.show_momentum_widget;
@@ -321,6 +342,10 @@ public class ModConfig {
 
     public void setMomentumBasedMouse(boolean enabled) {
         general.controls.momentum_based_mouse = enabled;
+    }
+
+    public void setMomentumMouseDeadzone(double deadzone) {
+        general.controls.momentum_mouse_deadzone = deadzone;
     }
 
     public void setShowMomentumWidget(boolean enabled) {

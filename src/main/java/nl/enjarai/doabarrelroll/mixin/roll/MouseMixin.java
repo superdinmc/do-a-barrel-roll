@@ -80,9 +80,14 @@ public abstract class MouseMixin implements RollMouse {
                 if (mouseTurnVec.lengthSquared() > 1.0) {
                     mouseTurnVec.normalize();
                 }
+                var readyTurnVec = new Vector2d(mouseTurnVec);
+
+                // check if the vector is within the deadzone
+                double deadzone = ModConfig.INSTANCE.getMomentumMouseDeadzone();
+                if (readyTurnVec.lengthSquared() < deadzone * deadzone) readyTurnVec.zero();
 
                 // enlarge the vector and apply it to the camera
-                var readyTurnVec = new Vector2d(mouseTurnVec).mul(1200 * (float) mouseDelta);
+                readyTurnVec.mul(1200 * (float) mouseDelta);
                 rollPlayer.doABarrelRoll$changeElytraLook(readyTurnVec.y, readyTurnVec.x, 0, ModConfig.INSTANCE.getDesktopSensitivity(), mouseDelta);
 
             } else {

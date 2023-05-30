@@ -5,7 +5,6 @@ import net.minecraft.client.util.SmoothUtil;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
-import nl.enjarai.doabarrelroll.api.RollEntity;
 import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 import nl.enjarai.doabarrelroll.config.ModConfig;
@@ -40,14 +39,10 @@ public class RotationModifiers {
     }
 
     public static RotationInstant banking(RotationInstant rotationInstant, RollContext context) {
-        var client = MinecraftClient.getInstance();
-        var player = client.player;
-        var rollPlayer = (RollEntity) player;
-        if (player == null) return rotationInstant;
-
         var delta = context.getRenderDelta();
-        var currentRoll = rollPlayer.doABarrelRoll$getRoll() * ElytraMath.TORAD;
-        var strength = 10 * Math.cos(player.getPitch() * ElytraMath.TORAD) * ModConfig.INSTANCE.getBankingStrength();
+        var currentRotation = context.getCurrentRotation();
+        var currentRoll = currentRotation.roll() * ElytraMath.TORAD;
+        var strength = 10 * Math.cos(currentRotation.pitch() * ElytraMath.TORAD) * ModConfig.INSTANCE.getBankingStrength();
 
         var dX = Math.sin(currentRoll) * strength;
         var dY = -strength + Math.cos(currentRoll) * strength;
