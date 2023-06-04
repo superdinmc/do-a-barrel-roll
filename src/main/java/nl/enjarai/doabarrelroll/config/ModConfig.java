@@ -93,7 +93,7 @@ public class ModConfig {
                         .name(getText("general"))
                         .option(getBooleanOption("general", "mod_enabled", false, false)
                                 .description(OptionDescription.createBuilder()
-                                        .description(Text.translatable("config.do_a_barrel_roll.general.mod_enabled.description",
+                                        .text(Text.translatable("config.do_a_barrel_roll.general.mod_enabled.description",
                                                 KeyBindingHelper.getBoundKeyOf(ModKeybindings.TOGGLE_ENABLED).getLocalizedText()))
                                         .build())
                                 .binding(true, () -> general.mod_enabled, value -> general.mod_enabled = value)
@@ -115,7 +115,7 @@ public class ModConfig {
                                         .build())
                                 .option(getOption(ActivationBehaviour.class, "controls", "activation_behaviour", false, false)
                                         .description(behaviour -> OptionDescription.createBuilder()
-                                                .description(getText("controls", "activation_behaviour.description")
+                                                .text(getText("controls", "activation_behaviour.description")
                                                         .append(getText("controls", "activation_behaviour.description." + behaviour.name().toLowerCase())))
                                                 .build())
                                         .controller(option1 -> EnumControllerBuilder.create(option1)
@@ -200,7 +200,7 @@ public class ModConfig {
                                 .name(getText("controller"))
                                 .collapsed(!(FabricLoader.getInstance().isModLoaded("controlify") || FabricLoader.getInstance().isModLoaded("midnightcontrols")))
                                 .description(OptionDescription.createBuilder()
-                                        .description(getText("controller.description"))
+                                        .text(getText("controller.description"))
                                         .build())
                                 .option(getOption(Double.class, "controller", "pitch", false, false)
                                         .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
@@ -226,7 +226,7 @@ public class ModConfig {
                 .name(getText(category, key));
         var descBuilder = OptionDescription.createBuilder();
         if (description) {
-            descBuilder.description(getText(category, key + ".description"));
+            descBuilder.text(getText(category, key + ".description"));
         }
         if (image) {
             descBuilder.image(DoABarrelRoll.id("textures/gui/config/images/" + category + "/" + key + ".png"), 480, 275);
@@ -241,7 +241,7 @@ public class ModConfig {
     }
 
     private DoubleSliderControllerBuilder getDoubleSlider(Option<Double> option, double min, double max, double step) {
-        return new DoubleSliderControllerBuilderImpl(option)
+        return DoubleSliderControllerBuilder.create(option)
                 .range(min, max)
                 .step(step);
     }
