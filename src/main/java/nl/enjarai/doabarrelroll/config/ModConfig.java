@@ -3,11 +3,11 @@ package nl.enjarai.doabarrelroll.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dev.isxander.yacl.api.*;
-import dev.isxander.yacl.api.controller.DoubleSliderControllerBuilder;
-import dev.isxander.yacl.api.controller.EnumControllerBuilder;
-import dev.isxander.yacl.api.controller.TickBoxControllerBuilder;
-import dev.isxander.yacl.impl.controller.DoubleSliderControllerBuilderImpl;
+import dev.isxander.yacl3.api.*;
+import dev.isxander.yacl3.api.controller.DoubleSliderControllerBuilder;
+import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
+import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
+import dev.isxander.yacl3.impl.controller.DoubleSliderControllerBuilderImpl;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;

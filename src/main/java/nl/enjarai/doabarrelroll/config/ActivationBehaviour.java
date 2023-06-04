@@ -1,6 +1,6 @@
 package nl.enjarai.doabarrelroll.config;
 
-import dev.isxander.yacl.api.NameableEnum;
+import dev.isxander.yacl3.api.NameableEnum;
 import net.minecraft.text.Text;
 
 public enum ActivationBehaviour implements NameableEnum {
