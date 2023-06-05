@@ -1,1 +1,8 @@
-- Disabled certain features in multiplayer if not explicitly allowed by the server.
+- Updated to 1.20.
+- Rewrote a massive chunk of internal code and API.
+  - This should make the overall smoothness of flight more... smooth.
+  - Also makes it way easier to create addon mods with similar roll mechanics.
+  - And server-side roll syncing should see some improvements as well.
+  - These changes are quite experimental, so please report any issues you find.
+- Revamped config screen to use new YACL v3 features, and be cleaner overall.
+- 
