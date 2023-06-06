@@ -40,14 +40,6 @@ public final class InputContextImpl implements InputContext {
     public void addKeyBinding(KeyBinding keyBinding) {
         Objects.requireNonNull(keyBinding);
         keyBindings.add(keyBinding);
-        bindingsByKey.put(keyBinding.boundKey, keyBinding);
-    }
-
-    @Override
-    public void removeKeyBinding(KeyBinding keyBinding) {
-        Objects.requireNonNull(keyBinding);
-        keyBindings.remove(keyBinding);
-        bindingsByKey.remove(keyBinding.boundKey);
     }
 
     @Override
@@ -58,5 +50,13 @@ public final class InputContextImpl implements InputContext {
     @Override
     public KeyBinding getKeyBinding(InputUtil.Key key) {
         return bindingsByKey.get(key);
+    }
+
+    @Override
+    public void updateKeysByCode() {
+        bindingsByKey.clear();
+        for (KeyBinding keyBinding : keyBindings) {
+            bindingsByKey.put(keyBinding.boundKey, keyBinding);
+        }
     }
 }

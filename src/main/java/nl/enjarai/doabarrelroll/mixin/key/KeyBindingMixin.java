@@ -8,6 +8,8 @@ import net.minecraft.client.util.InputUtil;
 import nl.enjarai.doabarrelroll.impl.key.InputContextImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
 
@@ -34,11 +36,11 @@ public abstract class KeyBindingMixin {
                     target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"
             )
     )
-    private static KeyBinding doABarrelRoll$applyKeybindContext(Map<InputUtil.Key, KeyBinding> map, InputUtil.Key key, Operation<KeyBinding> original) {
-        var binding = getContextKeyBinding(key);
+    private static Object doABarrelRoll$applyKeybindContext(Map<InputUtil.Key, KeyBinding> map, Object key, Operation<KeyBinding> original) {
+        var binding = getContextKeyBinding((InputUtil.Key) key);
         if (binding != null) return binding;
 
-        return original.call(key);
+        return original.call(map, key);
     }
 
     @WrapOperation(
@@ -48,11 +50,21 @@ public abstract class KeyBindingMixin {
                     target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"
             )
     )
-    private static KeyBinding doABarrelRoll$applyKeybindContext2(Map<InputUtil.Key, KeyBinding> map, InputUtil.Key key, Operation<KeyBinding> original) {
-        var binding = getContextKeyBinding(key);
+    private static Object doABarrelRoll$applyKeybindContext2(Map<InputUtil.Key, KeyBinding> map, Object key, Operation<KeyBinding> original) {
+        var binding = getContextKeyBinding((InputUtil.Key) key);
         if (binding != null) return binding;
 
-        return original.call(key);
+        return original.call(map, key);
+    }
+
+    @Inject(
+            method = "updateKeysByCode",
+            at = @At("HEAD")
+    )
+    private static void doABarrelRoll$updateContextualKeys(CallbackInfo ci) {
+        for (var context : InputContextImpl.CONTEXTS) {
+            context.updateKeysByCode();
+        }
     }
 
     @WrapWithCondition(
@@ -62,9 +74,9 @@ public abstract class KeyBindingMixin {
                     target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"
             )
     )
-    private static boolean doABarrelRoll$skipAddingContextualKeys(Map<InputUtil.Key, KeyBinding> map, InputUtil.Key key, KeyBinding keyBinding) {
+    private static boolean doABarrelRoll$skipAddingContextualKeys(Map<InputUtil.Key, KeyBinding> map, Object key, Object keyBinding) {
         for (var context : InputContextImpl.CONTEXTS) {
-            if (context.getKeyBindings().contains(keyBinding)) {
+            if (context.getKeyBindings().contains((KeyBinding) keyBinding)) {
                 return false;
             }
         }

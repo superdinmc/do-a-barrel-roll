@@ -19,9 +19,9 @@ public interface InputContext {
 
     void addKeyBinding(KeyBinding keyBinding);
 
-    void removeKeyBinding(KeyBinding keyBinding);
-
     List<KeyBinding> getKeyBindings();
 
     KeyBinding getKeyBinding(InputUtil.Key key);
+
+    void updateKeysByCode();
 }

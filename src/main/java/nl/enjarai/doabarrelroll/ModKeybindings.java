@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
+import nl.enjarai.doabarrelroll.api.key.InputContext;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.SyncedModConfig;
 import org.lwjgl.glfw.GLFW;
@@ -25,13 +26,35 @@ public class ModKeybindings {
             "category.do_a_barrel_roll.do_a_barrel_roll"
     );
 
+    public static final KeyBinding YAW_LEFT = new KeyBinding(
+            "key.do_a_barrel_roll.yaw_left",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_A,
+            "category.do_a_barrel_roll.do_a_barrel_roll"
+    );
+    public static final KeyBinding YAW_RIGHT = new KeyBinding(
+            "key.do_a_barrel_roll.yaw_right",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_D,
+            "category.do_a_barrel_roll.do_a_barrel_roll"
+    );
+
     public static final List<KeyBinding> FABRIC = List.of(
             TOGGLE_ENABLED,
-            TOGGLE_THRUST
+            TOGGLE_THRUST,
+            YAW_LEFT,
+            YAW_RIGHT
     );
-    public static final List<KeyBinding> FORGE = List.of(
-            TOGGLE_ENABLED
+
+    public static final InputContext CONTEXT = InputContext.of(
+            DoABarrelRoll.id("fall_flying"),
+            DoABarrelRollClient.FALL_FLYING_GROUP
     );
+
+    static {
+        CONTEXT.addKeyBinding(YAW_LEFT);
+        CONTEXT.addKeyBinding(YAW_RIGHT);
+    }
 
     public static void clientTick(MinecraftClient client) {
         while (TOGGLE_ENABLED.wasPressed()) {

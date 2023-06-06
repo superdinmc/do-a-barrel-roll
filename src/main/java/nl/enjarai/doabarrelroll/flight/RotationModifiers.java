@@ -5,6 +5,7 @@ import net.minecraft.client.util.SmoothUtil;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
+import nl.enjarai.doabarrelroll.ModKeybindings;
 import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 import nl.enjarai.doabarrelroll.config.ModConfig;
@@ -13,15 +14,13 @@ import nl.enjarai.doabarrelroll.config.Sensitivity;
 public class RotationModifiers {
     public static RollContext.ConfiguresRotation strafeButtons(double power) {
         return (rotationInstant, context) -> {
-            var client = MinecraftClient.getInstance();
-
             var yawDelta = power * context.getRenderDelta();
             var yaw = 0;
 
-            if (client.options.leftKey.isPressed()) {
+            if (ModKeybindings.YAW_LEFT.isPressed()) {
                 yaw -= yawDelta;
             }
-            if (client.options.rightKey.isPressed()) {
+            if (ModKeybindings.YAW_RIGHT.isPressed()) {
                 yaw += yawDelta;
             }
 
