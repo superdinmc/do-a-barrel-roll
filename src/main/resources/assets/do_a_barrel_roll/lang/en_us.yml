@@ -10,7 +10,7 @@ config.do_a_barrel_roll:
     .: Controls
     switch_roll_and_yaw: Switch Roll and Yaw
     switch_roll_and_yaw.description: >
-      Switch the roll and yaw axis to be more in line with vanilla movement. 
+      Switch the roll and yaw axis while using a mouse to be more in line with vanilla movement. 
       This is not recommended for the best experience™, but might make flying easier for some people.
     momentum_based_mouse: Use Momentum Based Mouse
     momentum_based_mouse.description: > 
@@ -49,7 +49,7 @@ config.do_a_barrel_roll:
           enabling it once, essentially letting you switch the mod on and off on the fly. (pun intended)
     invert_pitch: Invert Pitch
     invert_pitch.description: >
-      Inverts the pitch axis while flying.
+      Inverts the pitch axis while flying with a mouse.
   hud:
     .: HUD
     show_horizon: Show Horizon Widget
@@ -111,6 +111,14 @@ key.do_a_barrel_roll:
     enable: §aEnabled §rThrusting
     disable: §cDisabled §rThrusting
     disallowed: §cYou cannot use thrusting on this server
+  pitch_up: Pitch Up
+  pitch_down: Pitch Down
+  yaw_left: Yaw Left
+  yaw_right: Yaw Right
+  roll_left: Roll Left
+  roll_right: Roll Right
+  thrust_forward: Thrust Forward
+  thrust_backward: Thrust Backward
 
 toast.do_a_barrel_roll:
   .: Do a Barrel Roll
