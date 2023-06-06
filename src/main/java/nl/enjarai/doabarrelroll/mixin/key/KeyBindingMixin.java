@@ -5,18 +5,36 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import nl.enjarai.doabarrelroll.api.key.InputContext;
 import nl.enjarai.doabarrelroll.impl.key.InputContextImpl;
+import nl.enjarai.doabarrelroll.util.key.ContextualKeyBinding;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Mixin(KeyBinding.class)
-public abstract class KeyBindingMixin {
+public abstract class KeyBindingMixin implements ContextualKeyBinding {
+    @Unique
+    private final ArrayList<InputContext> contexts = new ArrayList<>();
+
+    @Override
+    public List<InputContext> doABarrelRoll$getContexts() {
+        return contexts;
+    }
+
+    @Override
+    public void doABarrelRoll$addToContext(InputContext context) {
+        contexts.add(context);
+    }
+
     private static KeyBinding getContextKeyBinding(InputUtil.Key key) {
-        for (var context : InputContextImpl.CONTEXTS) {
+        for (var context : InputContextImpl.getContexts()) {
             if (context.isActive()) {
                 var binding = context.getKeyBinding(key);
 
@@ -62,7 +80,7 @@ public abstract class KeyBindingMixin {
             at = @At("HEAD")
     )
     private static void doABarrelRoll$updateContextualKeys(CallbackInfo ci) {
-        for (var context : InputContextImpl.CONTEXTS) {
+        for (var context : InputContextImpl.getContexts()) {
             context.updateKeysByCode();
         }
     }
@@ -75,12 +93,6 @@ public abstract class KeyBindingMixin {
             )
     )
     private static boolean doABarrelRoll$skipAddingContextualKeys(Map<InputUtil.Key, KeyBinding> map, Object key, Object keyBinding) {
-        for (var context : InputContextImpl.CONTEXTS) {
-            if (context.getKeyBindings().contains((KeyBinding) keyBinding)) {
-                return false;
-            }
-        }
-
-        return true;
+        return !InputContextImpl.contextsContain((KeyBinding) keyBinding);
     }
 }
