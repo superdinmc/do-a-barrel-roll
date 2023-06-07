@@ -1,5 +1,6 @@
 - Updated to 1.20.
 - Rewrote a massive chunk of internal code and API.
+  - Functionality of the mod should not be affected.
   - This should make the overall smoothness of flight more... smooth.
   - Also makes it way easier to create addon mods with similar roll mechanics.
   - And server-side roll syncing should see some improvements as well.
