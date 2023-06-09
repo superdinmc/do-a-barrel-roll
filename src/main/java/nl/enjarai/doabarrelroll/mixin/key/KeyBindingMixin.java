@@ -35,11 +35,12 @@ public abstract class KeyBindingMixin implements ContextualKeyBinding {
 
     private static KeyBinding getContextKeyBinding(InputUtil.Key key) {
         for (var context : InputContextImpl.getContexts()) {
-            if (context.isActive()) {
-                var binding = context.getKeyBinding(key);
-
-                if (binding != null) {
+            var binding = context.getKeyBinding(key);
+            if (binding != null) {
+                if (context.isActive()) {
                     return binding;
+                } else {
+                    binding.setPressed(false);
                 }
             }
         }
@@ -70,9 +71,15 @@ public abstract class KeyBindingMixin implements ContextualKeyBinding {
     )
     private static Object doABarrelRoll$applyKeybindContext2(Map<InputUtil.Key, KeyBinding> map, Object key, Operation<KeyBinding> original) {
         var binding = getContextKeyBinding((InputUtil.Key) key);
-        if (binding != null) return binding;
+        var originalBinding = original.call(map, key);
+        if (binding != null) {
+            if (originalBinding != null) {
+                originalBinding.setPressed(false);
+            }
+            return binding;
+        }
 
-        return original.call(map, key);
+        return originalBinding;
     }
 
     @Inject(
