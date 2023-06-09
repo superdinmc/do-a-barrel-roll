@@ -1,12 +1,2 @@
-- Updated to 1.20.
-- Rewrote a massive chunk of internal code and API.
-  - Functionality of the mod should not be affected.
-  - This should make the overall smoothness of flight more... smooth.
-  - Also makes it way easier to create addon mods with similar roll mechanics.
-  - And server-side roll syncing should see some improvements as well.
-  - These changes are quite experimental, so please report any issues you find.
-- Revamped config screen to use new YACL v3 features, and be cleaner overall.
-- Changed how keybindings in flight are handled.
-  - Yaw, pitch, roll and thrusting keybinds can now be set independently of vanilla controls.
-  - If you set one of these to the same button as a vanilla keybind, they will override it while flying.
-  - This is *also* experimental.
+- Fixed a keybind context switch not unpressing the previous context
+- Fixed severe rendering issues when using the horizon widget

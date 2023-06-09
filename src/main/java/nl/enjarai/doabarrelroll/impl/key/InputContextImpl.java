@@ -1,6 +1,7 @@
 package nl.enjarai.doabarrelroll.impl.key;
 
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
@@ -34,11 +35,21 @@ public final class InputContextImpl implements InputContext {
     private final Supplier<Boolean> activeCondition;
     private final List<KeyBinding> keyBindings = new ReferenceArrayList<>();
     private final Map<InputUtil.Key, KeyBinding> bindingsByKey = new HashMap<>();
+    private boolean active;
 
     public InputContextImpl(Identifier id, Supplier<Boolean> activeCondition) {
         this.id = id;
         this.activeCondition = activeCondition;
         CONTEXTS.add(this);
+        ClientTickEvents.START_CLIENT_TICK.register(client -> tick());
+    }
+
+    public void tick() {
+        boolean active = activeCondition.get();
+        if (active != this.active) {
+            this.active = active;
+            KeyBinding.updatePressedStates();
+        }
     }
 
     @Override
@@ -48,7 +59,7 @@ public final class InputContextImpl implements InputContext {
 
     @Override
     public boolean isActive() {
-        return activeCondition.get();
+        return active;
     }
 
     @Override
