@@ -99,7 +99,9 @@ config.do_a_barrel_roll:
     yaw: Yaw
     roll: Roll
 
-category.do_a_barrel_roll.do_a_barrel_roll: Do a Barrel Roll
+category.do_a_barrel_roll.do_a_barrel_roll:
+  .: Do a Barrel Roll
+  movement: Do a Barrel Roll Movement
 key.do_a_barrel_roll:
   toggle_enabled:
     .: Toggle Enabled

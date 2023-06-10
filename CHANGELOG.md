@@ -1,2 +1,1 @@
-- Fixed a keybind context switch not unpressing the previous context
-- Fixed severe rendering issues when using the horizon widget
+- Added a seperate keybind category for movement to distinguish it more.

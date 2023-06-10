@@ -30,49 +30,49 @@ public class ModKeybindings {
             "key.do_a_barrel_roll.pitch_up",
             InputUtil.Type.KEYSYM,
             InputUtil.UNKNOWN_KEY.getCode(),
-            "category.do_a_barrel_roll.do_a_barrel_roll"
+            "category.do_a_barrel_roll.do_a_barrel_roll.movement"
     );
     public static final KeyBinding PITCH_DOWN = new KeyBinding(
             "key.do_a_barrel_roll.pitch_down",
             InputUtil.Type.KEYSYM,
             InputUtil.UNKNOWN_KEY.getCode(),
-            "category.do_a_barrel_roll.do_a_barrel_roll"
+            "category.do_a_barrel_roll.do_a_barrel_roll.movement"
     );
     public static final KeyBinding YAW_LEFT = new KeyBinding(
             "key.do_a_barrel_roll.yaw_left",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_A,
-            "category.do_a_barrel_roll.do_a_barrel_roll"
+            "category.do_a_barrel_roll.do_a_barrel_roll.movement"
     );
     public static final KeyBinding YAW_RIGHT = new KeyBinding(
             "key.do_a_barrel_roll.yaw_right",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_D,
-            "category.do_a_barrel_roll.do_a_barrel_roll"
+            "category.do_a_barrel_roll.do_a_barrel_roll.movement"
     );
     public static final KeyBinding ROLL_LEFT = new KeyBinding(
             "key.do_a_barrel_roll.roll_left",
             InputUtil.Type.KEYSYM,
             InputUtil.UNKNOWN_KEY.getCode(),
-            "category.do_a_barrel_roll.do_a_barrel_roll"
+            "category.do_a_barrel_roll.do_a_barrel_roll.movement"
     );
     public static final KeyBinding ROLL_RIGHT = new KeyBinding(
             "key.do_a_barrel_roll.roll_right",
             InputUtil.Type.KEYSYM,
             InputUtil.UNKNOWN_KEY.getCode(),
-            "category.do_a_barrel_roll.do_a_barrel_roll"
+            "category.do_a_barrel_roll.do_a_barrel_roll.movement"
     );
     public static final KeyBinding THRUST_FORWARD = new KeyBinding(
             "key.do_a_barrel_roll.thrust_forward",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_W,
-            "category.do_a_barrel_roll.do_a_barrel_roll"
+            "category.do_a_barrel_roll.do_a_barrel_roll.movement"
     );
     public static final KeyBinding THRUST_BACKWARD = new KeyBinding(
             "key.do_a_barrel_roll.thrust_backward",
             InputUtil.Type.KEYSYM,
             InputUtil.UNKNOWN_KEY.getCode(),
-            "category.do_a_barrel_roll.do_a_barrel_roll"
+            "category.do_a_barrel_roll.do_a_barrel_roll.movement"
     );
 
     public static final List<KeyBinding> FABRIC = List.of(
