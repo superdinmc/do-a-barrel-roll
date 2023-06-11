@@ -26,6 +26,7 @@ public class MomentumCrosshairWidget extends RenderHelper {
                     centerX + (int) lineVec.x, centerY + (int) lineVec.y,
                     blankPixel(matrices)
             );
+            RenderSystem.defaultBlendFunc();
         }
 
         // change the position of the crosshair, which is rendered up the stack

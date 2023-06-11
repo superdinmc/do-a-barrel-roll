@@ -1,33 +1,44 @@
 package nl.enjarai.doabarrelroll.flight;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.SmoothUtil;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
-import nl.enjarai.doabarrelroll.api.RollEntity;
+import nl.enjarai.doabarrelroll.ModKeybindings;
 import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
 
 public class RotationModifiers {
-    public static RollContext.ConfiguresRotation strafeButtons(double power) {
+    public static RollContext.ConfiguresRotation buttonControls(double power) {
         return (rotationInstant, context) -> {
-            var client = MinecraftClient.getInstance();
-
-            var yawDelta = power * context.getRenderDelta();
+            var delta = power * context.getRenderDelta();
+            var pitch = 0;
             var yaw = 0;
+            var roll = 0;
 
-            if (client.options.leftKey.isPressed()) {
-                yaw -= yawDelta;
+            if (ModKeybindings.PITCH_UP.isPressed()) {
+                pitch -= delta;
             }
-            if (client.options.rightKey.isPressed()) {
-                yaw += yawDelta;
+            if (ModKeybindings.PITCH_DOWN.isPressed()) {
+                pitch += delta;
+            }
+            if (ModKeybindings.YAW_LEFT.isPressed()) {
+                yaw -= delta;
+            }
+            if (ModKeybindings.YAW_RIGHT.isPressed()) {
+                yaw += delta;
+            }
+            if (ModKeybindings.ROLL_LEFT.isPressed()) {
+                roll -= delta;
+            }
+            if (ModKeybindings.ROLL_RIGHT.isPressed()) {
+                roll += delta;
             }
 
             // Putting this in the roll value, since it'll be swapped later
-            return rotationInstant.add(0, 0, yaw);
+            return rotationInstant.add(pitch, yaw, roll);
         };
     }
 
@@ -40,14 +51,10 @@ public class RotationModifiers {
     }
 
     public static RotationInstant banking(RotationInstant rotationInstant, RollContext context) {
-        var client = MinecraftClient.getInstance();
-        var player = client.player;
-        var rollPlayer = (RollEntity) player;
-        if (player == null) return rotationInstant;
-
         var delta = context.getRenderDelta();
-        var currentRoll = rollPlayer.doABarrelRoll$getRoll() * ElytraMath.TORAD;
-        var strength = 10 * Math.cos(player.getPitch() * ElytraMath.TORAD) * ModConfig.INSTANCE.getBankingStrength();
+        var currentRotation = context.getCurrentRotation();
+        var currentRoll = currentRotation.roll() * ElytraMath.TORAD;
+        var strength = 10 * Math.cos(currentRotation.pitch() * ElytraMath.TORAD) * ModConfig.INSTANCE.getBankingStrength();
 
         var dX = Math.sin(currentRoll) * strength;
         var dY = -strength + Math.cos(currentRoll) * strength;
@@ -60,13 +67,11 @@ public class RotationModifiers {
     }
 
     public static RotationInstant manageThrottle(RotationInstant rotationInstant, RollContext context) {
-        var client = MinecraftClient.getInstance();
-
         var delta = context.getRenderDelta();
 
-        if (client.options.forwardKey.isPressed()) {
+        if (ModKeybindings.THRUST_FORWARD.isPressed()) {
             DoABarrelRollClient.throttle += 0.1 * delta;
-        } else if (client.options.backKey.isPressed()) {
+        } else if (ModKeybindings.THRUST_BACKWARD.isPressed()) {
             DoABarrelRollClient.throttle -= 0.1 * delta;
         } else {
             DoABarrelRollClient.throttle -= DoABarrelRollClient.throttle * 0.95 * delta;

@@ -20,20 +20,21 @@ public class HorizonLineWidget extends RenderHelper {
         centerX += Math.round(offset.x);
         centerY += Math.round(offset.y);
 
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.ONE_MINUS_DST_COLOR, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         for (int i = 0; i < 2; i++) {
             v.negate();
 
             var start = v.mul(10.0, new Vector2d());
             var end = v.mul(50.0, new Vector2d());
 
-            RenderSystem.enableBlend();
-            RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.ONE_MINUS_DST_COLOR, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
-            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
             ModMath.forBresenhamLine(
                     centerX + (int) start.x, centerY + (int) start.y,
                     centerX + (int) end.x, centerY + (int) end.y,
                     blankPixel(matrices)
             );
         }
+        RenderSystem.defaultBlendFunc();
     }
 }

@@ -35,13 +35,13 @@ public class DoABarrelRollClient {
         // Keyboard modifiers
         RollEvents.EARLY_CAMERA_MODIFIERS.register(context -> context
                 .useModifier(RotationModifiers::manageThrottle, ModConfig.INSTANCE::getEnableThrust)
-                .useModifier(RotationModifiers.strafeButtons(1800)),
-                10, FALL_FLYING_GROUP);
+                .useModifier(RotationModifiers.buttonControls(1800)),
+                2000, FALL_FLYING_GROUP);
 
         // Mouse modifiers, including swapping axes
         RollEvents.EARLY_CAMERA_MODIFIERS.register(context -> context
                 .useModifier(ModConfig.INSTANCE::configureRotation),
-                20, FALL_FLYING_GROUP);
+                1000, FALL_FLYING_GROUP);
 
         // Generic movement modifiers, banking and such
         RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context
@@ -50,7 +50,7 @@ public class DoABarrelRollClient {
                         ModConfig.INSTANCE.getSmoothing()
                 ), ModConfig.INSTANCE::getSmoothingEnabled)
                 .useModifier(RotationModifiers::banking, ModConfig.INSTANCE::getEnableBanking),
-                10, FALL_FLYING_GROUP);
+                1000, FALL_FLYING_GROUP);
 
         ClientTickEvents.END_CLIENT_TICK.register((client) -> {
             if (!isFallFlying()) {

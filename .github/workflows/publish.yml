@@ -104,7 +104,6 @@ jobs:
           dependencies: |
             fabric-api | depends | *
             yacl | depends | *
-            cardinal-components | includes | *
 
           files: '${{ steps.download.outputs.download-path }}/!(*-@(dev|sources)).jar'
 

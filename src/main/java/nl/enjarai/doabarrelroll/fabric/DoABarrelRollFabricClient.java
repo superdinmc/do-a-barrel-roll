@@ -23,10 +23,6 @@ public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunc
 
     @Override
     public void onInitializeClient() {
-        if (!FabricLoader.getInstance().isModLoaded("yet_another_config_lib")) {
-            throw new IllegalStateException("Do a Barrel Roll requires Yet Another Config Lib (YACL) to be installed!");
-        }
-
         DoABarrelRollClient.init();
 
         ModConfig.touch();

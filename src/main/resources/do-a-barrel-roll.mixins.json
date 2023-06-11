@@ -8,6 +8,8 @@
     "InGameHudMixin",
     "LivingEntityMixin",
     "PlayerEntityMixin",
+    "key.KeyBindingEntryMixin",
+    "key.KeyBindingMixin",
     "roll.CameraMixin",
     "roll.DebugHudMixin",
     "roll.GameRendererMixin",

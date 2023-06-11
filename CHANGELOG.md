@@ -1,1 +1,1 @@
-- Disabled certain features in multiplayer if not explicitly allowed by the server.
+- Added a seperate keybind category for movement to distinguish it more.
