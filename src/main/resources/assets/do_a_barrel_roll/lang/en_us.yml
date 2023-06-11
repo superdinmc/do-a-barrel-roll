@@ -98,6 +98,11 @@ config.do_a_barrel_roll:
     pitch: Pitch
     yaw: Yaw
     roll: Roll
+  yacl:
+    missing:
+      .: Yet Another Config Lib is not installed
+      message: YACL 3 is required to edit the config in game, would you like to install YACL 3?
+
 
 category.do_a_barrel_roll.do_a_barrel_roll:
   .: Do a Barrel Roll
