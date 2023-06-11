@@ -19,11 +19,11 @@ jobs:
           is_append_body: true
 
   deploy_1_19_4:
-    uses: enjarai/do-a-barrel-roll/.github/workflows/publish.yml@1.20/dev
+    uses: enjarai/do-a-barrel-roll/.github/workflows/publish.yml@1.19.4/next
     with:
-      branch: 1.20/dev
+      branch: 1.19.4/next
       game_vers: |
-        1.20
+        1.19.4
       java_vers: 17
       GITHUB_REF: ${{ github.ref }}
     secrets:
