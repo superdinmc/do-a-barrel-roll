@@ -105,7 +105,7 @@ jobs:
             fabric-api | depends | *
             yacl | depends | *
 
-          files: '${{ steps.download.outputs.download-path }}/!(*-@(dev|sources)).jar'
+          files: '${{ steps.download.outputs.download-path }}/*+${{ steps.mod_version.outputs.result }}-fabric.jar'
 
           modrinth-featured: false
           changelog-file: CHANGELOG.md
