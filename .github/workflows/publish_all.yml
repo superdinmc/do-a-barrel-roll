@@ -33,6 +33,7 @@ jobs:
       PUBLISH_MAVEN_PASSWORD: ${{ secrets.PUBLISH_MAVEN_PASSWORD }}
 
   deploy_1_20:
+    needs: deploy_1_19_4
     uses: enjarai/do-a-barrel-roll/.github/workflows/publish.yml@1.20/dev
     with:
       branch: 1.20/dev
