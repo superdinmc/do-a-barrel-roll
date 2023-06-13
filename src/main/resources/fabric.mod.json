@@ -47,7 +47,7 @@
 	"accessWidener": "do-a-barrel-roll.accesswidener",
 
 	"depends": {
-		"minecraft": ">=1.20- <1.20.1-",
+		"minecraft": ">=1.20- <1.20.2-",
 		"fabric": "*",
 		"cicada": "*"
 	},
