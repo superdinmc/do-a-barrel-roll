@@ -121,8 +121,12 @@ public abstract class CameraMixin implements RollCamera {
             index = 2
     )
     private float doABarrelRoll$setRoll(float original) {
-        this.roll = tempRoll.get();
-        return (float) (this.roll * TORAD);
+        var roll = tempRoll.get();
+        if (roll != null) {
+            this.roll = roll;
+            return (float) (this.roll * TORAD);
+        }
+        return original;
     }
 
     @Override
