@@ -1,4 +1,4 @@
-package nl.enjarai.doabarrelroll.flight;
+package nl.enjarai.doabarrelroll.util;
 
 public class MagicNumbers {
     public static final double TORAD = Math.PI / 180;

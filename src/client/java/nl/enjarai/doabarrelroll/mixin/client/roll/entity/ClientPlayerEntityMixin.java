@@ -6,7 +6,7 @@ import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
-import nl.enjarai.doabarrelroll.flight.MagicNumbers;
+import nl.enjarai.doabarrelroll.util.MagicNumbers;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.net.RollSyncClient;
 import org.joml.Vector3d;

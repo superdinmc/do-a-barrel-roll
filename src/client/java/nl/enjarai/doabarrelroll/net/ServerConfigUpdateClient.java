@@ -8,6 +8,7 @@ import net.minecraft.network.PacketByteBuf;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.config.ModConfigServer;
+import nl.enjarai.doabarrelroll.util.ToastUtil;
 
 public class ServerConfigUpdateClient {
     private static boolean waitingForAck = false;
@@ -43,9 +44,12 @@ public class ServerConfigUpdateClient {
 
                 var success = buf.readBoolean();
                 if (success) {
-                    var data = ModConfigServer.CODEC.decode(JsonOps.INSTANCE, JsonParser.parseString(buf.readString()))
-                            .getOrThrow(false, DoABarrelRoll.LOGGER::warn).getFirst();
-                    DoABarrelRollClient.HANDSHAKE_CLIENT.setConfig(data);
+                    // I don't think we need this
+//                    var data = ModConfigServer.CODEC.decode(JsonOps.INSTANCE, JsonParser.parseString(buf.readString()))
+//                            .getOrThrow(false, DoABarrelRoll.LOGGER::warn).getFirst();
+//                    DoABarrelRollClient.HANDSHAKE_CLIENT.setConfig(data);
+
+                    ToastUtil.toasty("server_config_updated");
                 }
             } catch (RuntimeException e) {
                 DoABarrelRoll.LOGGER.warn("Failed to read config update ack from server: ", e);

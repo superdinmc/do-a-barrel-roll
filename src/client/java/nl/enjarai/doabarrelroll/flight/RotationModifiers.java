@@ -9,6 +9,7 @@ import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
+import nl.enjarai.doabarrelroll.util.MagicNumbers;
 
 public class RotationModifiers {
     public static RollContext.ConfiguresRotation buttonControls(double power) {

@@ -31,7 +31,7 @@ public class DoABarrelRoll {
                 ModConfigServer.CODEC, ModConfigServer.DEFAULT, ServerEvents::updateServerConfig);
         HANDSHAKE_SERVER = new HandshakeServer<>(
                 CONFIG_HOLDER, player -> !ModConfigServer.canModify(player),
-                ModConfigServer.CODEC, LimitedModConfigServer.CODEC
+                ModConfigServer.CODEC, LimitedModConfigServer.getCodec()
         );
     }
 }

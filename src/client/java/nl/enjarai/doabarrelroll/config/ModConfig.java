@@ -10,6 +10,7 @@ import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
+import nl.enjarai.doabarrelroll.util.ToastUtil;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -319,20 +320,10 @@ public class ModConfig {
 
     public void notifyPlayerOfServerConfig(LimitedModConfigServer serverConfig) {
         if (!serverConfig.allowThrusting() && general.thrust.enable_thrust) {
-            MinecraftClient.getInstance().getToastManager().add(SystemToast.create(
-                    MinecraftClient.getInstance(),
-                    SystemToast.Type.TUTORIAL_HINT,
-                    Text.translatable("toast.do_a_barrel_roll"),
-                    Text.translatable("toast.do_a_barrel_roll.thrusting_disabled_by_server")
-            ));
+            ToastUtil.toasty("thrusting_disabled_by_server");
         }
         if (serverConfig.forceEnabled() && !general.mod_enabled) {
-            MinecraftClient.getInstance().getToastManager().add(SystemToast.create(
-                    MinecraftClient.getInstance(),
-                    SystemToast.Type.TUTORIAL_HINT,
-                    Text.translatable("toast.do_a_barrel_roll"),
-                    Text.translatable("toast.do_a_barrel_roll.mod_forced_enabled_by_server")
-            ));
+            ToastUtil.toasty("mod_forced_enabled_by_server");
         }
     }
 

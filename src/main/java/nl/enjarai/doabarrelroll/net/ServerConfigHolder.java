@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -72,12 +73,11 @@ public class ServerConfigHolder<T extends ValidatableConfig> {
         try {
             // Creates the file if it doesn't exist
             Files.createDirectories(configFile.getParent());
-            Files.createFile(configFile);
             // Writes the config to the file
             Files.writeString(configFile, GSON.toJson(codec.encodeStart(JsonOps.INSTANCE, instance)
                     .getOrThrow(false, e -> {
                         throw new RuntimeException(e);
-                    })));
+                    })), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException | RuntimeException e) {
             DoABarrelRoll.LOGGER.error("Failed to save server config file: ", e);
         }
@@ -124,6 +124,11 @@ public class ServerConfigHolder<T extends ValidatableConfig> {
                 res.writeInt(1);
                 res.writeBoolean(true);
                 res.writeString(data);
+
+                DoABarrelRoll.LOGGER.info(
+                        "{} updated the server config.",
+                        player.getName().getString()
+                );
 
                 // Only set our instance if everything else succeeds
                 instance = newConfig;

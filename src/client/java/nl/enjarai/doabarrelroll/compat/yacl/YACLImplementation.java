@@ -3,6 +3,7 @@ package nl.enjarai.doabarrelroll.compat.yacl;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.DoubleSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
+import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.loader.api.FabricLoader;
@@ -10,13 +11,18 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
+import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.ModKeybindings;
 import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
+import nl.enjarai.doabarrelroll.config.LimitedModConfigServer;
 import nl.enjarai.doabarrelroll.config.ModConfig;
+import nl.enjarai.doabarrelroll.config.ModConfigServer;
+import nl.enjarai.doabarrelroll.net.ServerConfigUpdateClient;
 
 public class YACLImplementation {
+    @SuppressWarnings("OptionalIsPresent")
     public static Screen generateConfigScreen(Screen parent) {
-        return YetAnotherConfigLib.createBuilder()
+        var builder = YetAnotherConfigLib.createBuilder()
                 .title(getText("title"))
                 .category(ConfigCategory.createBuilder()
                         .name(getText("general"))
@@ -144,10 +150,51 @@ public class YACLImplementation {
                                         .binding(1.0, () -> ModConfig.INSTANCE.getControllerRoll(), value -> ModConfig.INSTANCE.setControllerRoll(value))
                                         .build())
                                 .build())
-                        .build())
-                .save(ModConfig.INSTANCE::save)
+                        .build());
+
+        var serverConfig = DoABarrelRollClient.HANDSHAKE_CLIENT.getConfig().flatMap(LimitedModConfigServer::tryToFull);
+        MutableConfigServer mut;
+        if (serverConfig.isPresent()) {
+            mut = new MutableConfigServer(serverConfig.get());
+            builder.category(ConfigCategory.createBuilder()
+                    .name(getText("server"))
+                    .option(LabelOption.create(getText("server", "description")))
+                    .option(getBooleanOption("server", "allow_thrusting", true, false)
+                            .binding(ModConfigServer.DEFAULT.allowThrusting(), () -> mut.allowThrusting, value -> mut.allowThrusting = value)
+                            .build())
+                    .option(getBooleanOption("server", "force_enabled", true, false)
+                            .binding(ModConfigServer.DEFAULT.forceEnabled(), () -> mut.forceEnabled, value -> mut.forceEnabled = value)
+                            .build())
+                    .option(getBooleanOption("server", "force_installed", true, false)
+                            .binding(ModConfigServer.DEFAULT.forceInstalled(), () -> mut.forceInstalled, value -> mut.forceInstalled = value)
+                            .build())
+                    .option(getOption(Integer.class, "server", "installed_timeout", true, false)
+                            .controller(option -> IntegerSliderControllerBuilder.create(option)
+                                    .range(0, 100)
+                                    .step(1))
+                            .binding(ModConfigServer.DEFAULT.installedTimeout(), () -> mut.installedTimeout, value -> mut.installedTimeout = value)
+                            .build())
+                    .build());
+        } else mut = null;
+
+        return builder
+                .save(YACLImplementation.save(mut))
                 .build()
                 .generateScreen(parent);
+    }
+
+    private static Runnable save(MutableConfigServer mut) {
+        return () -> {
+            ModConfig.INSTANCE.save();
+
+            var original = DoABarrelRollClient.HANDSHAKE_CLIENT.getConfig();
+            if (mut != null && original.isPresent()) {
+                var imut = mut.toImmutable();
+                if (!imut.equals(original.get())) {
+                    ServerConfigUpdateClient.sendUpdate(imut);
+                }
+            }
+        };
     }
 
     private static <T> Option.Builder<T> getOption(Class<T> clazz, String category, String key, boolean description, boolean image) {

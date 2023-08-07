@@ -73,7 +73,7 @@ dependencies {
         exclude group: "net.fabricmc.fabric-api"
     }
 
-    modCompileOnly("dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}") {
+    modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}") {
         exclude group: "net.fabricmc"
     }
 

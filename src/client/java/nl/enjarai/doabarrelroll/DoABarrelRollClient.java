@@ -19,7 +19,7 @@ import org.joml.Vector2d;
 public class DoABarrelRollClient {
     public static final HandshakeClient<LimitedModConfigServer> HANDSHAKE_CLIENT = new HandshakeClient<>(
             ModConfigServer.CODEC,
-            LimitedModConfigServer.CODEC,
+            LimitedModConfigServer.getCodec(),
             ModConfig.INSTANCE::notifyPlayerOfServerConfig
     );
     public static final SmoothUtil PITCH_SMOOTHER = new SmoothUtil();
