@@ -1,7 +1,6 @@
 name: Publish All
 
 on:
-  workflow_dispatch:
   release:
     types: [ created ]
 
@@ -19,22 +18,22 @@ jobs:
           body_path: CHANGELOG.md
           is_append_body: true
 
-#  deploy_1_19_4:
-#    uses: enjarai/do-a-barrel-roll/.github/workflows/publish.yml@1.19.4/next
-#    with:
-#      branch: 1.19.4/next
-#      game_vers: |
-#        1.19.4
-#      java_vers: 17
-#      GITHUB_REF: ${{ github.ref }}
-#    secrets:
-#      CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-#      MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-#      PUBLISH_MAVEN_USERNAME: ${{ secrets.PUBLISH_MAVEN_USERNAME }}
-#      PUBLISH_MAVEN_PASSWORD: ${{ secrets.PUBLISH_MAVEN_PASSWORD }}
+  deploy_1_19_4:
+    uses: enjarai/do-a-barrel-roll/.github/workflows/publish.yml@1.19.4/next
+    with:
+      branch: 1.19.4/next
+      game_vers: |
+        1.19.4
+      java_vers: 17
+      GITHUB_REF: ${{ github.ref }}
+    secrets:
+      CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+      MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+      PUBLISH_MAVEN_USERNAME: ${{ secrets.PUBLISH_MAVEN_USERNAME }}
+      PUBLISH_MAVEN_PASSWORD: ${{ secrets.PUBLISH_MAVEN_PASSWORD }}
 
   deploy_1_20:
-#    needs: deploy_1_19_4
+    needs: deploy_1_19_4
     uses: enjarai/do-a-barrel-roll/.github/workflows/publish.yml@1.20/dev
     with:
       branch: 1.20/dev
