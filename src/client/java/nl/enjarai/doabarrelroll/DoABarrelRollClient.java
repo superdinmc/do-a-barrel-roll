@@ -6,6 +6,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.SmoothUtil;
 import nl.enjarai.doabarrelroll.api.RollEntity;
 import nl.enjarai.doabarrelroll.api.RollMouse;
+import nl.enjarai.doabarrelroll.api.event.ClientEvents;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.api.event.RollGroup;
 import nl.enjarai.doabarrelroll.config.*;
@@ -20,7 +21,7 @@ public class DoABarrelRollClient {
     public static final HandshakeClient<LimitedModConfigServer> HANDSHAKE_CLIENT = new HandshakeClient<>(
             ModConfigServer.CODEC,
             LimitedModConfigServer.getCodec(),
-            ModConfig.INSTANCE::notifyPlayerOfServerConfig
+            ClientEvents::updateServerConfig
     );
     public static final SmoothUtil PITCH_SMOOTHER = new SmoothUtil();
     public static final SmoothUtil YAW_SMOOTHER = new SmoothUtil();
@@ -56,6 +57,8 @@ public class DoABarrelRollClient {
                 clearValues();
             }
         });
+
+        ClientEvents.SERVER_CONFIG_UPDATE.register(ModConfig.INSTANCE::notifyPlayerOfServerConfig);
     }
 
     public static void onRenderCrosshair(DrawContext context, float tickDelta, int scaledWidth, int scaledHeight) {

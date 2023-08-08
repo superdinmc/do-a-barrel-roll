@@ -98,6 +98,26 @@ config.do_a_barrel_roll:
     pitch: Pitch
     yaw: Yaw
     roll: Roll
+  server:
+    .: Server
+    description: §lThese settings apply server-wide and can only be changed by operators.
+    allow_thrusting: Allow Thrusting
+    allow_thrusting.description: >
+      Allows players to use the forward and back keys (W and S by default) 
+      to infinitely accelerate and decelerate respectively.
+    force_enabled: Force Mod Enabled
+    force_enabled.description: >
+      Forces the mod to be enabled for all players on the server. 
+      This will disable client-side toggling and some activation behaviours.
+    force_installed: Force Mod Installed
+    force_installed.description: >
+      Forces the mod to be installed for all players on the server. 
+      This will kick any players that don't have the mod loaded.
+    installed_timeout: Installed Check Timeout
+    installed_timeout.description: >
+      The amount of time in seconds that the server will 
+      wait for a client to respond to the handshake before kicking them.
+      §lIncrease this if players with bad connections are getting kicked even though they have the mod installed.
   yacl:
     missing:
       .: Yet Another Config Lib is not installed
@@ -129,12 +149,14 @@ key.do_a_barrel_roll:
 
 toast.do_a_barrel_roll:
   .: Do a Barrel Roll
-  thrusting_disabled_by_server: > 
+  thrusting_disabled_by_server: >-
     §cElytra thrusting is not allowed on this server, the feature will be forcibly disabled. 
     Disable it in your client config to remove this message.
-  mod_forced_enabled_by_server: >
+  mod_forced_enabled_by_server: >-
     This mod is forcibly enabled by this server, 
     client-side toggling and some activation behaviours will be disabled.
+  server_config_updated: >-
+    Server config updated successfully, sending new config to all players.
 
 controlify:
   category.do_a_barrel_roll.do_a_barrel_roll: Do a Barrel Roll

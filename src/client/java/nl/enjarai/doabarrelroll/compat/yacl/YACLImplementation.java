@@ -6,33 +6,45 @@ import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.ModKeybindings;
+import nl.enjarai.doabarrelroll.api.event.ClientEvents;
 import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
 import nl.enjarai.doabarrelroll.config.LimitedModConfigServer;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.ModConfigServer;
 import nl.enjarai.doabarrelroll.net.ServerConfigUpdateClient;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+
 public class YACLImplementation {
-    @SuppressWarnings("OptionalIsPresent")
     public static Screen generateConfigScreen(Screen parent) {
+        var inWorld = MinecraftClient.getInstance().world != null;
+        var serverConfig = DoABarrelRollClient.HANDSHAKE_CLIENT.getConfig();
+
+        var thrustingAllowed = new Dependable(serverConfig.map(LimitedModConfigServer::allowThrusting).orElse(!inWorld));
+        var allowDisabled = new Dependable(!serverConfig.map(LimitedModConfigServer::forceEnabled).orElse(false));
+
         var builder = YetAnotherConfigLib.createBuilder()
                 .title(getText("title"))
                 .category(ConfigCategory.createBuilder()
                         .name(getText("general"))
-                        .option(getBooleanOption("general", "mod_enabled", false, false)
+                        .option(allowDisabled.add(getBooleanOption("general", "mod_enabled", false, false)
                                 .description(OptionDescription.createBuilder()
                                         .text(Text.translatable("config.do_a_barrel_roll.general.mod_enabled.description",
                                                 KeyBindingHelper.getBoundKeyOf(ModKeybindings.TOGGLE_ENABLED).getLocalizedText()))
                                         .build())
-                                .binding(true, () -> ModConfig.INSTANCE.getModEnabled(), value -> ModConfig.INSTANCE.setModEnabled(value))
-                                .build())
+                                .binding(true, () -> ModConfig.INSTANCE.getModEnabled(), value -> ModConfig.INSTANCE.setModEnabled(value))))
                         .group(OptionGroup.createBuilder()
                                 .name(getText("controls"))
                                 .option(getBooleanOption("controls", "switch_roll_and_yaw", true, false)
@@ -80,20 +92,16 @@ public class YACLImplementation {
                         .group(OptionGroup.createBuilder()
                                 .name(getText("thrust"))
                                 .collapsed(true)
-                                .option(getBooleanOption("thrust", "enable_thrust", true, false)
-                                        .binding(false, () -> ModConfig.INSTANCE.getEnableThrustClient(), value -> ModConfig.INSTANCE.setEnableThrust(value))
-                                        .build())
-                                .option(getOption(Double.class, "thrust", "max_thrust", true, false)
+                                .option(thrustingAllowed.add(getBooleanOption("thrust", "enable_thrust", true, false)
+                                        .binding(false, () -> ModConfig.INSTANCE.getEnableThrustClient(), value -> ModConfig.INSTANCE.setEnableThrust(value))))
+                                .option(thrustingAllowed.add(getOption(Double.class, "thrust", "max_thrust", true, false)
                                         .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
-                                        .binding(2.0, () -> ModConfig.INSTANCE.getMaxThrust(), value -> ModConfig.INSTANCE.setMaxThrust(value))
-                                        .build())
-                                .option(getOption(Double.class, "thrust", "thrust_acceleration", true, false)
+                                        .binding(2.0, () -> ModConfig.INSTANCE.getMaxThrust(), value -> ModConfig.INSTANCE.setMaxThrust(value))))
+                                .option(thrustingAllowed.add(getOption(Double.class, "thrust", "thrust_acceleration", true, false)
                                         .controller(option -> getDoubleSlider(option, 0.1, 1.0, 0.1))
-                                        .binding(0.1, () -> ModConfig.INSTANCE.getThrustAcceleration(), value -> ModConfig.INSTANCE.setThrustAcceleration(value))
-                                        .build())
-                                .option(getBooleanOption("thrust", "thrust_particles", false, false)
-                                        .binding(true, () -> ModConfig.INSTANCE.getThrustParticles(), value -> ModConfig.INSTANCE.setThrustParticles(value))
-                                        .build())
+                                        .binding(0.1, () -> ModConfig.INSTANCE.getThrustAcceleration(), value -> ModConfig.INSTANCE.setThrustAcceleration(value))))
+                                .option(thrustingAllowed.add(getBooleanOption("thrust", "thrust_particles", false, false)
+                                        .binding(true, () -> ModConfig.INSTANCE.getThrustParticles(), value -> ModConfig.INSTANCE.setThrustParticles(value))))
                                 .build())
                         .build())
                 .category(ConfigCategory.createBuilder()
@@ -152,10 +160,13 @@ public class YACLImplementation {
                                 .build())
                         .build());
 
-        var serverConfig = DoABarrelRollClient.HANDSHAKE_CLIENT.getConfig().flatMap(LimitedModConfigServer::tryToFull);
+        // If we're in a world, use the synced config, otherwise, grab our local one.
+        var fullServerConfig = inWorld
+                ? serverConfig.flatMap(LimitedModConfigServer::tryToFull)
+                : Optional.of(DoABarrelRoll.CONFIG_HOLDER.instance);
         MutableConfigServer mut;
-        if (serverConfig.isPresent()) {
-            mut = new MutableConfigServer(serverConfig.get());
+        if (fullServerConfig.isPresent()) {
+            mut = new MutableConfigServer(fullServerConfig.get());
             builder.category(ConfigCategory.createBuilder()
                     .name(getText("server"))
                     .option(LabelOption.create(getText("server", "description")))
@@ -177,24 +188,40 @@ public class YACLImplementation {
                     .build());
         } else mut = null;
 
+        Consumer<LimitedModConfigServer> configListener = config -> {
+            // Update options that have dependent availability.
+            thrustingAllowed.set(config.allowThrusting());
+            allowDisabled.set(!config.forceEnabled());
+        };
+
         return builder
-                .save(YACLImplementation.save(mut))
+                .save(() -> {
+                    ModConfig.INSTANCE.save();
+
+                    if (mut != null) {
+                        if (MinecraftClient.getInstance().world == null) {
+                            DoABarrelRoll.CONFIG_HOLDER.instance = mut.toImmutable();
+                        } else {
+                            var original = DoABarrelRollClient.HANDSHAKE_CLIENT.getConfig();
+                            if (original.isPresent()){
+                                var imut = mut.toImmutable();
+                                if (!imut.equals(original.get())) {
+                                    ServerConfigUpdateClient.sendUpdate(imut);
+
+                                    configListener.accept(imut);
+                                }
+                            }
+                        }
+                    }
+                })
+                .screenInit(screen -> {
+                    // Add a listener for this screen to update elements when the server config changes.
+                    ClientEvents.ServerConfigUpdateEvent listener = configListener::accept;
+                    ClientEvents.SERVER_CONFIG_UPDATE.register(listener);
+                    ScreenEvents.remove(screen).register(screen1 -> ClientEvents.SERVER_CONFIG_UPDATE.unregister(listener));
+                })
                 .build()
                 .generateScreen(parent);
-    }
-
-    private static Runnable save(MutableConfigServer mut) {
-        return () -> {
-            ModConfig.INSTANCE.save();
-
-            var original = DoABarrelRollClient.HANDSHAKE_CLIENT.getConfig();
-            if (mut != null && original.isPresent()) {
-                var imut = mut.toImmutable();
-                if (!imut.equals(original.get())) {
-                    ServerConfigUpdateClient.sendUpdate(imut);
-                }
-            }
-        };
     }
 
     private static <T> Option.Builder<T> getOption(Class<T> clazz, String category, String key, boolean description, boolean image) {
@@ -228,5 +255,28 @@ public class YACLImplementation {
 
     private static MutableText getText(String key) {
         return Text.translatable("config.do_a_barrel_roll." + key);
+    }
+
+    private static class Dependable {
+        private final boolean initial;
+        private final List<Option<?>> options = new ArrayList<>();
+
+        private Dependable(boolean initial) {
+            this.initial = initial;
+        }
+
+        <T> Option<T> add(Option.Builder<T> builder) {
+            var option = builder
+                    .available(initial)
+                    .build();
+            options.add(option);
+            return option;
+        }
+
+        void set(boolean value) {
+            for (var option : options) {
+                option.setAvailable(value);
+            }
+        }
     }
 }
