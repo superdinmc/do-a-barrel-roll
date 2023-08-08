@@ -9,7 +9,7 @@
 		"enjarai"
 	],
 	"contact": {
-		"homepage": "https://enjarai.nl",
+		"homepage": "https://enjarai.dev",
 		"sources": "https://github.com/enjarai/do-a-barrel-roll",
 		"issues": "https://github.com/enjarai/do-a-barrel-roll/issues"
 	},
@@ -48,7 +48,7 @@
 
 	"depends": {
 		"minecraft": ">=1.19.4- <1.19.5-",
-		"fabric": "*",
+		"fabric-api": "*",
 		"cicada": "*"
 	},
 

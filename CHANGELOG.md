@@ -1,2 +1,1 @@
-- Marked compatible with 1.20.1
-- My publishing workflow requires me to publish for all versions at once, so this version is identical to 3.0.0+1.19.4
+- Fixed a crash issue when pondering using Create.

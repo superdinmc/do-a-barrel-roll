@@ -7,7 +7,7 @@
 [![Modrinth](https://img.shields.io/modrinth/dt/do-a-barrel-roll)](https://modrinth.com/mod/do-a-barrel-roll)
 [![CurseForge](https://cf.way2muchnoise.eu/full_663658_downloads.svg)](https://curseforge.com/minecraft/mc-mods/do-a-barrel-roll)
 
-Do a Barrel Roll is a lightweight, fully clientside mod for Fabric and Forge that changes 
+Do a Barrel Roll is a lightweight, fully clientside mod for Fabric that changes 
 elytra flight to be more fun and semi-realistic.
 It achieves this by redesigning movement with a 
 completely unlocked camera orientation in mind, 
@@ -28,10 +28,9 @@ The default controls are as follows, but can be modified:
 
 ## Configuration
 
-The mod can be configured in-game using ModMenu on Fabric, or the builtin mods button on Forge and a compatible config library.
-Currently, Cloth Config, YACL and Configured are supported.
-Once you install any of these, 
-you can access the config screen by finding the mod in your mod menu of choice and pressing the config button.
+The mod can be configured in-game using [ModMenu](https://modrinth.com/mod/modmenu) and [YACL](https://modrinth.com/mod/yacl).
+Once you install both of these,
+you can access the config screen by finding the mod in the mods list and pressing the config button.
 
 A wide range of options are available, including custom mouse behavior, elytra activation restrictions and
 changing values of modifiers like banking, sensitivity and more.
@@ -53,6 +52,10 @@ All the following configurations are valid:
 
 ## Disclaimers
 
+The Forge version of this mod will no longer receive any updates.
+This has to do with my personal preferences and lack of knowledge about Forge,
+due to which, maintaining a port was severely limiting what I could do with the mod.
+
 This mod does not actually modify the flight physics themselves, 
 so in most cases it shouldn't trigger anticheat. 
 However, doing things like loop de loops looks to the server like rapid camera movement
@@ -66,7 +69,7 @@ and may get you flagged.
 Based on the [Cool Elytra Roll](https://github.com/Jorbon/cool_elytra) mod by [Jorbon](https://github.com/Jorbon),
 specifically it's "realistic mode".
 
-Ported to Forge by [MehVahdJukaar](https://github.com/MehVahdJukaar).
+Originally ported to Forge by [MehVahdJukaar](https://github.com/MehVahdJukaar).
 
 Mod icon by Mizeno.
 
@@ -88,4 +91,4 @@ string field containing the following JSON:
 The client will respond with a boolean on the same channel to indicate success.
 
 This option will be respected by any clients using version 2.4.0 or later of the mod. 
-The Forge version does not support thrusting, so it will not be affected by this option.
+The legacy Forge versions do not support thrusting, so they will not be affected by this option.
