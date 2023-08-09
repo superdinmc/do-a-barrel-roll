@@ -41,8 +41,18 @@
 	"environment": "*",
 	"mixins": [
 		"do-a-barrel-roll.mixins.json",
-		"do-a-barrel-roll.compat.cameraoverhaul.mixins.json",
-		"do-a-barrel-roll.compat.controlify.mixins.json"
+		{
+			"config": "do-a-barrel-roll.client.mixins.json",
+			"environment": "client"
+		},
+		{
+			"config": "do-a-barrel-roll.compat.cameraoverhaul.mixins.json",
+			"environment": "client"
+		},
+		{
+			"config": "do-a-barrel-roll.compat.controlify.mixins.json",
+			"environment": "client"
+		}
 	],
 	"accessWidener": "do-a-barrel-roll.accesswidener",
 
@@ -50,6 +60,9 @@
 		"minecraft": ">=1.19.4- <1.19.5-",
 		"fabric-api": "*",
 		"cicada": "*"
+	},
+	"breaks": {
+		"optifabric": "*"
 	},
 
 	"custom": {
