@@ -98,6 +98,49 @@ config.do_a_barrel_roll:
     pitch: Pitch
     yaw: Yaw
     roll: Roll
+  server:
+    .: Server
+    description: §lThese settings apply server-wide and can only be changed by operators.
+    force_enabled: Force Mod Enabled
+    force_enabled.description: >
+      Forces the mod to be enabled for all players on the server. 
+      This will disable client-side toggling and some activation behaviours.
+    force_installed: Force Mod Installed
+    force_installed.description: >
+      Forces the mod to be installed for all players on the server. 
+      This will kick any players that don't have the mod loaded.
+    installed_timeout: Installed Check Timeout
+    installed_timeout.description: >
+      The amount of time in seconds that the server will 
+      wait for a client to respond to the handshake before kicking them.
+      §lIncrease this if players with bad connections are getting kicked even though they have the mod installed.
+  gameplay:
+    .: Gameplay
+    allow_thrusting: Allow Thrusting
+    allow_thrusting.description: >
+      Allows players to use the forward and back keys (W and S by default) 
+      to infinitely accelerate and decelerate respectively.
+    kinetic_damage:
+      .: Kinetic Damage Type
+      vanilla: Vanilla
+      high_speed: High Speed
+      none: None
+      instant_kill: Insta-kill
+      description:
+        .: |+
+          Configures how the Elytra is activated.
+
+
+        vanilla: >
+          §lVanilla§r: Same as vanilla.
+        high_speed: >
+          §lHigh Speed§r: Only applies kinetic damage at significantly increased speed.
+        none: >
+          §lNone§r: Disables kinetic damage entirely.
+        instant_kill: >
+          §lInsta-kill§r: Instantly kills the player when they hit a wall.
+      
+
   yacl:
     missing:
       .: Yet Another Config Lib is not installed
@@ -127,14 +170,18 @@ key.do_a_barrel_roll:
   thrust_forward: Thrust Forward
   thrust_backward: Thrust Backward
 
+
 toast.do_a_barrel_roll:
   .: Do a Barrel Roll
-  thrusting_disabled_by_server: > 
+  thrusting_disabled_by_server: >-
     §cElytra thrusting is not allowed on this server, the feature will be forcibly disabled. 
     Disable it in your client config to remove this message.
-  mod_forced_enabled_by_server: >
+  mod_forced_enabled_by_server: >-
     This mod is forcibly enabled by this server, 
     client-side toggling and some activation behaviours will be disabled.
+  server_config_updated: >-
+    Server config updated successfully, sending new config to all players.
+
 
 controlify:
   category.do_a_barrel_roll.do_a_barrel_roll: Do a Barrel Roll

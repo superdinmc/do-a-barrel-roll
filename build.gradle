@@ -1,5 +1,6 @@
 plugins {
     id 'fabric-loom' version '1.2-SNAPSHOT'
+    id 'io.github.juuxel.loom-vineflower' version '1.11.0'
     id 'maven-publish'
     id 'me.fallenbreath.yamlang' version '1.2.1'
 }
@@ -54,6 +55,9 @@ repositories {
 
     // Mod Menu
     maven { url "https://maven.terraformersmc.com/releases" }
+
+    // Permissions API
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
 dependencies {
@@ -69,7 +73,7 @@ dependencies {
         exclude group: "net.fabricmc.fabric-api"
     }
 
-    modCompileOnly("dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}") {
+    modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}") {
         exclude group: "net.fabricmc"
     }
 
@@ -84,6 +88,8 @@ dependencies {
 
     // Mixin Extras for extra compatibility.
     include(implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixin_extras_version}")))
+
+    include(modImplementation("me.lucko:fabric-permissions-api:${project.permissions_api_version}"))
 }
 
 base {
@@ -152,6 +158,15 @@ publishing {
 
 loom {
     accessWidenerPath = file("src/main/resources/do-a-barrel-roll.accesswidener")
+
+    splitEnvironmentSourceSets()
+
+    mods {
+        "do_a_barrel_roll" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
 }
 
 yamlang {

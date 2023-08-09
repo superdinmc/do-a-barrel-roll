@@ -1,12 +1,9 @@
 package nl.enjarai.doabarrelroll.net;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.text.Text;
 
-public interface SyncableConfig<SELF extends SyncableConfig<SELF>> {
+public interface SyncableConfig<T> {
     Integer getSyncTimeout();
 
     Text getSyncTimeoutMessage();
-
-    Codec<? super SELF> getTransferCodec();
 }
