@@ -1,5 +1,6 @@
 package nl.enjarai.doabarrelroll.compat.yacl;
 
+import nl.enjarai.doabarrelroll.config.KineticDamage;
 import nl.enjarai.doabarrelroll.config.ModConfigServer;
 
 public class MutableConfigServer {
@@ -7,15 +8,21 @@ public class MutableConfigServer {
     public boolean forceEnabled;
     public boolean forceInstalled;
     public int installedTimeout;
+    public KineticDamage kineticDamage;
 
     public MutableConfigServer(ModConfigServer config) {
         this.allowThrusting = config.allowThrusting();
         this.forceEnabled = config.forceEnabled();
         this.forceInstalled = config.forceInstalled();
         this.installedTimeout = config.installedTimeout();
+        this.kineticDamage = config.kineticDamage();
     }
 
     public ModConfigServer toImmutable() {
-        return new ModConfigServer(this.allowThrusting, this.forceEnabled, this.forceInstalled, this.installedTimeout);
+        return new ModConfigServer(
+                this.allowThrusting, this.forceEnabled,
+                this.forceInstalled, this.installedTimeout,
+                this.kineticDamage
+        );
     }
 }

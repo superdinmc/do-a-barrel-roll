@@ -86,7 +86,7 @@ public class ServerConfigHolder<T extends ValidatableConfig> {
     public PacketByteBuf clientSendsUpdate(ServerPlayerEntity player, PacketByteBuf buf) {
         var state = DoABarrelRoll.HANDSHAKE_SERVER.getHandshakeState(player);
         var accepted = state == HandshakeServer.HandshakeState.ACCEPTED;
-        var hasPermission = ModConfigServer.canModify(player);
+        var hasPermission = ModConfigServer.canModify(player.networkHandler);
 
         // Only players that have accepted the handshake and have permission can update the config
         if (!accepted || !hasPermission) {

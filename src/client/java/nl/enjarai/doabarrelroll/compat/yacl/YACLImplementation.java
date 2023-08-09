@@ -16,14 +16,12 @@ import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.ModKeybindings;
 import nl.enjarai.doabarrelroll.api.event.ClientEvents;
-import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
-import nl.enjarai.doabarrelroll.config.LimitedModConfigServer;
-import nl.enjarai.doabarrelroll.config.ModConfig;
-import nl.enjarai.doabarrelroll.config.ModConfigServer;
+import nl.enjarai.doabarrelroll.config.*;
 import nl.enjarai.doabarrelroll.net.ServerConfigUpdateClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -170,9 +168,6 @@ public class YACLImplementation {
             builder.category(ConfigCategory.createBuilder()
                     .name(getText("server"))
                     .option(LabelOption.create(getText("server", "description")))
-                    .option(getBooleanOption("server", "allow_thrusting", true, false)
-                            .binding(ModConfigServer.DEFAULT.allowThrusting(), () -> mut.allowThrusting, value -> mut.allowThrusting = value)
-                            .build())
                     .option(getBooleanOption("server", "force_enabled", true, false)
                             .binding(ModConfigServer.DEFAULT.forceEnabled(), () -> mut.forceEnabled, value -> mut.forceEnabled = value)
                             .build())
@@ -184,6 +179,22 @@ public class YACLImplementation {
                                     .range(0, 100)
                                     .step(1))
                             .binding(ModConfigServer.DEFAULT.installedTimeout(), () -> mut.installedTimeout, value -> mut.installedTimeout = value)
+                            .build())
+                    .group(OptionGroup.createBuilder()
+                            .name(getText("gameplay"))
+                            .option(getBooleanOption("gameplay", "allow_thrusting", true, false)
+                                    .binding(ModConfigServer.DEFAULT.allowThrusting(), () -> mut.allowThrusting, value -> mut.allowThrusting = value)
+                                    .build())
+                            .option(getOption(KineticDamage.class, "gameplay", "kinetic_damage", false, false)
+                                    .description(behaviour -> OptionDescription.createBuilder()
+                                            .text(getText("gameplay", "kinetic_damage.description")
+                                                    .append(getText("gameplay", "kinetic_damage.description." + behaviour.name().toLowerCase())))
+                                            .build())
+                                    .controller(option -> EnumControllerBuilder.create(option)
+                                            .enumClass(KineticDamage.class)
+                                            .valueFormatter(kd -> getText("gameplay", "kinetic_damage." + kd.name().toLowerCase(Locale.ROOT))))
+                                    .binding(ModConfigServer.DEFAULT.kineticDamage(), () -> mut.kineticDamage, value -> mut.kineticDamage = value)
+                                    .build())
                             .build())
                     .build());
         } else mut = null;
@@ -207,7 +218,6 @@ public class YACLImplementation {
                                 var imut = mut.toImmutable();
                                 if (!imut.equals(original.get())) {
                                     ServerConfigUpdateClient.sendUpdate(imut);
-
                                     configListener.accept(imut);
                                 }
                             }

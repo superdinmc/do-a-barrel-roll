@@ -101,10 +101,6 @@ config.do_a_barrel_roll:
   server:
     .: Server
     description: §lThese settings apply server-wide and can only be changed by operators.
-    allow_thrusting: Allow Thrusting
-    allow_thrusting.description: >
-      Allows players to use the forward and back keys (W and S by default) 
-      to infinitely accelerate and decelerate respectively.
     force_enabled: Force Mod Enabled
     force_enabled.description: >
       Forces the mod to be enabled for all players on the server. 
@@ -118,6 +114,33 @@ config.do_a_barrel_roll:
       The amount of time in seconds that the server will 
       wait for a client to respond to the handshake before kicking them.
       §lIncrease this if players with bad connections are getting kicked even though they have the mod installed.
+  gameplay:
+    .: Gameplay
+    allow_thrusting: Allow Thrusting
+    allow_thrusting.description: >
+      Allows players to use the forward and back keys (W and S by default) 
+      to infinitely accelerate and decelerate respectively.
+    kinetic_damage:
+      .: Kinetic Damage Type
+      vanilla: Vanilla
+      high_speed: High Speed
+      none: None
+      instant_kill: Insta-kill
+      description:
+        .: |+
+          Configures how the Elytra is activated.
+
+
+        vanilla: >
+          §lVanilla§r: Same as vanilla.
+        high_speed: >
+          §lHigh Speed§r: Only applies kinetic damage at significantly increased speed.
+        none: >
+          §lNone§r: Disables kinetic damage entirely.
+        instant_kill: >
+          §lInsta-kill§r: Instantly kills the player when they hit a wall.
+      
+
   yacl:
     missing:
       .: Yet Another Config Lib is not installed
@@ -147,6 +170,7 @@ key.do_a_barrel_roll:
   thrust_forward: Thrust Forward
   thrust_backward: Thrust Backward
 
+
 toast.do_a_barrel_roll:
   .: Do a Barrel Roll
   thrusting_disabled_by_server: >-
@@ -157,6 +181,7 @@ toast.do_a_barrel_roll:
     client-side toggling and some activation behaviours will be disabled.
   server_config_updated: >-
     Server config updated successfully, sending new config to all players.
+
 
 controlify:
   category.do_a_barrel_roll.do_a_barrel_roll: Do a Barrel Roll
