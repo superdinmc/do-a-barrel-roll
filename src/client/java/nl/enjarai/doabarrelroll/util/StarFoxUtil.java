@@ -87,7 +87,8 @@ public class StarFoxUtil {
 
     public static boolean isFoxMcCloud(PlayerEntity player) {
         ItemStack chestStack = player.getEquippedStack(EquipmentSlot.CHEST);
-        return chestStack.isOf(Items.ELYTRA) && chestStack.getName().getString().equals("Arwing");
+        String name = chestStack.getName().getString();
+        return chestStack.isOf(Items.ELYTRA) && (name.equals("Arwing") || name.equals("Star Fox 64") || name.contains("Do a Barrel Roll"));
     }
 
     public static void playBarrelRollSound(PlayerEntity player) {
