@@ -5,13 +5,21 @@ import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Slice;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
     @ModifyVariable(
             method = "travel",
+            slice = @Slice(
+                    from = @At(
+                            value = "INVOKE",
+                            target = "Lnet/minecraft/util/math/Vec3d;horizontalLength()D",
+                            ordinal = 1
+                    )
+            ),
             at = @At("STORE"),
-            name = "o"
+            index = 21
     )
     private float doABarrelRoll$modifyKineticDamage(float original) {
         var damageType = DoABarrelRoll.CONFIG_HOLDER.instance.kineticDamage();
