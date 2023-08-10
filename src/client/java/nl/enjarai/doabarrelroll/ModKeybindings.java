@@ -7,6 +7,7 @@ import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.api.key.InputContext;
 import nl.enjarai.doabarrelroll.config.LimitedModConfigServer;
 import nl.enjarai.doabarrelroll.config.ModConfig;
+import nl.enjarai.doabarrelroll.config.ModConfigScreen;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -21,6 +22,12 @@ public class ModKeybindings {
     );
     public static final KeyBinding TOGGLE_THRUST = new KeyBinding(
             "key.do_a_barrel_roll.toggle_thrust",
+            InputUtil.Type.KEYSYM,
+            InputUtil.UNKNOWN_KEY.getCode(),
+            "category.do_a_barrel_roll.do_a_barrel_roll"
+    );
+    public static final KeyBinding OPEN_CONFIG = new KeyBinding(
+            "key.do_a_barrel_roll.open_config",
             InputUtil.Type.KEYSYM,
             InputUtil.UNKNOWN_KEY.getCode(),
             "category.do_a_barrel_roll.do_a_barrel_roll"
@@ -78,6 +85,7 @@ public class ModKeybindings {
     public static final List<KeyBinding> FABRIC = List.of(
             TOGGLE_ENABLED,
             TOGGLE_THRUST,
+            OPEN_CONFIG,
             PITCH_UP,
             PITCH_DOWN,
             YAW_LEFT,
@@ -150,6 +158,9 @@ public class ModKeybindings {
                     );
                 }
             }
+        }
+        while (OPEN_CONFIG.wasPressed()) {
+            client.setScreen(ModConfigScreen.create(client.currentScreen));
         }
     }
 }

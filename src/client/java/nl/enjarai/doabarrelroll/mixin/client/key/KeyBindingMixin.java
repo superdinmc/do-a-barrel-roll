@@ -53,7 +53,8 @@ public abstract class KeyBindingMixin implements ContextualKeyBinding {
             at = @At(
                     value = "INVOKE",
                     target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"
-            )
+            ),
+            require = 0 // We let all these mixins fail if they need to as a temporary workaround to be compatible with Connector.
     )
     private static Object doABarrelRoll$applyKeybindContext(Map<InputUtil.Key, KeyBinding> map, Object key, Operation<KeyBinding> original) {
         var binding = getContextKeyBinding((InputUtil.Key) key);
@@ -67,7 +68,8 @@ public abstract class KeyBindingMixin implements ContextualKeyBinding {
             at = @At(
                     value = "INVOKE",
                     target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"
-            )
+            ),
+            require = 0
     )
     private static Object doABarrelRoll$applyKeybindContext2(Map<InputUtil.Key, KeyBinding> map, Object key, Operation<KeyBinding> original) {
         var binding = getContextKeyBinding((InputUtil.Key) key);
@@ -84,7 +86,8 @@ public abstract class KeyBindingMixin implements ContextualKeyBinding {
 
     @Inject(
             method = "updateKeysByCode",
-            at = @At("HEAD")
+            at = @At("HEAD"),
+            require = 0
     )
     private static void doABarrelRoll$updateContextualKeys(CallbackInfo ci) {
         for (var context : InputContextImpl.getContexts()) {
@@ -97,7 +100,8 @@ public abstract class KeyBindingMixin implements ContextualKeyBinding {
             at = @At(
                     value = "INVOKE",
                     target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"
-            )
+            ),
+            require = 0
     )
     private static boolean doABarrelRoll$skipAddingContextualKeys(Map<InputUtil.Key, KeyBinding> map, Object key, Object keyBinding) {
         return !InputContextImpl.contextsContain((KeyBinding) keyBinding);
