@@ -1,1 +1,1 @@
-- Fixed compatibility with Sinytra Connector, a compatibility layer to run Fabric mods on Forge.
+- Fixed a crash at startup on dedicated servers.

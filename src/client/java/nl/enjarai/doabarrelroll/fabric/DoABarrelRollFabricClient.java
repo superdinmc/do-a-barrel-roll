@@ -17,7 +17,7 @@ import nl.enjarai.doabarrelroll.fabric.net.HandshakeClientFabric;
 import nl.enjarai.doabarrelroll.util.StarFoxUtil;
 import org.slf4j.Logger;
 
-public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunchEntrypoint, CicadaEntrypoint {
+public class DoABarrelRollFabricClient implements ClientModInitializer, CicadaEntrypoint {
     public static final Logger LOGGER = ProperLogger.getLogger(DoABarrelRoll.MODID);
 
     @Override
@@ -38,11 +38,6 @@ public class DoABarrelRollFabricClient implements ClientModInitializer, PreLaunc
 
             StarFoxUtil.clientTick(client);
         });
-    }
-
-    @Override
-    public void onPreLaunch() {
-        MixinExtrasBootstrap.init();
     }
 
     @Override
