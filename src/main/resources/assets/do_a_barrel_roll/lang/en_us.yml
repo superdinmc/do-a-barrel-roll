@@ -161,6 +161,8 @@ key.do_a_barrel_roll:
     enable: §aEnabled §rThrusting
     disable: §cDisabled §rThrusting
     disallowed: §cYou cannot use thrusting on this server
+  open_config: Open Config
+
   pitch_up: Pitch Up
   pitch_down: Pitch Down
   yaw_left: Yaw Left

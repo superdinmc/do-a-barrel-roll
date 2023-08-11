@@ -19,7 +19,8 @@ public class LivingEntityMixin {
                     )
             ),
             at = @At("STORE"),
-            index = 21
+            index = 21,
+            require = 0 // We let this mixin fail if it needs to as a temporary workaround to be compatible with Connector.
     )
     private float doABarrelRoll$modifyKineticDamage(float original) {
         var damageType = DoABarrelRoll.CONFIG_HOLDER.instance.kineticDamage();

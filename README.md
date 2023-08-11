@@ -73,22 +73,45 @@ Originally ported to Forge by [MehVahdJukaar](https://github.com/MehVahdJukaar).
 
 Mod icon by Mizeno.
 
-## For server owners
+## For server admins
+
+### Thrusting
 
 The mod includes a "thrusting" feature that is probably considered cheating by most servers, 
 as it lets users accelerate without using fireworks.
 **This is disabled by default on servers as of 2.8.3.**
 If you want to allow players to use this feature on your server, you can either:
 
-- Install the mod on your server and set `"allowThrusting"` to `true` in `config/do_a_barrel_roll-server.json`
-- Send a custom packet to the client at login on the `do_a_barrel_roll:config_sync` channel with one 
-string field containing the following JSON:
-```json
-{
-  "allowThrusting": true
-}
-```
-The client will respond with a boolean on the same channel to indicate success.
+- Install the mod on your server and use the "Server" tab on the config screen to enable it. (recommended)
+  - This tab is only available to server operators and players with the `do_a_barrel_roll.configure` permission.
+  - You can also set `"allowThrusting"` to `true` in `config/do_a_barrel_roll-server.json`
+    to configure the mod without a client.
+- Create a custom plugin or mod to send a packet to the client at login on 
+  the `do_a_barrel_roll:config_sync` channel with the following layout:
+
+| Type    | Value                      |
+|---------|----------------------------|
+| integer | `1`                        |
+| string  | `{"allowThrusting": true}` |
+
+Any client that has DABR installed will respond on the same channel with a packet like this:
+
+| Type    | Value              |
+|---------|--------------------|
+| integer | [protocol version] |
+| boolean | [success]          |
 
 This option will be respected by any clients using version 2.4.0 or later of the mod. 
 The legacy Forge versions do not support thrusting, so they will not be affected by this option.
+
+### Other features
+
+The server config includes a few other features to configure server-side behaviour, including:
+
+- `forceEnabled`: Forces the mod to be enabled for all players, regardless of their client configuration.
+- `forceInstalled`: Rejects any player trying to join without having the mod installed on their client.
+- `installedTimeout`: The amount of time (in ticks) to wait for a client to respond to the `do_a_barrel_roll:config_sync` packet.
+  - If the client does not respond in time, and `forceInstalled` is set to `true`, they will be kicked from the server.
+  - You may want to increase this value if players with bad connections are getting kicked despite having the mod installed.
+
+These options can all be configured via the same methods as the `allowThrusting` option.
