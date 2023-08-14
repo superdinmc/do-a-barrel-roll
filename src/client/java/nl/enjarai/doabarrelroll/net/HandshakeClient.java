@@ -6,19 +6,21 @@ import com.mojang.serialization.JsonOps;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class HandshakeClient<T> {
-    private final Codec<? extends T> transferCodec;
-    private final Codec<? extends T> limitedTransferCodec;
-    private final Consumer<T> updateCallback;
-    private T serverConfig = null;
+public class HandshakeClient<L, F extends L> {
+    public static final int PROTOCOL_VERSION = 3;
+
+    private final Codec<F> transferCodec;
+    private final Codec<L> limitedTransferCodec;
+    private final Consumer<L> updateCallback;
+    private L serverConfig = null;
+    private F fullServerConfig = null;
     private boolean hasConnected = false;
 
-    public HandshakeClient(Codec<? extends T> transferCodec, Codec<? extends T> limitedTransferCodec, Consumer<T> updateCallback) {
+    public HandshakeClient(Codec<F> transferCodec, Codec<L> limitedTransferCodec, Consumer<L> updateCallback) {
         this.transferCodec = transferCodec;
         this.limitedTransferCodec = limitedTransferCodec;
         this.updateCallback = updateCallback;
@@ -28,24 +30,31 @@ public class HandshakeClient<T> {
      * Returns the server config if the client has received one for this server,
      * returns an empty optional in any other case.
      */
-    public Optional<T> getConfig() {
+    public Optional<L> getConfig() {
         return Optional.ofNullable(serverConfig);
     }
 
-    public void setConfig(@Nullable T config) {
-        serverConfig = config;
-        updateCallback.accept(serverConfig);
-        hasConnected = serverConfig != null;
+    public Optional<F> getFullConfig() {
+        return Optional.ofNullable(fullServerConfig);
     }
+
+//    public void setConfig(@Nullable L config) {
+//        serverConfig = config;
+//        updateCallback.accept(serverConfig);
+//        hasConnected = serverConfig != null;
+//    }
 
     public boolean hasConnected() {
         return hasConnected;
     }
 
     public PacketByteBuf handleConfigSync(PacketByteBuf buf) {
+        serverConfig = null;
+        fullServerConfig = null;
+
         try {
             var protocolVersion = buf.readInt();
-            if (protocolVersion < 1 || protocolVersion > 2) {
+            if (protocolVersion < 1 || protocolVersion > PROTOCOL_VERSION) {
                 DoABarrelRoll.LOGGER.warn("Received config with unknown protocol version: {}, will attempt to load anyway", protocolVersion);
             }
 
@@ -56,11 +65,25 @@ public class HandshakeClient<T> {
                 isLimited = buf.readBoolean();
             }
 
-            var codec = isLimited ? limitedTransferCodec : transferCodec;
-            serverConfig = codec.parse(JsonOps.INSTANCE, JsonParser.parseString(data))
-                    .getOrThrow(false, DoABarrelRoll.LOGGER::error);
+            if (protocolVersion == 2) {
+                var codec = isLimited ? limitedTransferCodec : transferCodec;
+                serverConfig = codec.parse(JsonOps.INSTANCE, JsonParser.parseString(data))
+                        .getOrThrow(false, DoABarrelRoll.LOGGER::error);
+                if (!isLimited) {
+                    //noinspection unchecked
+                    fullServerConfig = (F) serverConfig;
+                }
+            } else {
+                serverConfig = limitedTransferCodec.parse(JsonOps.INSTANCE, JsonParser.parseString(data))
+                        .getOrThrow(false, DoABarrelRoll.LOGGER::error);
+                if (!isLimited) {
+                    var data2 = buf.readString();
+
+                    fullServerConfig = transferCodec.parse(JsonOps.INSTANCE, JsonParser.parseString(data2))
+                            .getOrThrow(false, DoABarrelRoll.LOGGER::error);
+                }
+            }
         } catch (RuntimeException e) {
-            serverConfig = null;
             DoABarrelRoll.LOGGER.error("Failed to parse config from server", e);
         }
 
@@ -71,7 +94,7 @@ public class HandshakeClient<T> {
         }
 
         var returnBuf = new PacketByteBuf(Unpooled.buffer());
-        returnBuf.writeInt(2);
+        returnBuf.writeInt(PROTOCOL_VERSION);
         returnBuf.writeBoolean(serverConfig != null);
         return returnBuf;
     }

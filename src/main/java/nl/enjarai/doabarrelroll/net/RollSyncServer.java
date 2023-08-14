@@ -33,7 +33,7 @@ public class RollSyncServer {
         buf.writeFloat(roll);
 
         PlayerLookup.tracking(entity).stream()
-                .filter(player -> DoABarrelRoll.HANDSHAKE_SERVER.getHandshakeState(player) == HandshakeServer.HandshakeState.ACCEPTED)
+                .filter(player -> DoABarrelRoll.HANDSHAKE_SERVER.getHandshakeState(player).state == HandshakeServer.HandshakeState.ACCEPTED)
                 .filter(player -> player != entity)
                 .forEach(player -> ServerPlayNetworking.send(player, DoABarrelRoll.ROLL_CHANNEL, buf));
     }

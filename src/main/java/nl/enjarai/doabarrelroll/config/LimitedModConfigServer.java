@@ -3,9 +3,9 @@ package nl.enjarai.doabarrelroll.config;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import java.util.Optional;
-
 public interface LimitedModConfigServer {
+    LimitedModConfigServer OPERATOR = new Impl(true, false);
+
     static Codec<LimitedModConfigServer> getCodec() {
         return RecordCodecBuilder.create(instance -> instance.group(
                 Codec.BOOL.optionalFieldOf("allowThrusting", ModConfigServer.DEFAULT.allowThrusting()).forGetter(LimitedModConfigServer::allowThrusting),
@@ -16,10 +16,6 @@ public interface LimitedModConfigServer {
     boolean allowThrusting();
 
     boolean forceEnabled();
-
-    default Optional<ModConfigServer> tryToFull() {
-        return this instanceof ModConfigServer full ? Optional.of(full) : Optional.empty();
-    }
 
     record Impl(boolean allowThrusting, boolean forceEnabled) implements LimitedModConfigServer {
     }

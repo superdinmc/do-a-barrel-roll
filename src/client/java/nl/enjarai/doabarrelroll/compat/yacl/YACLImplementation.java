@@ -160,7 +160,7 @@ public class YACLImplementation {
 
         // If we're in a world, use the synced config, otherwise, grab our local one.
         var fullServerConfig = inWorld
-                ? serverConfig.flatMap(LimitedModConfigServer::tryToFull)
+                ? DoABarrelRollClient.HANDSHAKE_CLIENT.getFullConfig()
                 : Optional.of(DoABarrelRoll.CONFIG_HOLDER.instance);
         MutableConfigServer mut;
         if (fullServerConfig.isPresent()) {

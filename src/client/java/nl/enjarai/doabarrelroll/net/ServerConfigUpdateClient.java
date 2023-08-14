@@ -1,12 +1,10 @@
 package nl.enjarai.doabarrelroll.net;
 
-import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.PacketByteBuf;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
-import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.config.ModConfigServer;
 import nl.enjarai.doabarrelroll.util.ToastUtil;
 
@@ -50,6 +48,8 @@ public class ServerConfigUpdateClient {
 //                    DoABarrelRollClient.HANDSHAKE_CLIENT.setConfig(data);
 
                     ToastUtil.toasty("server_config_updated");
+                } else {
+                    ToastUtil.toasty("server_config_update_failed");
                 }
             } catch (RuntimeException e) {
                 DoABarrelRoll.LOGGER.warn("Failed to read config update ack from server: ", e);

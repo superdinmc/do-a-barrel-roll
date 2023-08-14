@@ -83,7 +83,7 @@ as it lets users accelerate without using fireworks.
 If you want to allow players to use this feature on your server, you can either:
 
 - Install the mod on your server and use the "Server" tab on the config screen to enable it. (recommended)
-  - This tab is only available to server operators and players with the `do_a_barrel_roll.configure` permission.
+  - This tab is only available to level 3 server operators and players with the `do_a_barrel_roll.configure` permission.
   - You can also set `"allowThrusting"` to `true` in `config/do_a_barrel_roll-server.json`
     to configure the mod without a client.
 - Create a custom plugin or mod to send a packet to the client at login on 
@@ -115,3 +115,6 @@ The server config includes a few other features to configure server-side behavio
   - You may want to increase this value if players with bad connections are getting kicked despite having the mod installed.
 
 These options can all be configured via the same methods as the `allowThrusting` option.
+
+It is also possible to allow specific players to bypass configured restrictions by giving them level 2 operator status 
+or the `do_a_barrel_roll.ignore_config` permission.

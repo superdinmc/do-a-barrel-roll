@@ -9,7 +9,10 @@ import nl.enjarai.doabarrelroll.api.RollMouse;
 import nl.enjarai.doabarrelroll.api.event.ClientEvents;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.api.event.RollGroup;
-import nl.enjarai.doabarrelroll.config.*;
+import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
+import nl.enjarai.doabarrelroll.config.LimitedModConfigServer;
+import nl.enjarai.doabarrelroll.config.ModConfig;
+import nl.enjarai.doabarrelroll.config.ModConfigServer;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.net.HandshakeClient;
 import nl.enjarai.doabarrelroll.render.HorizonLineWidget;
@@ -18,7 +21,7 @@ import nl.enjarai.doabarrelroll.util.MixinHooks;
 import org.joml.Vector2d;
 
 public class DoABarrelRollClient {
-    public static final HandshakeClient<LimitedModConfigServer> HANDSHAKE_CLIENT = new HandshakeClient<>(
+    public static final HandshakeClient<LimitedModConfigServer, ModConfigServer> HANDSHAKE_CLIENT = new HandshakeClient<>(
             ModConfigServer.CODEC,
             LimitedModConfigServer.getCodec(),
             ClientEvents::updateServerConfig

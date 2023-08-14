@@ -1,1 +1,2 @@
-- Fixed a crash at startup on dedicated servers.
+- Added the option for operators or players with the `do_a_barrel_roll.ignore_config` permission to ignore the server config.
+  - This will let you enable thrusting by default again in singleplayer, so long as you have cheats enabled.

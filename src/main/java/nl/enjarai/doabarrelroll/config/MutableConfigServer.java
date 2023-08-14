@@ -1,7 +1,4 @@
-package nl.enjarai.doabarrelroll.compat.yacl;
-
-import nl.enjarai.doabarrelroll.config.KineticDamage;
-import nl.enjarai.doabarrelroll.config.ModConfigServer;
+package nl.enjarai.doabarrelroll.config;
 
 public class MutableConfigServer {
     public boolean allowThrusting;

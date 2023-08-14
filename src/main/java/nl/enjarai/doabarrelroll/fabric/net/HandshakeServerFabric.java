@@ -12,9 +12,16 @@ public class HandshakeServerFabric {
     public static void init() {
         ServerPlayConnectionEvents.INIT.register((handler, server) -> {
             ServerPlayNetworking.registerReceiver(handler, DoABarrelRoll.HANDSHAKE_CHANNEL, (server1, player, handler1, buf, responseSender) -> {
-                if (DoABarrelRoll.HANDSHAKE_SERVER.clientReplied(handler1, buf) == HandshakeServer.HandshakeState.ACCEPTED) {
+                var reply = DoABarrelRoll.HANDSHAKE_SERVER.clientReplied(handler1, buf);
+                if (reply == HandshakeServer.HandshakeState.ACCEPTED) {
                     RollSyncServer.startListening(handler1);
                     ServerConfigUpdaterFabric.startListening(handler1);
+                } else if (reply == HandshakeServer.HandshakeState.RESEND) {
+                    // Resending can happen when the client has a different protocol version than expected.
+                    ServerPlayNetworking.send(player, DoABarrelRoll.HANDSHAKE_CHANNEL,
+                            DoABarrelRoll.HANDSHAKE_SERVER.getConfigSyncBuf(player.networkHandler));
+
+                    DoABarrelRoll.HANDSHAKE_SERVER.configSentToClient(player.networkHandler);
                 }
             });
 

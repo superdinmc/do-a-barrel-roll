@@ -10,7 +10,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
-import nl.enjarai.doabarrelroll.api.event.ServerEvents;
 import nl.enjarai.doabarrelroll.config.ModConfigServer;
 
 import java.io.BufferedReader;
@@ -21,7 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class ServerConfigHolder<T extends ValidatableConfig> {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -84,8 +82,8 @@ public class ServerConfigHolder<T extends ValidatableConfig> {
     }
 
     public PacketByteBuf clientSendsUpdate(ServerPlayerEntity player, PacketByteBuf buf) {
-        var state = DoABarrelRoll.HANDSHAKE_SERVER.getHandshakeState(player);
-        var accepted = state == HandshakeServer.HandshakeState.ACCEPTED;
+        var info = DoABarrelRoll.HANDSHAKE_SERVER.getHandshakeState(player);
+        var accepted = info.state == HandshakeServer.HandshakeState.ACCEPTED;
         var hasPermission = ModConfigServer.canModify(player.networkHandler);
 
         // Only players that have accepted the handshake and have permission can update the config
