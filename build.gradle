@@ -86,15 +86,15 @@ dependencies {
         exclude group: "net.fabricmc.fabric-api"
     }
 
-    modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}") {
+    modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}") {
         exclude group: "net.fabricmc"
     }
 
-    modCompileOnly("dev.isxander:controlify:${project.controlify_version}:fabric-1.19.4") {
-        exclude group: "net.fabricmc"
-        exclude group: "maven.modrinth"
-        exclude group: "com.github.CaffeineMC"
-    }
+//    modCompileOnly("dev.isxander:controlify:${project.controlify_version}:fabric-1.19.4") {
+//        exclude group: "net.fabricmc"
+//        exclude group: "maven.modrinth"
+//        exclude group: "com.github.CaffeineMC"
+//    }
 
     // Mod Menu integration.
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
