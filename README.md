@@ -4,10 +4,10 @@
 ![Enviroment](https://img.shields.io/badge/environment-client%2c%20opt%20server-536a9e?style=flat)
 [![Discord](https://img.shields.io/discord/1016206797389975612?style=flat&color=blue&logo=discord&label=Discord)](https://discord.gg/WcYsDDQtyR)
 
-[![Modrinth](https://img.shields.io/badge/dynamic/json?style=flat&color=158000&label=downloads&prefix=+%20&query=downloads&url=https://api.modrinth.com/api/v1/mod/6FtRfnLg&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMSAxMSIgd2lkdGg9IjE0LjY2NyIgaGVpZ2h0PSIxNC42NjciICB4bWxuczp2PSJodHRwczovL3ZlY3RhLmlvL25hbm8iPjxkZWZzPjxjbGlwUGF0aCBpZD0iQSI+PHBhdGggZD0iTTAgMGgxMXYxMUgweiIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGNsaXAtcGF0aD0idXJsKCNBKSI+PHBhdGggZD0iTTEuMzA5IDcuODU3YTQuNjQgNC42NCAwIDAgMS0uNDYxLTEuMDYzSDBDLjU5MSA5LjIwNiAyLjc5NiAxMSA1LjQyMiAxMWMxLjk4MSAwIDMuNzIyLTEuMDIgNC43MTEtMi41NTZoMGwtLjc1LS4zNDVjLS44NTQgMS4yNjEtMi4zMSAyLjA5Mi0zLjk2MSAyLjA5MmE0Ljc4IDQuNzggMCAwIDEtMy4wMDUtMS4wNTVsMS44MDktMS40NzQuOTg0Ljg0NyAxLjkwNS0xLjAwM0w4LjE3NCA1LjgybC0uMzg0LS43ODYtMS4xMTYuNjM1LS41MTYuNjk0LS42MjYuMjM2LS44NzMtLjM4N2gwbC0uMjEzLS45MS4zNTUtLjU2Ljc4Ny0uMzcuODQ1LS45NTktLjcwMi0uNTEtMS44NzQuNzEzLTEuMzYyIDEuNjUxLjY0NSAxLjA5OC0xLjgzMSAxLjQ5MnptOS42MTQtMS40NEE1LjQ0IDUuNDQgMCAwIDAgMTEgNS41QzExIDIuNDY0IDguNTAxIDAgNS40MjIgMCAyLjc5NiAwIC41OTEgMS43OTQgMCA0LjIwNmguODQ4QzEuNDE5IDIuMjQ1IDMuMjUyLjgwOSA1LjQyMi44MDljMi42MjYgMCA0Ljc1OCAyLjEwMiA0Ljc1OCA0LjY5MSAwIC4xOS0uMDEyLjM3Ni0uMDM0LjU2bC43NzcuMzU3aDB6IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGZpbGw9IiM1ZGE0MjYiLz48L2c+PC9zdmc+)](https://modrinth.com/mod/do-a-barrel-roll)
+[![Modrinth](https://img.shields.io/modrinth/dt/do-a-barrel-roll)](https://modrinth.com/mod/do-a-barrel-roll)
 [![CurseForge](https://cf.way2muchnoise.eu/full_663658_downloads.svg)](https://curseforge.com/minecraft/mc-mods/do-a-barrel-roll)
 
-Do a Barrel Roll is a lightweight, fully clientside mod for Fabric and Forge that changes 
+Do a Barrel Roll is a lightweight, fully clientside mod for Fabric that changes 
 elytra flight to be more fun and semi-realistic.
 It achieves this by redesigning movement with a 
 completely unlocked camera orientation in mind, 
@@ -28,10 +28,9 @@ The default controls are as follows, but can be modified:
 
 ## Configuration
 
-The mod can be configured in-game using ModMenu on Fabric, or the builtin mods button on Forge and a compatible config library.
-Currently, Cloth Config, YACL and Configured are supported.
-Once you install any of these, 
-you can access the config screen by finding the mod in your mod menu of choice and pressing the config button.
+The mod can be configured in-game using [ModMenu](https://modrinth.com/mod/modmenu) and [YACL](https://modrinth.com/mod/yacl).
+Once you install both of these,
+you can access the config screen by finding the mod in the mods list and pressing the config button.
 
 A wide range of options are available, including custom mouse behavior, elytra activation restrictions and
 changing values of modifiers like banking, sensitivity and more.
@@ -51,7 +50,11 @@ All the following configurations are valid:
 
 ![](img/do-a-barrel-roll.gif)
 
-## Disclaimer
+## Disclaimers
+
+The Forge version of this mod will no longer receive any updates.
+This has to do with my personal preferences and lack of knowledge about Forge,
+due to which, maintaining a port was severely limiting what I could do with the mod.
 
 This mod does not actually modify the flight physics themselves, 
 so in most cases it shouldn't trigger anticheat. 
@@ -59,30 +62,59 @@ However, doing things like loop de loops looks to the server like rapid camera m
 and may get you flagged.
 **Use at your own risk.**
 
+**Versions prior to 2.8.3 may not be suitable for use on multiplayer servers due to lax server-side restrictions**
+
 ## Credits
 
 Based on the [Cool Elytra Roll](https://github.com/Jorbon/cool_elytra) mod by [Jorbon](https://github.com/Jorbon),
 specifically it's "realistic mode".
 
-Ported to Forge by [MehVahdJukaar](https://github.com/MehVahdJukaar).
+Originally ported to Forge by [MehVahdJukaar](https://github.com/MehVahdJukaar).
 
 Mod icon by Mizeno.
 
-## For server owners
+## For server admins
+
+### Thrusting
 
 The mod includes a "thrusting" feature that is probably considered cheating by most servers, 
 as it lets users accelerate without using fireworks.
-If you want to completely ban players from using this feature on your server, you can either:
+**This is disabled by default on servers as of 2.8.3.**
+If you want to allow players to use this feature on your server, you can either:
 
-- Install the mod on your server and set `"allowThrusting"` to `false` in `config/do_a_barrel_roll-server.json`
-- Send a custom packet to the client at login on the `do_a_barrel_roll:config_sync` channel with one 
-string field containing the following JSON:
-```json
-{
-  "allowThrusting": false
-}
-```
-The client will respond with a boolean on the same channel to indicate success.
+- Install the mod on your server and use the "Server" tab on the config screen to enable it. (recommended)
+  - This tab is only available to level 3 server operators and players with the `do_a_barrel_roll.configure` permission.
+  - You can also set `"allowThrusting"` to `true` in `config/do_a_barrel_roll-server.json`
+    to configure the mod without a client.
+- Create a custom plugin or mod to send a packet to the client at login on 
+  the `do_a_barrel_roll:config_sync` channel with the following layout:
+
+| Type    | Value                      |
+|---------|----------------------------|
+| integer | `1`                        |
+| string  | `{"allowThrusting": true}` |
+
+Any client that has DABR installed will respond on the same channel with a packet like this:
+
+| Type    | Value              |
+|---------|--------------------|
+| integer | [protocol version] |
+| boolean | [success]          |
 
 This option will be respected by any clients using version 2.4.0 or later of the mod. 
-The Forge version does not currently support thrusting, so it will not be affected by this option.
+The legacy Forge versions do not support thrusting, so they will not be affected by this option.
+
+### Other features
+
+The server config includes a few other features to configure server-side behaviour, including:
+
+- `forceEnabled`: Forces the mod to be enabled for all players, regardless of their client configuration.
+- `forceInstalled`: Rejects any player trying to join without having the mod installed on their client.
+- `installedTimeout`: The amount of time (in ticks) to wait for a client to respond to the `do_a_barrel_roll:config_sync` packet.
+  - If the client does not respond in time, and `forceInstalled` is set to `true`, they will be kicked from the server.
+  - You may want to increase this value if players with bad connections are getting kicked despite having the mod installed.
+
+These options can all be configured via the same methods as the `allowThrusting` option.
+
+It is also possible to allow specific players to bypass configured restrictions by giving them level 2 operator status 
+or the `do_a_barrel_roll.ignore_config` permission.

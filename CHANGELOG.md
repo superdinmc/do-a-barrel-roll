@@ -1,1 +1,3 @@
-- Hopefully fixed mod functionality on 1.18.2 forge.
+- Added the option for operators or players with the `do_a_barrel_roll.ignore_config` permission to ignore the server config.
+  - This will let you enable thrusting by default again in singleplayer, so long as you have cheats enabled.
+- The mod will now reinitiate a config sync handshake in more situations, such as changing player permissions.

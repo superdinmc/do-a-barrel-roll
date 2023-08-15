@@ -34,5 +34,5 @@ jobs:
       - name: Upload To Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ inputs.branch }}
+          name: Artifacts
           path: ./build/libs/

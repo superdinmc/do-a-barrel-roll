@@ -1,163 +1,177 @@
 plugins {
-    id "base"
-    id "maven-publish"
-
-    id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
+    id 'fabric-loom' version '1.3-SNAPSHOT'
+    id 'io.github.juuxel.loom-vineflower' version '1.11.0'
+    id 'maven-publish'
+    id 'me.fallenbreath.yamlang' version '1.2.1'
 }
 
-architectury {
-    minecraft = rootProject.minecraft_version
-}
+version = project.mod_version
+group = project.maven_group
 
-subprojects {
-    apply plugin: "dev.architectury.loom"
-    apply plugin: "maven-publish"
+loom {
+    accessWidenerPath = file("src/main/resources/do-a-barrel-roll.accesswidener")
 
-    dependencies {
-        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-        // The following line declares the mojmap mappings, you may use other mappings as well
+    splitEnvironmentSourceSets()
 
-        // The following line declares the yarn mappings you may select this one as well.
-        mappings "net.fabricmc:yarn:${rootProject.yarn_version}:v2"
+    mods {
+        "do_a_barrel_roll" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
     }
 }
 
-tasks {
-    // Register a custom "collect jars" task that copies the Fabric and Forge mod jars
-    // into the root project's build/libs. This makes it easier to find them
-    // for testing and releasing.
-    def collectJars = tasks.register("collectJars", Copy) {copy ->
+repositories {
+    // Add repositories to retrieve artifacts from in here.
+    // You should only use this when depending on other mods because
+    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+    // for more information about repositories.
 
-        subprojects.forEach {
-            def task = it.tasks.getByName("remapJar")
+    // Personal maven for cicada and backup mirrors of some dependencies.
+    maven { url = "https://maven.enjarai.nl/mirrors" }
+    maven { url = "https://maven.enjarai.nl/releases" }
 
-            dependsOn(task)
+    maven {
+        url = "https://www.cursemaven.com"
+        allowInsecureProtocol = true
+    }
 
-            copy.from task
-            copy.into buildDir.path + "/libs"
+    // Mod Menu.
+    maven { url 'https://maven.terraformersmc.com' }
+
+    // MidnightControls.
+    maven { url = "https://aperlambda.github.io/maven" }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
         }
     }
 
-    // Set up assemble to depend on the collectJars task, so it gets run on gradlew build.
-    assemble {
-        dependsOn(collectJars)
+    // Cloth Config.
+    maven { url "https://maven.shedaniel.me/" }
+    maven { url "https://maven.terraformersmc.com/releases/" }
+
+    // Jitpack for Mixin Extras.
+    maven {
+        url 'https://jitpack.io'
+        content {
+            includeGroup 'com.github.llamalad7'
+        }
+    }
+
+    // YACL/Controlify
+    maven { url = "https://maven.isxander.dev/releases" }
+    maven { url = "https://maven.quiltmc.org/repository/release/" }
+
+    // Mod Menu
+    maven { url "https://maven.terraformersmc.com/releases" }
+
+    // Permissions API
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+
+dependencies {
+    // To change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_version}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    // Fabric API. This is technically optional, but you probably want it anyway.
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    include modImplementation("nl.enjarai:cicada-lib:${project.cicada_version}") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
+
+    modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:${project.yacl_version}") {
+        exclude group: "net.fabricmc"
+    }
+
+    modCompileOnly("dev.isxander:controlify:${project.controlify_version}:fabric-1.19.4") {
+        exclude group: "net.fabricmc"
+        exclude group: "maven.modrinth"
+        exclude group: "com.github.CaffeineMC"
+    }
+
+    // Mod Menu integration.
+    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+    // Mixin Extras for extra compatibility.
+    include(implementation("com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixin_extras_version}"))
+    annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixin_extras_version}")
+    clientAnnotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixin_extras_version}")
+
+    include(modImplementation("me.lucko:fabric-permissions-api:${project.permissions_api_version}"))
+}
+
+base {
+    archivesName = project.archives_base_name
+}
+
+version = "${rootProject.mod_version}+${rootProject.minecraft_version}-fabric"
+
+processResources {
+    inputs.property "version", "${rootProject.mod_version}+${rootProject.minecraft_version}"
+
+    filesMatching("fabric.mod.json") {
+        expand "version": "${rootProject.mod_version}+${rootProject.minecraft_version}"
     }
 }
 
-allprojects {
-    apply plugin: "java"
-    apply plugin: "architectury-plugin"
+tasks.withType(JavaCompile).configureEach {
+    // Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
+    it.options.release = 17
+}
 
-    archivesBaseName = rootProject.mod_id
-    version = "${rootProject.mod_version}+${rootProject.minecraft_version}"
-    group = rootProject.maven_group
+java {
+    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+    // if it is present.
+    // If you remove this line, sources will not be generated.
+    withSourcesJar()
 
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${base.archivesName.get()}"}
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+    options.release = 17
+}
+
+// configure the maven publication
+publishing {
     repositories {
-
-        flatDir {
-            dirs 'mods'
-        }
-
-        mavenLocal()
-
-        maven { url 'https://maven.fabricmc.net' }
-
-        // Add repositories to retrieve artifacts from in here.
-        // You should only use this when depending on other mods because
-        // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-        // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-        // for more information about repositories.
-
-        // Personal maven for cicada and backup mirrors of some dependencies.
-        maven { url = "https://maven.enjarai.nl/releases" }
-        maven { url = "https://maven.enjarai.nl/mirrors" }
-
         maven {
-            url = "https://www.cursemaven.com"
-            allowInsecureProtocol = true
-        }
-
-        // Mod Menu.
-        maven { url 'https://maven.terraformersmc.com' }
-
-        // MidnightControls.
-        maven { url = "https://aperlambda.github.io/maven" }
-        maven {
-            name = "Modrinth"
-            url = "https://api.modrinth.com/maven"
-            content {
-                includeGroup "maven.modrinth"
+            name = "enjaraiMaven"
+            url = "https://maven.enjarai.nl/releases"
+            credentials(PasswordCredentials)
+            authentication {
+                basic(BasicAuthentication)
             }
-        }
-
-        // Cloth Config.
-        maven { url "https://maven.shedaniel.me/" }
-        maven { url "https://maven.terraformersmc.com/releases/" }
-
-        // Jitpack for Mixin Extras.
-        maven {
-            url 'https://jitpack.io'
-            content {
-                includeGroup 'com.github.LlamaLad7'
-            }
-        }
-
-        // YACL
-        maven { url = "https://maven.isxander.dev/releases" }
-
-        // Cardinal Components API
-        maven {
-            name = "Ladysnake Mods"
-            url = 'https://ladysnake.jfrog.io/artifactory/mods'
         }
     }
 
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
-        options.release = 17
-    }
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = project.maven_group
+            artifactId = archivesBaseName
+            version = project.version
 
-    java {
-        withSourcesJar()
+            from components.java
+        }
     }
 }
 
-// Disable publishing for the root project.
-project.tasks.publish.enabled = false
-
-subprojects {
-    if (!path.startsWith(":common")) {
-        tasks {
-            tasks.getByName("remapJar") {
-                dependsOn("shadowJar")
-                // The project name will be "fabric" or "forge", so this will become the classifier/suffix
-                // for the jar. For example: do-a-barrel-roll-2.0.0+1.19.2-fabric.jar
-                archiveClassifier.set(project.name)
-            }
-        }
-
-        publishing {
-            repositories {
-                maven {
-                    name = "enjaraiMaven"
-                    url = "https://maven.enjarai.nl/releases"
-                    credentials(PasswordCredentials)
-                    authentication {
-                        basic(BasicAuthentication)
-                    }
-                }
-            }
-
-            publications {
-                mavenJava(MavenPublication) {
-                    groupId = project.maven_group
-                    artifactId = archivesBaseName
-                    version = project.version + "-" + project.name
-
-                    from components.java
-                }
-            }
-        }
-    }
+yamlang {
+    targetSourceSets = [sourceSets.main]
+    inputDir = 'assets/do_a_barrel_roll/lang'
 }
