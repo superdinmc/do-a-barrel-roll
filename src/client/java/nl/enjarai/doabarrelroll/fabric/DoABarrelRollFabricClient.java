@@ -1,10 +1,8 @@
 package nl.enjarai.doabarrelroll.fabric;
 
-import com.llamalad7.mixinextras.MixinExtrasBootstrap;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 import nl.enjarai.cicada.api.conversation.ConversationManager;
 import nl.enjarai.cicada.api.util.CicadaEntrypoint;
 import nl.enjarai.cicada.api.util.JsonSource;
@@ -43,7 +41,7 @@ public class DoABarrelRollFabricClient implements ClientModInitializer, CicadaEn
     @Override
     public void registerConversations(ConversationManager conversationManager) {
         conversationManager.registerSource(
-                JsonSource.fromUrl("https://raw.githubusercontent.com/enjarai/do-a-barrel-roll/master/fabric/src/main/resources/cicada/do-a-barrel-roll/conversations.json")
+                JsonSource.fromUrl("https://raw.githubusercontent.com/enjarai/do-a-barrel-roll/1.20/dev/src/main/resources/cicada/do-a-barrel-roll/conversations.json")
                         .or(JsonSource.fromResource("cicada/do-a-barrel-roll/conversations.json")),
                 LOGGER::info
         );

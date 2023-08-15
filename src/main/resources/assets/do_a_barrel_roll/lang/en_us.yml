@@ -183,6 +183,8 @@ toast.do_a_barrel_roll:
     client-side toggling and some activation behaviours will be disabled.
   server_config_updated: >-
     Server config updated successfully, sending new config to all players.
+  server_config_update_failed: >-
+    Failed to update server config, please check the server logs for more information.
 
 
 controlify:
