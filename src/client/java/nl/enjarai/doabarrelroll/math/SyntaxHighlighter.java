@@ -49,7 +49,7 @@ public class SyntaxHighlighter {
 		
 		switch (type) {
 			case Variable -> {
-				return Text.literal(str).formatted(Formatting.GREEN);
+				return Text.literal(str).formatted(Formatting.ITALIC);
 			}
 			
 			case Operator -> {
