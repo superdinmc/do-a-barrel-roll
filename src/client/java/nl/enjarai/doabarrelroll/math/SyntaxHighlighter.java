@@ -18,32 +18,32 @@ public class SyntaxHighlighter {
 					formattedText.append(formatText(context.getCurrent(), SyntaxType.Variable));
 					context.position++;
 				}
-//			} else if (context.getCurrent() == '-' || context.getCurrent() == '+') { //unary operators
-//				if (Character.isDigit(context.peek())) {
-//					formattedText.append(formatText(context.getCurrent(), SyntaxType.Number));
-//					context.position++;
-//				} else if (isLetter(context.peek())) {
-//					formattedText.append(formatText(context.getCurrent(), SyntaxType.Function));
-//					context.position++;
-//				}
+			} else if (context.getCurrent() == '-' || context.getCurrent() == '+') { //unary operators
+				if (Character.isDigit(context.peek())) {
+					formattedText.append(formatText(context.getCurrent(), SyntaxType.Number));
+					context.position++;
+				} else if (isLetter(context.peek())) {
+					formattedText.append(formatText(context.getCurrent(), SyntaxType.Function));
+					context.position++;
+				}
 			} else if (Character.isDigit(context.getCurrent()) || context.getCurrent() == '.') { //numbers
 				formattedText.append(formatText(context.getCurrent(), SyntaxType.Number));
 				context.position++;
-//			} else if (isLetter(context.getCurrent())) { //functions
-//				StringBuilder builder = new StringBuilder();
-//
-//				while (isLetter(context.getCurrent())) {
-//					builder.append(context.getCurrent());
-//					context.position++;
-//				}
-//
-//				String builtResult = builder.toString();
-//
-//				if (isKeyword(builtResult) && context.getCurrent() == '(') {
-//					formattedText.append(formatText(builtResult, SyntaxType.Function));
-//				} else {
-//					formattedText.append(formatText(builtResult, SyntaxType.Error));
-//				}
+			} else if (isLetter(context.getCurrent())) { //functions
+				StringBuilder builder = new StringBuilder();
+
+				while (isLetter(context.getCurrent())) {
+					builder.append(context.getCurrent());
+					context.position++;
+				}
+
+				String builtResult = builder.toString();
+
+				if (isKeyword(builtResult) && context.getCurrent() == '(') {
+					formattedText.append(formatText(builtResult, SyntaxType.Function));
+				} else {
+					formattedText.append(formatText(builtResult, SyntaxType.Error));
+				}
 			} else if (isOperator(context.getCurrent())) { //typical operators
 				formattedText.append(formatText(context.getCurrent(), SyntaxType.Operator));
 				context.position++;
