@@ -62,6 +62,15 @@ config.do_a_barrel_roll:
       Creates a more realistic, plane-like feeling while flying, 
       allowing you to make turns without having to do full 90 degree rolls.
     banking_strength: Banking Strength
+    modify_rotation_speed: Modify Rotation Speed
+    modify_rotation_speed.description: >
+      TODO
+    rotation_speed_formula: Rotation Speed Formula
+    rotation_speed_formula.description: |+
+      The formula used to calculate the rotation multiplier applied to input.
+      Returning a value of 1 will result in no change to the input.
+      
+
   thrust:
     .: Thrusting Options
     enable_thrust: Enable Thrusting

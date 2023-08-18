@@ -10,6 +10,8 @@ import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
+import nl.enjarai.doabarrelroll.config.serialization.ExpressionParserTypeAdapter;
+import nl.enjarai.doabarrelroll.math.ExpressionParser;
 import nl.enjarai.doabarrelroll.util.ToastUtil;
 
 import java.io.*;
@@ -18,6 +20,7 @@ import java.nio.file.Path;
 
 public class ModConfig {
     public static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(ExpressionParser.class, new ExpressionParserTypeAdapter())
             .setPrettyPrinting()
             .create();
     public static final Path CONFIG_FILE = FabricLoader.getInstance()
@@ -51,6 +54,8 @@ public class ModConfig {
         static class Banking {
             boolean enable_banking = true;
             double banking_strength = 20.0;
+            boolean modify_rotation_speed = false;
+            ExpressionParser rotation_speed_formula = new ExpressionParser("$velocity_x * $look_x + $velocity_y * $look_y + $velocity_z * $look_z");
         }
 
         Thrust thrust = new Thrust();
@@ -115,6 +120,14 @@ public class ModConfig {
     public double getBankingStrength() {
         return general.banking.banking_strength;
     }// = 20;
+
+    public boolean getModifyRotationSpeed() {
+        return general.banking.modify_rotation_speed;
+    }// = false;
+
+    public ExpressionParser getRotationSpeedFormula() {
+        return general.banking.rotation_speed_formula;
+    }// = new ExpressionParser("$total_velocity * 2.0 - 1.0");
 
     public boolean getEnableThrust() {
         return general.thrust.enable_thrust && DoABarrelRollClient.HANDSHAKE_CLIENT
@@ -231,6 +244,14 @@ public class ModConfig {
 
     public void setBankingStrength(double strength) {
         general.banking.banking_strength = strength;
+    }
+
+    public void setModifyRotationSpeed(boolean enabled) {
+        general.banking.modify_rotation_speed = enabled;
+    }
+
+    public void setRotationSpeedFormula(ExpressionParser formula) {
+        general.banking.rotation_speed_formula = formula;
     }
 
     public void setEnableThrust(boolean enabled) {

@@ -1,5 +1,6 @@
 package nl.enjarai.doabarrelroll.flight;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.SmoothUtil;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
@@ -9,7 +10,10 @@ import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
-import nl.enjarai.doabarrelroll.util.MagicNumbers;
+import nl.enjarai.doabarrelroll.math.Expression;
+import nl.enjarai.doabarrelroll.math.MagicNumbers;
+
+import java.util.Map;
 
 public class RotationModifiers {
     public static RollContext.ConfiguresRotation buttonControls(double power) {
@@ -99,5 +103,29 @@ public class RotationModifiers {
             }
             return rotationInstant;
         };
+    }
+
+    public static RotationInstant modifyRotationSpeed(RotationInstant rotationInstant, RollContext context) {
+        var player = MinecraftClient.getInstance().player;
+        if (player == null) return rotationInstant;
+
+        var expressionHolder = ModConfig.INSTANCE.getRotationSpeedFormula();
+        Expression expression = !expressionHolder.hasError() ? expressionHolder.getCompiled() : vars -> 1;
+
+        var currentRotation = context.getCurrentRotation();
+        var vars = Map.of(
+                "pitch", currentRotation.pitch(),
+                "yaw", currentRotation.yaw(),
+                "roll", currentRotation.roll(),
+                "velocity_length", player.getVelocity().length(),
+                "velocity_x", player.getVelocity().getX(),
+                "velocity_y", player.getVelocity().getY(),
+                "velocity_z", player.getVelocity().getZ(),
+                "look_x", player.getRotationVector().getX(),
+                "look_y", player.getRotationVector().getY(),
+                "look_z", player.getRotationVector().getZ()
+        );
+        var multiplier = expression.eval(vars);
+        return rotationInstant.multiply(multiplier, multiplier, multiplier);
     }
 }

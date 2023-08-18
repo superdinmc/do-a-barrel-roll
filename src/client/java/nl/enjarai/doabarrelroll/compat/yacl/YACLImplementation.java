@@ -1,10 +1,9 @@
 package nl.enjarai.doabarrelroll.compat.yacl;
 
 import dev.isxander.yacl3.api.*;
-import dev.isxander.yacl3.api.controller.DoubleSliderControllerBuilder;
-import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
-import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
-import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
+import dev.isxander.yacl3.api.controller.*;
+import dev.isxander.yacl3.gui.controllers.string.IStringController;
+import dev.isxander.yacl3.gui.controllers.string.StringController;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -12,11 +11,13 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.ModKeybindings;
 import nl.enjarai.doabarrelroll.api.event.ClientEvents;
 import nl.enjarai.doabarrelroll.config.*;
+import nl.enjarai.doabarrelroll.math.ExpressionParser;
 import nl.enjarai.doabarrelroll.net.ServerConfigUpdateClient;
 
 import java.util.ArrayList;
@@ -85,6 +86,18 @@ public class YACLImplementation {
                                 .option(getOption(Double.class, "banking", "banking_strength", false, false)
                                         .controller(option -> getDoubleSlider(option, 0.0, 100.0, 1.0))
                                         .binding(20.0, () -> ModConfig.INSTANCE.getBankingStrength(), value -> ModConfig.INSTANCE.setBankingStrength(value))
+                                        .build())
+                                .option(getBooleanOption("banking", "modify_rotation_speed", true, false)
+                                        .binding(false, () -> ModConfig.INSTANCE.getModifyRotationSpeed(), value -> ModConfig.INSTANCE.setModifyRotationSpeed(value))
+                                        .build())
+                                .option(getOption(ExpressionParser.class, "banking", "rotation_speed_formula", false, false)
+                                        .description(parser -> OptionDescription.createBuilder()
+                                                .text(getText("banking", "rotation_speed_formula.description")
+                                                        .append(Text.literal(parser.hasError() ? parser.getError().getMessage() : "")
+                                                                .formatted(Formatting.RED)))
+                                                .build())
+                                        .customController(ExpressionParserController::new)
+                                        .binding(new ExpressionParser("$velocity_x * $look_x + $velocity_y * $look_y + $velocity_z * $look_z"), () -> ModConfig.INSTANCE.getRotationSpeedFormula(), value -> ModConfig.INSTANCE.setRotationSpeedFormula(value))
                                         .build())
                                 .build())
                         .group(OptionGroup.createBuilder()

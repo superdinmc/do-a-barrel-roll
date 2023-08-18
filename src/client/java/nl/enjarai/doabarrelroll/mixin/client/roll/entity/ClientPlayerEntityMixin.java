@@ -1,13 +1,12 @@
 package nl.enjarai.doabarrelroll.mixin.client.roll.entity;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
-import nl.enjarai.doabarrelroll.util.MagicNumbers;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
+import nl.enjarai.doabarrelroll.math.MagicNumbers;
 import nl.enjarai.doabarrelroll.net.RollSyncClient;
 import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
@@ -52,14 +51,11 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
 	@Override
 	public void doABarrelRoll$changeElytraLook(double pitch, double yaw, double roll, Sensitivity sensitivity, double mouseDelta) {
-		var player = MinecraftClient.getInstance().player;
-		if (player == null) return;
-
 		var rotDelta = RotationInstant.of(pitch, yaw, roll);
 		var currentRoll = doABarrelRoll$getRoll();
 		var currentRotation = RotationInstant.of(
-				player.getPitch(),
-				player.getYaw(),
+				getPitch(),
+				getYaw(),
 				currentRoll
 		);
 		var context = RollContext.of(currentRotation, rotDelta, mouseDelta);

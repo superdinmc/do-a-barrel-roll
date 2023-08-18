@@ -18,6 +18,8 @@ public interface RotationInstant {
 
     RotationInstant add(double pitch, double yaw, double roll);
 
+    RotationInstant multiply(double pitch, double yaw, double roll);
+
     /**
      * Add absolute upright rotation to this rolled rotation, taking roll into account.
      */
