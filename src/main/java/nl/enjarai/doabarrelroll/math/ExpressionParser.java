@@ -102,50 +102,59 @@ public class ExpressionParser extends Parser {
             while (ch >= '0' && ch <= '9' || ch == '.') nextChar();
             var a = Double.parseDouble(string.substring(startPos, pos));
             x = vars -> a;
-        } else if (ch >= 'a' && ch <= 'z') { // functions
-            while (ch >= 'a' && ch <= 'z') nextChar();
-            var func = string.substring(startPos, pos);
+        } else if (isVariableChar()) {
+            while (isVariableChar()) nextChar();
+            var name = string.substring(startPos, pos);
             List<Expression> args = new ArrayList<>();
-            if (weat('(')) {
+            if (weat('(')) { // functions
                 do {
                     args.add(parseExpression());
                 } while (weat(','));
-                if (!weat(')')) throw new RuntimeException("Missing ')' after argument to '" + func + "'");
-            } else {
-                throw new RuntimeException("Missing '(' after function name '" + func + "' at position " + pos);
+                if (!weat(')')) throw new RuntimeException("Missing ')' after argument to '" + name + "'");
+                x = switch (args.size()) {
+                    case 1 -> {
+                        var a = args.get(0);
+                        yield switch (name) {
+                            case "sqrt" -> vars -> Math.sqrt(a.eval(vars));
+                            case "sin" -> vars -> Math.sin(a.eval(vars));
+                            case "cos" -> vars -> Math.cos(a.eval(vars));
+                            case "tan" -> vars -> Math.tan(a.eval(vars));
+                            case "asin" -> vars -> Math.asin(a.eval(vars));
+                            case "acos" -> vars -> Math.acos(a.eval(vars));
+                            case "atan" -> vars -> Math.atan(a.eval(vars));
+                            case "abs" -> vars -> Math.abs(a.eval(vars));
+                            case "exp" -> vars -> Math.exp(a.eval(vars));
+                            case "ceil" -> vars -> Math.ceil(a.eval(vars));
+                            case "floor" -> vars -> Math.floor(a.eval(vars));
+                            case "log" -> vars -> Math.log(a.eval(vars));
+                            case "round" -> vars -> Math.round(a.eval(vars));
+                            case "randint" -> vars -> RANDOM.nextInt((int) a.eval(vars));
+                            default -> throw new RuntimeException("Unknown function '" + name + "' for 1 arg at position " + (pos - name.length()));
+                        };
+                    }
+                    case 2 -> {
+                        var a = args.get(0);
+                        var b = args.get(1);
+                        yield switch (name) {
+                            case "min" -> vars -> Math.min(a.eval(vars), b.eval(vars));
+                            case "max" -> vars -> Math.max(a.eval(vars), b.eval(vars));
+                            case "randint" -> vars -> {
+                                var av = a.eval(vars);
+                                return av + RANDOM.nextInt((int) (b.eval(vars) - av));
+                            };
+                            default -> throw new RuntimeException("Unknown function '" + name + "' for 2 args at position " + (pos - name.length()));
+                        };
+                    }
+                    default -> throw new RuntimeException("Unknown function '" + name + "' for " + args.size() + " args at position " + (pos - name.length()));
+                };
+            } else { // constants
+                var a = switch (name) {
+                    case "pi" -> Math.PI;
+                    case "e" -> Math.E;
+                    default -> throw new RuntimeException("Unknown constant '" + name + "' at position " + (pos - name.length()));
+                };
+                x = vars -> a;
             }
-            x = switch (args.size()) {
-                case 1 -> {
-                    var a = args.get(0);
-                    yield switch (func) {
-                        case "sqrt" -> vars -> Math.sqrt(a.eval(vars));
-                        case "sin" -> vars -> Math.sin(a.eval(vars));
-                        case "cos" -> vars -> Math.cos(a.eval(vars));
-                        case "tan" -> vars -> Math.tan(a.eval(vars));
-                        case "asin" -> vars -> Math.asin(a.eval(vars));
-                        case "acos" -> vars -> Math.acos(a.eval(vars));
-                        case "atan" -> vars -> Math.atan(a.eval(vars));
-                        case "abs" -> vars -> Math.abs(a.eval(vars));
-                        case "exp" -> vars -> Math.exp(a.eval(vars));
-                        case "ceil" -> vars -> Math.ceil(a.eval(vars));
-                        case "floor" -> vars -> Math.floor(a.eval(vars));
-                        case "log" -> vars -> Math.log(a.eval(vars));
-                        case "round" -> vars -> Math.round(a.eval(vars));
-                        case "randint" -> vars -> RANDOM.nextInt((int) a.eval(vars));
-                        default -> throw new RuntimeException("Unknown function '" + func + "' for 1 arg at position " + (pos - func.length()));
-                    };
-                }
-                case 2 -> {
-                    var a = args.get(0);
-                    var b = args.get(1);
-                    yield switch (func) {
-                        case "min" -> vars -> Math.min(a.eval(vars), b.eval(vars));
-                        case "max" -> vars -> Math.max(a.eval(vars), b.eval(vars));
-                        default -> throw new RuntimeException("Unknown function '" + func + "' for 2 args at position " + (pos - func.length()));
-                    };
-                }
-                default -> throw new RuntimeException("Unknown function '" + func + "' for " + args.size() + " args at position " + (pos - func.length()));
-            };
         } else if (weat('$')) {
             while (isVariableChar()) nextChar();
             var variable = string.substring(startPos + 1, pos);
