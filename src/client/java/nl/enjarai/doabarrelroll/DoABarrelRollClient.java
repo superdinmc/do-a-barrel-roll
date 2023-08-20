@@ -48,7 +48,7 @@ public class DoABarrelRollClient {
 
         // Generic movement modifiers, banking and such
         RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context
-                .useModifier(RotationModifiers::modifyRotationSpeed, ModConfig.INSTANCE::getModifyRotationSpeed)
+                .useModifier(RotationModifiers::applyControlSurfaceEfficacy, ModConfig.INSTANCE::getSimulateControlSurfaceEfficacy)
                 .useModifier(RotationModifiers.smoothing(
                         PITCH_SMOOTHER, YAW_SMOOTHER, ROLL_SMOOTHER,
                         ModConfig.INSTANCE.getSmoothing()

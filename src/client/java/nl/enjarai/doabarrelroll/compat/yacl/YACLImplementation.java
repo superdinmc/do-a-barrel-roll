@@ -2,8 +2,6 @@ package nl.enjarai.doabarrelroll.compat.yacl;
 
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.*;
-import dev.isxander.yacl3.gui.controllers.string.IStringController;
-import dev.isxander.yacl3.gui.controllers.string.StringController;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -87,17 +85,8 @@ public class YACLImplementation {
                                         .controller(option -> getDoubleSlider(option, 0.0, 100.0, 1.0))
                                         .binding(20.0, () -> ModConfig.INSTANCE.getBankingStrength(), value -> ModConfig.INSTANCE.setBankingStrength(value))
                                         .build())
-                                .option(getBooleanOption("banking", "modify_rotation_speed", true, false)
-                                        .binding(false, () -> ModConfig.INSTANCE.getModifyRotationSpeed(), value -> ModConfig.INSTANCE.setModifyRotationSpeed(value))
-                                        .build())
-                                .option(getOption(ExpressionParser.class, "banking", "rotation_speed_formula", false, false)
-                                        .description(parser -> OptionDescription.createBuilder()
-                                                .text(getText("banking", "rotation_speed_formula.description")
-                                                        .append(Text.literal(parser.hasError() ? parser.getError().getMessage() : "")
-                                                                .formatted(Formatting.RED)))
-                                                .build())
-                                        .customController(ExpressionParserController::new)
-                                        .binding(new ExpressionParser("$velocity_x * $look_x + $velocity_y * $look_y + $velocity_z * $look_z"), () -> ModConfig.INSTANCE.getRotationSpeedFormula(), value -> ModConfig.INSTANCE.setRotationSpeedFormula(value))
+                                .option(getBooleanOption("banking", "simulate_control_surface_efficacy", true, false)
+                                        .binding(false, () -> ModConfig.INSTANCE.getSimulateControlSurfaceEfficacy(), value -> ModConfig.INSTANCE.setSimulateControlSurfaceEfficacy(value))
                                         .build())
                                 .build())
                         .group(OptionGroup.createBuilder()
@@ -113,6 +102,12 @@ public class YACLImplementation {
                                         .binding(0.1, () -> ModConfig.INSTANCE.getThrustAcceleration(), value -> ModConfig.INSTANCE.setThrustAcceleration(value))))
                                 .option(thrustingAllowed.add(getBooleanOption("thrust", "thrust_particles", false, false)
                                         .binding(true, () -> ModConfig.INSTANCE.getThrustParticles(), value -> ModConfig.INSTANCE.setThrustParticles(value))))
+                                .build())
+                        .group(OptionGroup.createBuilder()
+                                .name(getText("misc"))
+                                .option(getBooleanOption("misc", "enable_easter_eggs", false, false)
+                                        .binding(ModConfig.DEFAULT.getEnableEasterEggs(), ModConfig.INSTANCE::getEnableEasterEggs, ModConfig.INSTANCE::setEnableEasterEggs)
+                                        .build())
                                 .build())
                         .build())
                 .category(ConfigCategory.createBuilder()
@@ -168,6 +163,50 @@ public class YACLImplementation {
                                         .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
                                         .binding(1.0, () -> ModConfig.INSTANCE.getControllerRoll(), value -> ModConfig.INSTANCE.setControllerRoll(value))
                                         .build())
+                                .build())
+                        .build())
+                .category(ConfigCategory.createBuilder()
+                        .name(getText("advanced"))
+                        .option(LabelOption.create(getText("advanced", "description")))
+                        .group(OptionGroup.createBuilder()
+                                .name(getText("banking_math"))
+                                .option(getExpressionOption("banking_math", "banking_x_formula", true, false)
+                                        .binding(ModConfig.DEFAULT.getBankingXFormula(), ModConfig.INSTANCE::getBankingXFormula, ModConfig.INSTANCE::setBankingXFormula)
+                                        .build())
+                                .option(getExpressionOption("banking_math", "banking_y_formula", true, false)
+                                        .binding(ModConfig.DEFAULT.getBankingYFormula(), ModConfig.INSTANCE::getBankingYFormula, ModConfig.INSTANCE::setBankingYFormula)
+                                        .build())
+                                .build())
+                        .group(OptionGroup.createBuilder()
+                                .name(getText("control_surface_efficacy"))
+                                .option(getExpressionOption("control_surface_efficacy", "elevator", true, false)
+                                        .binding(ModConfig.DEFAULT.getElevatorEfficacyFormula(), ModConfig.INSTANCE::getElevatorEfficacyFormula, ModConfig.INSTANCE::setElevatorEfficacyFormula)
+                                        .build())
+                                .option(getExpressionOption("control_surface_efficacy", "aileron", true, false)
+                                        .binding(ModConfig.DEFAULT.getAileronEfficacyFormula(), ModConfig.INSTANCE::getAileronEfficacyFormula, ModConfig.INSTANCE::setAileronEfficacyFormula)
+                                        .build())
+                                .option(getExpressionOption("control_surface_efficacy", "rudder", true, false)
+                                        .binding(ModConfig.DEFAULT.getRudderEfficacyFormula(), ModConfig.INSTANCE::getRudderEfficacyFormula, ModConfig.INSTANCE::setRudderEfficacyFormula)
+                                        .build())
+                                .build())
+                        .group(OptionGroup.createBuilder()
+                                .name(getText("documentation"))
+                                .option(LabelOption.create(getText("documentation", "description")))
+                                .build())
+                        .group(OptionGroup.createBuilder()
+                                .name(getText("variables_documentation"))
+                                .collapsed(true)
+                                .option(LabelOption.create(getText("variables_documentation", "description")))
+                                .build())
+                        .group(OptionGroup.createBuilder()
+                                .name(getText("functions_documentation"))
+                                .collapsed(true)
+                                .option(LabelOption.create(getText("functions_documentation", "description")))
+                                .build())
+                        .group(OptionGroup.createBuilder()
+                                .name(getText("constants_documentation"))
+                                .collapsed(true)
+                                .option(LabelOption.create(getText("constants_documentation", "description")))
                                 .build())
                         .build());
 
@@ -264,6 +303,25 @@ public class YACLImplementation {
     private static Option.Builder<Boolean> getBooleanOption(String category, String key, boolean description, boolean image) {
         return getOption(Boolean.class, category, key, description, image)
                 .controller(TickBoxControllerBuilder::create);
+    }
+
+    private static Option.Builder<ExpressionParser> getExpressionOption(String category, String key, boolean description, boolean image) {
+        return getOption(ExpressionParser.class, category, key, false, false)
+                .description(parser -> {
+                    var descBuilder = OptionDescription.createBuilder();
+                    var error = Text.literal(parser.hasError() ? parser.getError().getMessage() : "")
+                            .formatted(Formatting.RED);
+                    if (description) {
+                        descBuilder.text(getText(category, key + ".description").append("\n\n").append(error));
+                    } else {
+                        descBuilder.text(error);
+                    }
+                    if (image) {
+                        descBuilder.image(DoABarrelRoll.id("textures/gui/config/images/" + category + "/" + key + ".png"), 480, 275);
+                    }
+                    return descBuilder.build();
+                })
+                .customController(ExpressionParserController::new);
     }
 
     private static DoubleSliderControllerBuilder getDoubleSlider(Option<Double> option, double min, double max, double step) {

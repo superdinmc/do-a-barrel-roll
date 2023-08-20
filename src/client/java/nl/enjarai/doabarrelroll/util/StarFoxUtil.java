@@ -16,6 +16,7 @@ import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.api.event.StarFox64Events;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
+import nl.enjarai.doabarrelroll.config.ModConfig;
 
 public class StarFoxUtil {
     private static final Random random = Random.create();
@@ -86,6 +87,8 @@ public class StarFoxUtil {
     }
 
     public static boolean isFoxMcCloud(PlayerEntity player) {
+        if (!ModConfig.INSTANCE.getEnableEasterEggs()) return false;
+
         ItemStack chestStack = player.getEquippedStack(EquipmentSlot.CHEST);
         String name = chestStack.getName().getString();
         return chestStack.isOf(Items.ELYTRA) && (name.equals("Arwing") || name.equals("Star Fox 64") || name.contains("Do a Barrel Roll"));
