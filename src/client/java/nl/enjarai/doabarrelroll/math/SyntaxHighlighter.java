@@ -27,11 +27,11 @@ public class SyntaxHighlighter {
 					if (debugLog) DoABarrelRoll.LOGGER.info("Coloring variable");
 				}
 			} else if (context.getCurrent() == '-' || context.getCurrent() == '+') { //unary operators
-				if (Character.isDigit(context.peek()) && context.lastIsOperator()) {
+				if (Character.isDigit(context.peek()) && context.lastIsNotValue()) {
 					formattedText.append(formatText(context.getCurrent(), SyntaxType.Number));
 					context.position++;
 					if (debugLog) DoABarrelRoll.LOGGER.info("Coloring number");
-				} else if (isLetter(context.peek()) && context.lastIsOperator()) {
+				} else if (isLetter(context.peek()) && context.lastIsNotValue()) {
 					formattedText.append(formatText(context.getCurrent(), SyntaxType.Function));
 					context.position++;
 					if (debugLog) DoABarrelRoll.LOGGER.info("Coloring function");
@@ -191,13 +191,14 @@ class SyntaxHighlightContext {
 		return rawText.charAt(i);
 	}
 	
-	public boolean lastIsOperator() {
+	public boolean lastIsNotValue() {
 		int tempPos = position;
 		
 		while (tempPos > 0) {
 			tempPos--;
 			
-			if (SyntaxHighlighter.isOperator(getByIndex(tempPos))) {
+			if (SyntaxHighlighter.isOperator(getByIndex(tempPos))
+					|| SyntaxHighlighter.isScope(getByIndex(tempPos))) {
 				return true;
 			} else if (!Character.isWhitespace(getByIndex(tempPos))) {
 				break;
