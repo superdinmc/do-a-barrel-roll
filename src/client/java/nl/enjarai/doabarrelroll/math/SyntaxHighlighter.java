@@ -3,63 +3,98 @@ package nl.enjarai.doabarrelroll.math;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import nl.enjarai.doabarrelroll.DoABarrelRoll;
 
 public class SyntaxHighlighter {
+	private static final boolean debugLog = false;
+	
 	public static Text highlightText(String text) {
 		MutableText formattedText = Text.literal("");
 		SyntaxHighlightContext context = new SyntaxHighlightContext(text);
+		
+		DoABarrelRoll.LOGGER.info("Begun syntax highlighting");
 		
 		while (context.getCurrent() != (char)0) {
 			if (context.getCurrent() == '$') { //variables
 				formattedText.append(String.valueOf(context.getCurrent()));
 				context.position++;
+				if (debugLog) DoABarrelRoll.LOGGER.info("Begun coloring variable");
 				
 				while (isLetter(context.getCurrent()) || context.getCurrent() == '_') {
 					formattedText.append(formatText(context.getCurrent(), SyntaxType.Variable));
 					context.position++;
+					if (debugLog) DoABarrelRoll.LOGGER.info("Coloring variable");
 				}
 			} else if (context.getCurrent() == '-' || context.getCurrent() == '+') { //unary operators
-				if (Character.isDigit(context.peek())) {
+				if (Character.isDigit(context.peek()) && context.lastIsOperator()) {
 					formattedText.append(formatText(context.getCurrent(), SyntaxType.Number));
 					context.position++;
-				} else if (isLetter(context.peek())) {
+					if (debugLog) DoABarrelRoll.LOGGER.info("Coloring number");
+				} else if (isLetter(context.peek()) && context.lastIsOperator()) {
 					formattedText.append(formatText(context.getCurrent(), SyntaxType.Function));
 					context.position++;
+					if (debugLog) DoABarrelRoll.LOGGER.info("Coloring function");
+				} else {
+					formattedText.append(formatText(context.getCurrent(), SyntaxType.Operator));
+					context.position++;
+					if (debugLog) DoABarrelRoll.LOGGER.info("Coloring operator");
 				}
 			} else if (Character.isDigit(context.getCurrent()) || context.getCurrent() == '.') { //numbers
 				formattedText.append(formatText(context.getCurrent(), SyntaxType.Number));
 				context.position++;
+				if (debugLog) DoABarrelRoll.LOGGER.info("Coloring number");
 			} else if (isLetter(context.getCurrent())) { //functions
 				StringBuilder builder = new StringBuilder();
-
+				
 				while (isLetter(context.getCurrent())) {
 					builder.append(context.getCurrent());
 					context.position++;
+					if (debugLog) DoABarrelRoll.LOGGER.info("Reading possible function");
 				}
-
+				
 				String builtResult = builder.toString();
-
+				
 				if (isKeyword(builtResult) && context.getCurrent() == '(') {
 					formattedText.append(formatText(builtResult, SyntaxType.Function));
+					if (debugLog) DoABarrelRoll.LOGGER.info("Coloring function");
+				} else if (isConstant(builtResult)) {
+					formattedText.append(formatText(builtResult, SyntaxType.Constant));
+					if (debugLog) DoABarrelRoll.LOGGER.info("Coloring constant");
 				} else {
 					formattedText.append(formatText(builtResult, SyntaxType.Error));
+					if (debugLog) DoABarrelRoll.LOGGER.info("Coloring error");
 				}
 			} else if (isOperator(context.getCurrent())) { //typical operators
 				formattedText.append(formatText(context.getCurrent(), SyntaxType.Operator));
 				context.position++;
+				if (debugLog) DoABarrelRoll.LOGGER.info("Coloring operator");
 			} else if (isScope(context.getCurrent())) { //parentheses
 				formattedText.append(formatText(context.getCurrent(), SyntaxType.Scope));
 				context.position++;
+				if (debugLog) DoABarrelRoll.LOGGER.info("Skipping parentheses");
 			} else if (Character.isWhitespace(context.getCurrent())) { //whitespace
 				formattedText.append(String.valueOf(context.getCurrent()));
 				context.position++;
+				if (debugLog) DoABarrelRoll.LOGGER.info("Skipping whitespace");
 			} else { //errors
 				formattedText.append(formatText(context.getCurrent(), SyntaxType.Error));
 				context.position++;
+				if (debugLog) DoABarrelRoll.LOGGER.info("Coloring errors");
 			}
 		}
 		
+		if (debugLog) DoABarrelRoll.LOGGER.info("Finished syntax coloring");
 		return formattedText;
+	}
+	
+	public static boolean isConstant(String str) {
+		switch (str) {
+			case "pi" -> {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public static boolean isKeyword(String str) {
@@ -113,7 +148,11 @@ public class SyntaxHighlighter {
 			}
 			
 			case Function -> {
-				return Text.literal(str).formatted(Formatting.BLUE);
+				return Text.literal(str).formatted(Formatting.YELLOW);
+			}
+			
+			case Constant -> {
+				return Text.literal(str).formatted(Formatting.ITALIC);
 			}
 			
 			case Scope -> {
@@ -148,7 +187,23 @@ class SyntaxHighlightContext {
 	
 	public char getByIndex(int i) {
 		if (i >= rawText.length()) return (char)0;
-		return rawText.charAt(1);
+		return rawText.charAt(i);
+	}
+	
+	public boolean lastIsOperator() {
+		int tempPos = position;
+		
+		while (tempPos > 0) {
+			tempPos--;
+			
+			if (SyntaxHighlighter.isOperator(getByIndex(tempPos))) {
+				return true;
+			} else if (!Character.isWhitespace(getByIndex(tempPos))) {
+				break;
+			}
+		}
+		
+		return false;
 	}
 }
 
@@ -158,5 +213,6 @@ enum SyntaxType {
 	Error,
 	Scope,
 	Function,
-	Number
+	Number,
+	Constant
 }
