@@ -4,9 +4,6 @@ package nl.enjarai.doabarrelroll.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
@@ -23,6 +20,7 @@ public class ModConfig {
             .registerTypeAdapter(ExpressionParser.class, new ExpressionParserTypeAdapter())
             .setPrettyPrinting()
             .create();
+    public static final ModConfig DEFAULT = new ModConfig();
     public static final Path CONFIG_FILE = FabricLoader.getInstance()
             .getConfigDir().resolve("do_a_barrel_roll-client.json");
     public static ModConfig INSTANCE = loadConfigFile(CONFIG_FILE.toFile());
@@ -30,6 +28,8 @@ public class ModConfig {
     public static void touch() {
         // touch the grass
     }
+
+    int format_version_do_not_edit = 1;
 
     General general = new General();
     static class General {
@@ -54,8 +54,7 @@ public class ModConfig {
         static class Banking {
             boolean enable_banking = true;
             double banking_strength = 20.0;
-            boolean modify_rotation_speed = false;
-            ExpressionParser rotation_speed_formula = new ExpressionParser("$velocity_x * $look_x + $velocity_y * $look_y + $velocity_z * $look_z");
+            boolean simulate_control_surface_efficacy = false;
         }
 
         Thrust thrust = new Thrust();
@@ -64,6 +63,11 @@ public class ModConfig {
             double max_thrust = 2.0;
             double thrust_acceleration = 0.1;
             boolean thrust_particles = true;
+        }
+
+        Misc misc = new Misc();
+        static class Misc {
+            boolean enable_easter_eggs = true;
         }
     }
 
@@ -79,6 +83,16 @@ public class ModConfig {
 
         Sensitivity desktop = new Sensitivity();
         Sensitivity controller = new Sensitivity();
+    }
+
+    AdvancedConfig advanced = new AdvancedConfig();
+    static class AdvancedConfig {
+        ExpressionParser banking_x_formula = new ExpressionParser("sin($roll * TO_RAD) * cos($pitch * TO_RAD) * 10 * $banking_strength");
+        ExpressionParser banking_y_formula = new ExpressionParser("(-1 + cos($roll * TO_RAD)) * cos($pitch * TO_RAD) * 10 * $banking_strength");
+
+        ExpressionParser elevator_efficacy_formula = new ExpressionParser("$velocity_x * $look_x + $velocity_y * $look_y + $velocity_z * $look_z");
+        ExpressionParser aileron_efficacy_formula = new ExpressionParser("$velocity_x * $look_x + $velocity_y * $look_y + $velocity_z * $look_z");
+        ExpressionParser rudder_efficacy_formula = new ExpressionParser("$velocity_x * $look_x + $velocity_y * $look_y + $velocity_z * $look_z");
     }
 
     public boolean getModEnabled() {
@@ -121,13 +135,9 @@ public class ModConfig {
         return general.banking.banking_strength;
     }// = 20;
 
-    public boolean getModifyRotationSpeed() {
-        return general.banking.modify_rotation_speed;
+    public boolean getSimulateControlSurfaceEfficacy() {
+        return general.banking.simulate_control_surface_efficacy;
     }// = false;
-
-    public ExpressionParser getRotationSpeedFormula() {
-        return general.banking.rotation_speed_formula;
-    }// = new ExpressionParser("$total_velocity * 2.0 - 1.0");
 
     public boolean getEnableThrust() {
         return general.thrust.enable_thrust && DoABarrelRollClient.HANDSHAKE_CLIENT
@@ -148,6 +158,10 @@ public class ModConfig {
 
     public boolean getThrustParticles() {
         return general.thrust.thrust_particles;
+    }
+
+    public boolean getEnableEasterEggs() {
+        return general.misc.enable_easter_eggs;
     }
 
     public boolean getSmoothingEnabled() {
@@ -206,6 +220,26 @@ public class ModConfig {
         return sensitivity.controller.roll;
     }
 
+    public ExpressionParser getBankingXFormula() {
+        return advanced.banking_x_formula;
+    }
+
+    public ExpressionParser getBankingYFormula() {
+        return advanced.banking_y_formula;
+    }
+
+    public ExpressionParser getElevatorEfficacyFormula() {
+        return advanced.elevator_efficacy_formula;
+    }
+
+    public ExpressionParser getAileronEfficacyFormula() {
+        return advanced.aileron_efficacy_formula;
+    }
+
+    public ExpressionParser getRudderEfficacyFormula() {
+        return advanced.rudder_efficacy_formula;
+    }
+
     public void setModEnabled(boolean enabled) {
         general.mod_enabled = enabled;
     }
@@ -246,12 +280,8 @@ public class ModConfig {
         general.banking.banking_strength = strength;
     }
 
-    public void setModifyRotationSpeed(boolean enabled) {
-        general.banking.modify_rotation_speed = enabled;
-    }
-
-    public void setRotationSpeedFormula(ExpressionParser formula) {
-        general.banking.rotation_speed_formula = formula;
+    public void setSimulateControlSurfaceEfficacy(boolean enabled) {
+        general.banking.simulate_control_surface_efficacy = enabled;
     }
 
     public void setEnableThrust(boolean enabled) {
@@ -268,6 +298,10 @@ public class ModConfig {
 
     public void setThrustParticles(boolean enabled) {
         general.thrust.thrust_particles = enabled;
+    }
+
+    public void setEnableEasterEggs(boolean enabled) {
+        general.misc.enable_easter_eggs = enabled;
     }
 
     public void setSmoothingEnabled(boolean enabled) {
@@ -316,6 +350,26 @@ public class ModConfig {
 
     public void setControllerRoll(double roll) {
         sensitivity.controller.roll = roll;
+    }
+
+    public void setBankingXFormula(ExpressionParser formula) {
+        advanced.banking_x_formula = formula;
+    }
+
+    public void setBankingYFormula(ExpressionParser formula) {
+        advanced.banking_y_formula = formula;
+    }
+
+    public void setElevatorEfficacyFormula(ExpressionParser formula) {
+        advanced.elevator_efficacy_formula = formula;
+    }
+
+    public void setAileronEfficacyFormula(ExpressionParser formula) {
+        advanced.aileron_efficacy_formula = formula;
+    }
+
+    public void setRudderEfficacyFormula(ExpressionParser formula) {
+        advanced.rudder_efficacy_formula = formula;
     }
 
     public void save() {

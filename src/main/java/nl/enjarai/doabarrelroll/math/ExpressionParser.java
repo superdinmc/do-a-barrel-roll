@@ -30,6 +30,10 @@ public class ExpressionParser extends Parser {
         return compiled;
     }
 
+    public Expression getCompiledOrDefaulting(double defaultValue) {
+        return hasError() ? vars -> defaultValue : getCompiled();
+    }
+
     public RuntimeException getError() {
         getCompiled();
         return error;
@@ -123,13 +127,13 @@ public class ExpressionParser extends Parser {
                             case "acos" -> vars -> Math.acos(a.eval(vars));
                             case "atan" -> vars -> Math.atan(a.eval(vars));
                             case "abs" -> vars -> Math.abs(a.eval(vars));
-                            case "exp" -> vars -> Math.exp(a.eval(vars));
                             case "ceil" -> vars -> Math.ceil(a.eval(vars));
                             case "floor" -> vars -> Math.floor(a.eval(vars));
                             case "log" -> vars -> Math.log(a.eval(vars));
                             case "round" -> vars -> Math.round(a.eval(vars));
                             case "randint" -> vars -> RANDOM.nextInt((int) a.eval(vars));
-                            default -> throw new RuntimeException("Unknown function '" + name + "' for 1 arg at position " + (pos - name.length()));
+                            default ->
+                                    throw new RuntimeException("Unknown function '" + name + "' for 1 arg at position " + (pos - name.length()));
                         };
                     }
                     case 2 -> {
@@ -142,16 +146,21 @@ public class ExpressionParser extends Parser {
                                 var av = a.eval(vars);
                                 return av + RANDOM.nextInt((int) (b.eval(vars) - av));
                             };
-                            default -> throw new RuntimeException("Unknown function '" + name + "' for 2 args at position " + (pos - name.length()));
+                            default ->
+                                    throw new RuntimeException("Unknown function '" + name + "' for 2 args at position " + (pos - name.length()));
                         };
                     }
-                    default -> throw new RuntimeException("Unknown function '" + name + "' for " + args.size() + " args at position " + (pos - name.length()));
+                    default ->
+                            throw new RuntimeException("Unknown function '" + name + "' for " + args.size() + " args at position " + (pos - name.length()));
                 };
             } else { // constants
                 var a = switch (name) {
-                    case "pi" -> Math.PI;
-                    case "e" -> Math.E;
-                    default -> throw new RuntimeException("Unknown constant '" + name + "' at position " + (pos - name.length()));
+                    case "PI" -> Math.PI;
+                    case "E" -> Math.E;
+                    case "TO_RAD" -> Math.PI / 180;
+                    case "TO_DEG" -> 180 / Math.PI;
+                    default ->
+                            throw new RuntimeException("Unknown constant '" + name + "' at position " + (pos - name.length()));
                 };
                 x = vars -> a;
             }
@@ -159,9 +168,8 @@ public class ExpressionParser extends Parser {
             while (isVariableChar()) nextChar();
             var variable = string.substring(startPos + 1, pos);
             x = vars -> {
-                    var value = vars.get(variable);
-                    if (value != null) return value;
-                    else throw new RuntimeException("Unknown variable '" + variable + "' at position " + (pos - variable.length()));
+                var value = vars.get(variable);
+                return value != null ? value : 0; // TODO better error handling
             };
         } else {
             throw new RuntimeException("Unexpected '" + ch + "' at position " + pos);
