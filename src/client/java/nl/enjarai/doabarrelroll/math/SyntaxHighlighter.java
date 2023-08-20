@@ -1,6 +1,7 @@
 package nl.enjarai.doabarrelroll.math;
 
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
@@ -12,7 +13,7 @@ public class SyntaxHighlighter {
 		MutableText formattedText = Text.literal("");
 		SyntaxHighlightContext context = new SyntaxHighlightContext(text);
 		
-		DoABarrelRoll.LOGGER.info("Begun syntax highlighting");
+		if (debugLog) DoABarrelRoll.LOGGER.info("Begun syntax highlighting");
 		
 		while (context.getCurrent() != (char)0) {
 			if (context.getCurrent() == '$') { //variables
@@ -43,13 +44,13 @@ public class SyntaxHighlighter {
 				formattedText.append(formatText(context.getCurrent(), SyntaxType.Number));
 				context.position++;
 				if (debugLog) DoABarrelRoll.LOGGER.info("Coloring number");
-			} else if (isLetter(context.getCurrent())) { //functions
+			} else if (isLetter(context.getCurrent())) { //functions and constants
 				StringBuilder builder = new StringBuilder();
 				
-				while (isLetter(context.getCurrent())) {
+				while (isLetter(context.getCurrent()) || context.getCurrent() == '_') {
 					builder.append(context.getCurrent());
 					context.position++;
-					if (debugLog) DoABarrelRoll.LOGGER.info("Reading possible function");
+					if (debugLog) DoABarrelRoll.LOGGER.info("Reading possible function or constant");
 				}
 				
 				String builtResult = builder.toString();
@@ -89,7 +90,7 @@ public class SyntaxHighlighter {
 	
 	public static boolean isConstant(String str) {
 		switch (str) {
-			case "pi" -> {
+			case "PI", "E", "TO_RAD", "TO_DEG" -> {
 				return true;
 			}
 		}
@@ -152,7 +153,7 @@ public class SyntaxHighlighter {
 			}
 			
 			case Constant -> {
-				return Text.literal(str).formatted(Formatting.ITALIC);
+				return Text.literal(str).setStyle(Style.EMPTY.withColor(0xFFA500));
 			}
 			
 			case Scope -> {
