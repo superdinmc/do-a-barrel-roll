@@ -189,14 +189,14 @@ config.do_a_barrel_roll:
       §7The expressions above use a custom expression language that allows you to use variables and functions in your calculations.
       
       
-      For basic mathematical operations, you can use the standard operators: +, -, *, /, and ^ for exponentiation.
+      For basic mathematical operations, you can use the standard operators: §d+§7, §d-§7, §d*§7, §d/§7, and §d^§7 for exponentiation.
       The calculation order follows PEMDAS, so you can use parentheses to group operations.
       
       
       Aside from that, there are three types of named expression you can use:
-        - Variables: These start with a $, and hold dynamic values.
-        - Functions: These are names followed by parentheses, and take arguments in the parentheses.
-        - Constants: These are names that are not variables or functions, and are replaced with a constant value.
+        - §f$§avariables§7: These start with a §f$§7, and hold dynamic values.
+        - §efunctions§f()§7: These are names followed by parentheses, and take arguments in the parentheses.
+        - §6CONSTANTS§7: These are names that are not variables or functions, and are replaced with a constant value.
       
       
       Expand the categories below to see the available variables, functions, and constants.
@@ -204,44 +204,44 @@ config.do_a_barrel_roll:
     .: Variables
     description: |-
       §7The following variables are available:
-        - $pitch: The player's current pitch, in degrees.
-        - $yaw: The player's current yaw, in degrees.
-        - $roll: The player's current roll, in degrees.
-        - $velocity_length: The player's current velocity, in blocks per tick.
-        - $velocity_x: The player's current velocity along the X axis, in blocks per tick.
-        - $velocity_y: The player's current velocity along the Y axis, in blocks per tick.
-        - $velocity_z: The player's current velocity along the Z axis, in blocks per tick.
-        - $look_x: The player's current look vector along the X axis.
-        - $look_y: The player's current look vector along the Y axis.
-        - $look_z: The player's current look vector along the Z axis.
+        - §f$§apitch§7: The player's current pitch, in degrees.
+        - §f$§ayaw§7: The player's current yaw, in degrees.
+        - §f$§aroll§7: The player's current roll, in degrees.
+        - §f$§avelocity_length§7: The player's current velocity, in blocks per tick.
+        - §f$§avelocity_x§7: The player's current velocity along the X axis, in blocks per tick.
+        - §f$§avelocity_y§7: The player's current velocity along the Y axis, in blocks per tick.
+        - §f$§avelocity_z§7: The player's current velocity along the Z axis, in blocks per tick.
+        - §f$§alook_x§7: The player's current look vector along the X axis.
+        - §f$§alook_y§7: The player's current look vector along the Y axis.
+        - §f$§alook_z§7: The player's current look vector along the Z axis.
   functions_documentation:
     .: Functions
     description: |-
       §7The following functions are available:
-        - sqrt(x): Returns the square root of x.
-        - sin(x): Returns the sine of x.
-        - cos(x): Returns the cosine of x.
-        - tan(x): Returns the tangent of x.
-        - asin(x): Returns the arcsine of x.
-        - acos(x): Returns the arccosine of x.
-        - atan(x): Returns the arctangent of x.
-        - abs(x): Returns the absolute value of x.
-        - ciel(x): Returns the smallest integer greater than or equal to x.
-        - floor(x): Returns the largest integer less than or equal to x.
-        - round(x): Returns the integer closest to x.
-        - log(x): Returns the natural logarithm of x.
-        - randint(max): Returns a random integer between 0 and max.
-        - randint(min, max): Returns a random integer between min and max.
-        - min(x, y): Returns the smaller of x and y.
-        - max(x, y): Returns the larger of x and y.
+        - §esqrt§f(x)§7: Returns the square root of x.
+        - §esin§f(x)§7: Returns the sine of x.
+        - §ecos§f(x)§7: Returns the cosine of x.
+        - §etan§f(x)§7: Returns the tangent of x.
+        - §easin§f(x)§7: Returns the arcsine of x.
+        - §eacos§f(x)§7: Returns the arccosine of x.
+        - §eatan§f(x)§7: Returns the arctangent of x.
+        - §eabs§f(x)§7: Returns the absolute value of x.
+        - §eciel§f(x)§7: Returns the smallest integer greater than or equal to x.
+        - §efloor§f(x)§7: Returns the largest integer less than or equal to x.
+        - §eround§f(x)§7: Returns the integer closest to x.
+        - §elog§f(x)§7: Returns the natural logarithm of x.
+        - §erandint§f(max)§7: Returns a random integer between 0 and max.
+        - §erandint§f(min, max)§7: Returns a random integer between min and max.
+        - §emin§f(x, y)§7: Returns the smaller of x and y.
+        - §emax§f(x, y)§7: Returns the larger of x and y.
   constants_documentation:
     .: Constants
     description: |-
       §7The following constants are available:
-        - PI: The value of pi.
-        - E: The value of e.
-        - TO_RAD: The conversion factor from degrees to radians.
-        - TO_DEG: The conversion factor from radians to degrees.
+        - §6PI§7: The value of pi.
+        - §6E§7: The value of e.
+        - §6TO_RAD§7: The conversion factor from degrees to radians.
+        - §6TO_DEG§7: The conversion factor from radians to degrees.
       
 
   yacl:
