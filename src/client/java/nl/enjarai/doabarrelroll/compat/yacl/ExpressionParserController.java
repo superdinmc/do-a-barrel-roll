@@ -6,7 +6,9 @@ import dev.isxander.yacl3.gui.AbstractWidget;
 import dev.isxander.yacl3.gui.YACLScreen;
 import dev.isxander.yacl3.gui.controllers.string.IStringController;
 import dev.isxander.yacl3.gui.controllers.string.StringControllerElement;
+import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.math.ExpressionParser;
+import nl.enjarai.doabarrelroll.math.SyntaxHighlighter;
 
 public record ExpressionParserController(Option<ExpressionParser> option) implements IStringController<ExpressionParser> {
     @Override
@@ -18,7 +20,12 @@ public record ExpressionParserController(Option<ExpressionParser> option) implem
     public void setFromString(String value) {
         option.requestSet(new ExpressionParser(value));
     }
-
+    
+    @Override
+    public Text formatValue() {
+        return SyntaxHighlighter.highlightText(getString());
+    }
+    
     @Override
     public AbstractWidget provideWidget(YACLScreen screen, Dimension<Integer> widgetDimension) {
         return new StringControllerElement(this, screen, widgetDimension, true) {
