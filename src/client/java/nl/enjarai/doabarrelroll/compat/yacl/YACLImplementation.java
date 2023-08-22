@@ -6,10 +6,13 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Util;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.ModKeybindings;
@@ -18,6 +21,7 @@ import nl.enjarai.doabarrelroll.config.*;
 import nl.enjarai.doabarrelroll.math.ExpressionParser;
 import nl.enjarai.doabarrelroll.net.ServerConfigUpdateClient;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -192,6 +196,19 @@ public class YACLImplementation {
                         .group(OptionGroup.createBuilder()
                                 .name(getText("documentation"))
                                 .option(LabelOption.create(getText("documentation", "description")))
+                                .option(ButtonOption.createBuilder()
+                                        .name(getText("documentation", "get_help"))
+                                        .text(getText("documentation", "get_help.text"))
+                                        .action((screen, btn) -> {
+                                            var client = MinecraftClient.getInstance();
+                                            client.setScreen(new ConfirmScreen((result) -> {
+                                                if (result) {
+                                                    Util.getOperatingSystem().open(URI.create("https://discord.gg/WcYsDDQtyR"));
+                                                }
+                                                client.setScreen(screen);
+                                            }, getText("documentation", "get_help"), getText("documentation", "get_help.confirm"), ScreenTexts.YES, ScreenTexts.NO));
+                                        })
+                                        .build())
                                 .build())
                         .group(OptionGroup.createBuilder()
                                 .name(getText("variables_documentation"))

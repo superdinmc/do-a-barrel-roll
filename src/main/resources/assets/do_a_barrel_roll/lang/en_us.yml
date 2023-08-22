@@ -153,35 +153,35 @@ config.do_a_barrel_roll:
     .: Banking Calculations
     banking_x_formula: Banking X Function
     banking_x_formula.description: |
-      This expression is used to calculate the amount of absolute yaw to apply when banking is enabled.
+      §7This expression is used to calculate the amount of absolute yaw to apply when banking is enabled.
       By default, this is based on the player's current pitch and roll, and the configured banking strength.
       
       Note: Absolute yaw in this case means the yaw that is applied as if the player's roll were zero.
       
       Additional variables:
-        - $banking_strength: The configured banking strength.
+        - §f$§abanking_strength§7: The configured banking strength.
     banking_y_formula: Banking Y Function
     banking_y_formula.description: |
-      This expression is used to calculate the amount of absolute pitch to apply when banking is enabled.
+      §7This expression is used to calculate the amount of absolute pitch to apply when banking is enabled.
       By default, this is based on the player's current pitch and roll, and the configured banking strength.
       
       Note: Absolute pitch in this case means the pitch that is applied as if the player's roll were zero.
       
       Additional variables:
-        - $banking_strength: The configured banking strength.
+        - §f$§abanking_strength§7: The configured banking strength.
   control_surface_efficacy:
     .: Control Surface Efficacy Calculations
     elevator: Elevator (Pitch)
     elevator.description: >
-      This expression is used to calculate the efficacy of the elevator control surface.
+      §7This expression is used to calculate the efficacy of the elevator control surface.
       By default, this is based on the estimated angle of attack of the control surface.
     aileron: Aileron (Roll)
     aileron.description: >
-      This expression is used to calculate the efficacy of the aileron control surface.
+      §7This expression is used to calculate the efficacy of the aileron control surface.
       By default, this is based on the estimated angle of attack of the control surface.
     rudder: Rudder (Yaw)
     rudder.description: >
-      This expression is used to calculate the efficacy of the rudder control surface.
+      §7This expression is used to calculate the efficacy of the rudder control surface.
       By default, this is based on the estimated angle of attack of the control surface.
   documentation:
     .: Documentation
@@ -200,6 +200,10 @@ config.do_a_barrel_roll:
       
       
       Expand the categories below to see the available variables, functions, and constants.
+    get_help:
+      .: Get help in Discord
+      text: OPEN
+      confirm: Do you want to open this Discord invite link in your browser?
   variables_documentation:
     .: Variables
     description: |-
@@ -248,6 +252,9 @@ config.do_a_barrel_roll:
     missing:
       .: Yet Another Config Lib is not installed
       message: YACL 3 is required to edit the config in game, would you like to install YACL 3?
+    outdated:
+      .: Yet Another Config Lib is outdated
+      message: The latest version of YACL 3 is required to edit the config in game, would you like to update YACL 3?
 
 
 category.do_a_barrel_roll.do_a_barrel_roll:

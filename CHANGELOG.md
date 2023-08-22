@@ -1,3 +1,10 @@
-- Added the option for operators or players with the `do_a_barrel_roll.ignore_config` permission to ignore the server config.
-  - This will let you enable thrusting by default again in singleplayer, so long as you have cheats enabled.
-- The mod will now reinitiate a config sync handshake in more situations, such as changing player permissions.
+- Added an advanced tab to the config.
+  - Settings here allow you to extensively customize some of the math used under the hood to control flight.
+  - This is done using a custom expression format, which is documented in the config screen itself.
+  - Be sure to take a look if you want to fully customize your flight experience.
+- Added experimental control surface efficacy simulation.
+  - This is disabled by default, but can be enabled in the config.
+  - This is a work in progress, and subject to change in the future.
+  - You can customize the math used for this in the advanced tab, so feel free to experiment.
+  - If you find settings you like, please share them with me so I can improve on the default config.
+- Added easter eggs. :tiny_potato:
