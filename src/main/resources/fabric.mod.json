@@ -28,7 +28,7 @@
 			"nl.enjarai.doabarrelroll.compat.modmenu.ModMenuIntegration"
 		],
 		"cicada": [
-			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
+			"nl.enjarai.doabarrelroll.DoABarrelRoll"
 		],
 		"controlify": [
 			"nl.enjarai.doabarrelroll.compat.controlify.ControlifyCompat"

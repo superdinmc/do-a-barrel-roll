@@ -15,9 +15,7 @@ import nl.enjarai.doabarrelroll.fabric.net.HandshakeClientFabric;
 import nl.enjarai.doabarrelroll.util.StarFoxUtil;
 import org.slf4j.Logger;
 
-public class DoABarrelRollFabricClient implements ClientModInitializer, CicadaEntrypoint {
-    public static final Logger LOGGER = ProperLogger.getLogger(DoABarrelRoll.MODID);
-
+public class DoABarrelRollFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         DoABarrelRollClient.init();
@@ -36,14 +34,5 @@ public class DoABarrelRollFabricClient implements ClientModInitializer, CicadaEn
 
             StarFoxUtil.clientTick(client);
         });
-    }
-
-    @Override
-    public void registerConversations(ConversationManager conversationManager) {
-        conversationManager.registerSource(
-                JsonSource.fromUrl("https://raw.githubusercontent.com/enjarai/do-a-barrel-roll/1.20/dev/src/main/resources/cicada/do-a-barrel-roll/conversations.json")
-                        .or(JsonSource.fromResource("cicada/do-a-barrel-roll/conversations.json")),
-                LOGGER::info
-        );
     }
 }

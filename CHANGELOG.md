@@ -1,10 +1,1 @@
-- Added an advanced tab to the config.
-  - Settings here allow you to extensively customize some of the math used under the hood to control flight.
-  - This is done using a custom expression format, which is documented in the config screen itself.
-  - Be sure to take a look if you want to fully customize your flight experience.
-- Added experimental control surface efficacy simulation.
-  - This is disabled by default, but can be enabled in the config.
-  - This is a work in progress, and subject to change in the future.
-  - You can customize the math used for this in the advanced tab, so feel free to experiment.
-  - If you find settings you like, please share them with me so I can improve on the default config.
-- Added easter eggs. :tiny_potato:
+- Fixed an issue preventing dedicated servers from shutting down fully when stopped using /stop or similar.
