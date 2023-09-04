@@ -79,15 +79,31 @@ Mod icon by Mizeno.
 
 The mod includes a "thrusting" feature that is probably considered cheating by most servers, 
 as it lets users accelerate without using fireworks.
-**This is disabled by default on servers as of 2.8.3.**
-If you want to allow players to use this feature on your server, you can either:
 
-- Install the mod on your server and use the "Server" tab on the config screen to enable it. (recommended)
-  - This tab is only available to level 3 server operators and players with the `do_a_barrel_roll.configure` permission.
-  - You can also set `"allowThrusting"` to `true` in `config/do_a_barrel_roll-server.json`
-    to configure the mod without a client.
-- Create a custom plugin or mod to send a packet to the client at login on 
-  the `do_a_barrel_roll:config_sync` channel with the following layout:
+**This feature is disabled by default on servers as of 2.8.3.**
+
+If you want to allow players to use this feature on your server you can, 
+depending on your server platform, use one of the methods below.
+These configurations will be respected by any clients using version 2.4.0 or later of the mod.
+The legacy Forge versions do not support thrusting and other server-side featuers, 
+so they will not be affected by any of these options.
+
+#### For Fabric servers
+
+Fabric server owners can install the mod on their server and, while in the world, use the "Server" tab on the config screen to configure it. (recommended)
+- This tab is only available to level 3 server operators and players with the `do_a_barrel_roll.configure` permission.
+- You can also set values manually in `config/do_a_barrel_roll-server.json`
+  to configure the mod without a client.
+
+#### For Bukkit/Spigot servers
+
+On platforms that support Bukkit plugins, you can use the [DABRCS](https://modrinth.com/plugin/dabrcs/) plugin to configure the mod.
+- While this is a third-party creation, it is officially endorsed by me.
+
+#### For other server platforms
+
+On servers that have no official support, you'll have to create a custom plugin or mod to send a packet to the client at login on 
+the `do_a_barrel_roll:handshake` channel with the following layout:
 
 | Type    | Value                      |
 |---------|----------------------------|
@@ -100,9 +116,6 @@ Any client that has DABR installed will respond on the same channel with a packe
 |---------|--------------------|
 | integer | [protocol version] |
 | boolean | [success]          |
-
-This option will be respected by any clients using version 2.4.0 or later of the mod. 
-The legacy Forge versions do not support thrusting, so they will not be affected by this option.
 
 ### Other features
 
