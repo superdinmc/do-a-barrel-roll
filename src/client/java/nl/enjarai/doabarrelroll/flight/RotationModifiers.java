@@ -49,9 +49,9 @@ public class RotationModifiers {
 
     public static RollContext.ConfiguresRotation smoothing(SmoothUtil pitchSmoother, SmoothUtil yawSmoother, SmoothUtil rollSmoother, Sensitivity smoothness) {
         return (rotationInstant, context) -> RotationInstant.of(
-                pitchSmoother.smooth(rotationInstant.pitch(), smoothness.pitch * context.getRenderDelta()),
-                yawSmoother.smooth(rotationInstant.yaw(), smoothness.yaw * context.getRenderDelta()),
-                rollSmoother.smooth(rotationInstant.roll(), smoothness.roll * context.getRenderDelta())
+                smoothness.pitch == 0 ? rotationInstant.pitch() : pitchSmoother.smooth(rotationInstant.pitch(), 1 / smoothness.pitch * context.getRenderDelta()),
+                smoothness.yaw == 0 ? rotationInstant.yaw() : yawSmoother.smooth(rotationInstant.yaw(), 1 / smoothness.yaw * context.getRenderDelta()),
+                smoothness.roll == 0 ? rotationInstant.roll() : rollSmoother.smooth(rotationInstant.roll(), 1 / smoothness.roll * context.getRenderDelta())
         );
     }
 

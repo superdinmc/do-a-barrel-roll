@@ -18,6 +18,7 @@ import java.nio.file.Path;
 public class ModConfig {
     public static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(ExpressionParser.class, new ExpressionParserTypeAdapter())
+            .addSerializationExclusionStrategy(new MigrationValue.SerializationStrategy())
             .setPrettyPrinting()
             .create();
     public static final ModConfig DEFAULT = new ModConfig();
@@ -29,7 +30,20 @@ public class ModConfig {
         // touch the grass
     }
 
-    int format_version_do_not_edit = 1;
+
+    private void performMigrations() {
+        if (format_version_do_not_edit <= 1) { // configs below format version 1 use old smoothing values
+            var enabled = sensitivity.smoothing.smoothing_enabled;
+            sensitivity.camera_smoothing.pitch = enabled ? 1 / sensitivity.smoothing.smoothing_pitch : 0;
+            sensitivity.camera_smoothing.yaw = enabled ? 1 / sensitivity.smoothing.smoothing_yaw : 0;
+            sensitivity.camera_smoothing.roll = enabled ? 1 / sensitivity.smoothing.smoothing_roll : 0;
+        }
+
+        format_version_do_not_edit = 2; // update format version
+    }
+
+
+    int format_version_do_not_edit = 2;
 
     General general = new General();
     static class General {
@@ -74,6 +88,7 @@ public class ModConfig {
 
     SensitivityConfig sensitivity = new SensitivityConfig();
     static class SensitivityConfig {
+        @MigrationValue
         Smoothing smoothing = new Smoothing();
         static class Smoothing {
             boolean smoothing_enabled = true;
@@ -82,6 +97,7 @@ public class ModConfig {
             double smoothing_roll = 1.0;
         }
 
+        Sensitivity camera_smoothing = new Sensitivity(1.0, 2.5, 1.0);
         Sensitivity desktop = new Sensitivity();
         Sensitivity controller = new Sensitivity();
     }
@@ -169,28 +185,20 @@ public class ModConfig {
         return general.misc.enable_easter_eggs;
     }
 
-    public boolean getSmoothingEnabled() {
-        return sensitivity.smoothing.smoothing_enabled;
-    }
-
     public double getSmoothingPitch() {
-        return sensitivity.smoothing.smoothing_pitch;
+        return sensitivity.camera_smoothing.pitch;
     }
 
     public double getSmoothingYaw() {
-        return sensitivity.smoothing.smoothing_yaw;
+        return sensitivity.camera_smoothing.yaw;
     }
 
     public double getSmoothingRoll() {
-        return sensitivity.smoothing.smoothing_roll;
+        return sensitivity.camera_smoothing.roll;
     }
 
     public Sensitivity getSmoothing() {
-        return new Sensitivity(
-                sensitivity.smoothing.smoothing_pitch,
-                sensitivity.smoothing.smoothing_yaw,
-                sensitivity.smoothing.smoothing_roll
-        );
+        return sensitivity.camera_smoothing;
     }
 
     public Sensitivity getDesktopSensitivity() {
@@ -313,20 +321,16 @@ public class ModConfig {
         general.misc.enable_easter_eggs = enabled;
     }
 
-    public void setSmoothingEnabled(boolean enabled) {
-        sensitivity.smoothing.smoothing_enabled = enabled;
-    }
-
     public void setSmoothingPitch(double pitch) {
-        sensitivity.smoothing.smoothing_pitch = pitch;
+        sensitivity.camera_smoothing.pitch = pitch;
     }
 
     public void setSmoothingYaw(double yaw) {
-        sensitivity.smoothing.smoothing_yaw = yaw;
+        sensitivity.camera_smoothing.yaw = yaw;
     }
 
     public void setSmoothingRoll(double roll) {
-        sensitivity.smoothing.smoothing_roll = roll;
+        sensitivity.camera_smoothing.roll = roll;
     }
 
     public void setDesktopSensitivity(Sensitivity sensitivity) {
@@ -437,6 +441,7 @@ public class ModConfig {
         }
 
         // Saves the file in order to write new fields if they were added
+        config.performMigrations();
         config.saveConfigFile(file);
         return config;
     }

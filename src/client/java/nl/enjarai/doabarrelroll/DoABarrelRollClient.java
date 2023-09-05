@@ -52,7 +52,7 @@ public class DoABarrelRollClient {
                 .useModifier(RotationModifiers.smoothing(
                         PITCH_SMOOTHER, YAW_SMOOTHER, ROLL_SMOOTHER,
                         ModConfig.INSTANCE.getSmoothing()
-                ), ModConfig.INSTANCE::getSmoothingEnabled)
+                ))
                 .useModifier(RotationModifiers::banking, ModConfig.INSTANCE::getEnableBanking),
                 1000, FALL_FLYING_GROUP);
 
