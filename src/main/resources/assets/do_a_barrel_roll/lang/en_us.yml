@@ -50,6 +50,10 @@ config.do_a_barrel_roll:
     invert_pitch: Invert Pitch
     invert_pitch.description: >
       Inverts the pitch axis while flying with a mouse.
+    disable_when_submerged: Disable When Submerged
+    disable_when_submerged.description: >
+      Disables the mod while you are underwater. 
+      It is recommended to keep this enabled to prevent loss of control while swimming.
   hud:
     .: HUD
     show_horizon: Show Horizon Widget

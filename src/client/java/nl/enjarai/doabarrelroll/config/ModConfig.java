@@ -43,6 +43,7 @@ public class ModConfig {
             double momentum_mouse_deadzone = 0.2;
             boolean show_momentum_widget = true;
             ActivationBehaviour activation_behaviour = ActivationBehaviour.VANILLA;
+            boolean disable_when_submerged = true;
         }
 
         Hud hud = new Hud();
@@ -122,6 +123,10 @@ public class ModConfig {
     public ActivationBehaviour getActivationBehaviour() {
         return general.controls.activation_behaviour;
     } //= ActivationBehaviour.VANILLA;
+
+    public boolean getDisableWhenSubmerged() {
+        return general.controls.disable_when_submerged;
+    } //= true;
 
     public boolean getShowHorizon() {
         return general.hud.show_horizon;
@@ -266,6 +271,10 @@ public class ModConfig {
 
     public void setActivationBehaviour(ActivationBehaviour behaviour) {
         general.controls.activation_behaviour = behaviour;
+    }
+
+    public void setDisableWhenSubmerged(boolean enabled) {
+        general.controls.disable_when_submerged = enabled;
     }
 
     public void setShowHorizon(boolean enabled) {

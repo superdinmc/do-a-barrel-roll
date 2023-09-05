@@ -106,6 +106,12 @@ public class DoABarrelRollClient {
         }
 
         var player = MinecraftClient.getInstance().player;
-        return player != null && player.isFallFlying();
+        if (player == null) {
+            return false;
+        }
+        if (ModConfig.INSTANCE.getDisableWhenSubmerged() && player.isSubmergedInWater()) {
+            return false;
+        }
+        return player.isFallFlying();
     }
 }
