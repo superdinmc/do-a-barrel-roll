@@ -1,5 +1,1 @@
-- The mod will now disable itself when you're submerged in water.
-    - This can be turned off in the config.
-- Smoothing sliders now use an inverse curve.
-    - This should make them more intuitive, as a lower number now actually means less smoothing.
-    - Your old values will be automatically converted.
+- Updated to support 1.20.2.

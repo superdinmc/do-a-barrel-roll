@@ -40,6 +40,7 @@ jobs:
       game_vers: |
         1.20
         1.20.1
+        1.20.2
       java_vers: 17
       GITHUB_REF: ${{ github.ref }}
     secrets:
