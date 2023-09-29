@@ -1,1 +1,1 @@
-- Updated to support 1.20.2.
+- Fixed compatibility with Equipment Compare. (#89)

@@ -1,6 +1,6 @@
 plugins {
-    id 'fabric-loom' version '1.3-SNAPSHOT'
-    id 'io.github.juuxel.loom-vineflower' version '1.11.0'
+    id 'fabric-loom' version '1.4-SNAPSHOT'
+//    id 'io.github.juuxel.loom-vineflower' version '1.11.0'
     id 'maven-publish'
     id 'me.fallenbreath.yamlang' version '1.2.1'
 }
@@ -29,8 +29,8 @@ repositories {
     // for more information about repositories.
 
     // Personal maven for cicada and backup mirrors of some dependencies.
-    maven { url = "https://maven.enjarai.nl/mirrors" }
-    maven { url = "https://maven.enjarai.nl/releases" }
+    maven { url = "https://maven.enjarai.dev/mirrors" }
+    maven { url = "https://maven.enjarai.dev/releases" }
 
     maven {
         url = "https://www.cursemaven.com"
@@ -103,6 +103,10 @@ dependencies {
     include(implementation("com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixin_extras_version}"))
     annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixin_extras_version}")
     clientAnnotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixin_extras_version}")
+
+    include(implementation("com.github.bawnorton.mixinsquared:mixinsquared-fabric:${project.mixin_squared_version}"))
+    annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:${project.mixin_squared_version}")
+    clientAnnotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:${project.mixin_squared_version}")
 
     include(modImplementation("me.lucko:fabric-permissions-api:${project.permissions_api_version}"))
 }
