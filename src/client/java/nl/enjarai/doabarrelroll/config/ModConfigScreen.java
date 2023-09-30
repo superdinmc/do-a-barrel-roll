@@ -13,15 +13,22 @@ import java.net.URI;
 
 public class ModConfigScreen {
     public static Screen create(Screen parent) {
-        if (Compat.isYACLLoaded()) {
-            return YACLImplementation.generateConfigScreen(parent);
-        } else {
+        if (!Compat.isYACLLoaded()) {
             return new ConfirmScreen((result) -> {
                 if (result) {
                     Util.getOperatingSystem().open(URI.create("https://modrinth.com/mod/yacl/versions"));
                 }
                 MinecraftClient.getInstance().setScreen(parent);
             }, getText("missing"), getText("missing.message"), ScreenTexts.YES, ScreenTexts.NO);
+        } else if (!Compat.isYACLUpToDate()) {
+            return new ConfirmScreen((result) -> {
+                if (result) {
+                    Util.getOperatingSystem().open(URI.create("https://modrinth.com/mod/yacl/versions"));
+                }
+                MinecraftClient.getInstance().setScreen(parent);
+            }, getText("outdated"), getText("outdated.message"), ScreenTexts.YES, ScreenTexts.NO);
+        } else {
+            return YACLImplementation.generateConfigScreen(parent);
         }
     }
 

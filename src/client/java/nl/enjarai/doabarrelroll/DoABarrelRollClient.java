@@ -48,10 +48,11 @@ public class DoABarrelRollClient {
 
         // Generic movement modifiers, banking and such
         RollEvents.LATE_CAMERA_MODIFIERS.register(context -> context
+                .useModifier(RotationModifiers::applyControlSurfaceEfficacy, ModConfig.INSTANCE::getSimulateControlSurfaceEfficacy)
                 .useModifier(RotationModifiers.smoothing(
                         PITCH_SMOOTHER, YAW_SMOOTHER, ROLL_SMOOTHER,
                         ModConfig.INSTANCE.getSmoothing()
-                ), ModConfig.INSTANCE::getSmoothingEnabled)
+                ))
                 .useModifier(RotationModifiers::banking, ModConfig.INSTANCE::getEnableBanking),
                 1000, FALL_FLYING_GROUP);
 
@@ -104,6 +105,12 @@ public class DoABarrelRollClient {
         }
 
         var player = MinecraftClient.getInstance().player;
-        return player != null && player.isFallFlying();
+        if (player == null) {
+            return false;
+        }
+        if (ModConfig.INSTANCE.getDisableWhenSubmerged() && player.isSubmergedInWater()) {
+            return false;
+        }
+        return player.isFallFlying();
     }
 }

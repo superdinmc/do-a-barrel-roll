@@ -1,5 +1,6 @@
 package nl.enjarai.doabarrelroll.flight;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.SmoothUtil;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
@@ -9,7 +10,10 @@ import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
-import nl.enjarai.doabarrelroll.util.MagicNumbers;
+import nl.enjarai.doabarrelroll.math.MagicNumbers;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RotationModifiers {
     public static RollContext.ConfiguresRotation buttonControls(double power) {
@@ -45,9 +49,9 @@ public class RotationModifiers {
 
     public static RollContext.ConfiguresRotation smoothing(SmoothUtil pitchSmoother, SmoothUtil yawSmoother, SmoothUtil rollSmoother, Sensitivity smoothness) {
         return (rotationInstant, context) -> RotationInstant.of(
-                pitchSmoother.smooth(rotationInstant.pitch(), smoothness.pitch * context.getRenderDelta()),
-                yawSmoother.smooth(rotationInstant.yaw(), smoothness.yaw * context.getRenderDelta()),
-                rollSmoother.smooth(rotationInstant.roll(), smoothness.roll * context.getRenderDelta())
+                smoothness.pitch == 0 ? rotationInstant.pitch() : pitchSmoother.smooth(rotationInstant.pitch(), 1 / smoothness.pitch * context.getRenderDelta()),
+                smoothness.yaw == 0 ? rotationInstant.yaw() : yawSmoother.smooth(rotationInstant.yaw(), 1 / smoothness.yaw * context.getRenderDelta()),
+                smoothness.roll == 0 ? rotationInstant.roll() : rollSmoother.smooth(rotationInstant.roll(), 1 / smoothness.roll * context.getRenderDelta())
         );
     }
 
@@ -55,10 +59,15 @@ public class RotationModifiers {
         var delta = context.getRenderDelta();
         var currentRotation = context.getCurrentRotation();
         var currentRoll = currentRotation.roll() * MagicNumbers.TORAD;
-        var strength = 10 * Math.cos(currentRotation.pitch() * MagicNumbers.TORAD) * ModConfig.INSTANCE.getBankingStrength();
 
-        var dX = Math.sin(currentRoll) * strength;
-        var dY = -strength + Math.cos(currentRoll) * strength;
+        var xExpression = ModConfig.INSTANCE.getBankingXFormula().getCompiledOrDefaulting(0);
+        var yExpression = ModConfig.INSTANCE.getBankingYFormula().getCompiledOrDefaulting(0);
+
+        var vars = getVars(context);
+        vars.put("banking_strength", ModConfig.INSTANCE.getBankingStrength());
+
+        var dX = xExpression.eval(vars);
+        var dY = yExpression.eval(vars);
 
         // check if we accidentally got NaN, for some reason this happens sometimes
         if (Double.isNaN(dX)) dX = 0;
@@ -99,5 +108,34 @@ public class RotationModifiers {
             }
             return rotationInstant;
         };
+    }
+
+    public static RotationInstant applyControlSurfaceEfficacy(RotationInstant rotationInstant, RollContext context) {
+        var elevatorExpression = ModConfig.INSTANCE.getElevatorEfficacyFormula().getCompiledOrDefaulting(1);
+        var aileronExpression = ModConfig.INSTANCE.getAileronEfficacyFormula().getCompiledOrDefaulting(1);
+        var rudderExpression = ModConfig.INSTANCE.getRudderEfficacyFormula().getCompiledOrDefaulting(1);
+
+        var vars = getVars(context);
+        return rotationInstant.multiply(elevatorExpression.eval(vars), rudderExpression.eval(vars), aileronExpression.eval(vars));
+    }
+
+    private static Map<String, Double> getVars(RollContext context) {
+        var player = MinecraftClient.getInstance().player;
+        assert player != null;
+
+        var currentRotation = context.getCurrentRotation();
+        var rotationVector = player.getRotationVector();
+        return new HashMap<>() {{
+            put("pitch", currentRotation.pitch());
+            put("yaw", currentRotation.yaw());
+            put("roll", currentRotation.roll());
+            put("velocity_length", player.getVelocity().length());
+            put("velocity_x", player.getVelocity().getX());
+            put("velocity_y", player.getVelocity().getY());
+            put("velocity_z", player.getVelocity().getZ());
+            put("look_x", rotationVector.getX());
+            put("look_y", rotationVector.getY());
+            put("look_z", rotationVector.getZ());
+        }};
     }
 }
