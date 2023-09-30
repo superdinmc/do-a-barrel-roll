@@ -198,7 +198,6 @@ public class YACLImplementation {
                                 .option(LabelOption.create(getText("documentation", "description")))
                                 .option(ButtonOption.createBuilder()
                                         .name(getText("documentation", "get_help"))
-                                        .text(getText("documentation", "get_help.text"))
                                         .action((screen, btn) -> {
                                             var client = MinecraftClient.getInstance();
                                             client.setScreen(new ConfirmScreen((result) -> {
