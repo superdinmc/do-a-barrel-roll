@@ -14,7 +14,7 @@ import nl.enjarai.doabarrelroll.util.StarFoxUtil;
 
 import java.util.List;
 
-public class DoABarrelRollFabricClient implements ClientModInitializer, MixinCanceller {
+public class DoABarrelRollFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         DoABarrelRollClient.init();
@@ -33,15 +33,5 @@ public class DoABarrelRollFabricClient implements ClientModInitializer, MixinCan
 
             StarFoxUtil.clientTick(client);
         });
-    }
-
-    @Override
-    public boolean shouldCancel(List<String> targetClassNames, String mixinClassName) {
-        if (mixinClassName.equals("com.anthonyhilyard.equipmentcompare.mixin.KeyMappingMixin") && MixinAnnotationReader.getPriority(mixinClassName) == 1000) {
-            DoABarrelRoll.LOGGER.warn("Equipment Compare detected, disabling their overly invasive keybinding mixin. Report any relevant issues to them.");
-            DoABarrelRoll.LOGGER.warn("If the author of Equipment Compare is reading this: see #31 on your github. Once the issue is fixed, you can set the priority of this mixin to anything other than 1000 to stop it being disabled.");
-            return true;
-        }
-        return false;
     }
 }

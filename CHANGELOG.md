@@ -1,1 +1,1 @@
-- Fixed compatibility with Equipment Compare. (#89)
+- Fixed a crash on dedicated servers. (#113)
