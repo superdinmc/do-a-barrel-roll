@@ -34,7 +34,7 @@
 			"nl.enjarai.doabarrelroll.compat.controlify.ControlifyCompat"
 		],
 		"mixinsquared": [
-			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
+			"nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabric"
 		]
 	},
 	
