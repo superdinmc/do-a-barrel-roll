@@ -1,1 +1,1 @@
-- Fixed a crash on dedicated servers. (#113)
+- Fixed an incompatibility with Keybind Fix.
