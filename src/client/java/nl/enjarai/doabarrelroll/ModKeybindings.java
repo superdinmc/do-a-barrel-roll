@@ -17,7 +17,7 @@ public class ModKeybindings {
     public static final KeyBinding TOGGLE_ENABLED = new KeyBinding(
             "key.do_a_barrel_roll.toggle_enabled",
             InputUtil.Type.KEYSYM,
-            GLFW.GLFW_KEY_L,
+            GLFW.GLFW_KEY_I,
             "category.do_a_barrel_roll.do_a_barrel_roll"
     );
     public static final KeyBinding TOGGLE_THRUST = new KeyBinding(

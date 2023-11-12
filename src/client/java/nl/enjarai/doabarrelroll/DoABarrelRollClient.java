@@ -113,4 +113,8 @@ public class DoABarrelRollClient {
         }
         return player.isFallFlying();
     }
+
+    public static boolean isConnectedToRealms() {
+        return false;
+    }
 }
