@@ -1,8 +1,10 @@
 package nl.enjarai.doabarrelroll;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.util.SmoothUtil;
 import nl.enjarai.doabarrelroll.api.RollEntity;
 import nl.enjarai.doabarrelroll.api.RollMouse;
@@ -18,7 +20,10 @@ import nl.enjarai.doabarrelroll.net.HandshakeClient;
 import nl.enjarai.doabarrelroll.render.HorizonLineWidget;
 import nl.enjarai.doabarrelroll.render.MomentumCrosshairWidget;
 import nl.enjarai.doabarrelroll.util.MixinHooks;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2d;
+
+import java.lang.reflect.Method;
 
 public class DoABarrelRollClient {
     public static final HandshakeClient<LimitedModConfigServer, ModConfigServer> HANDSHAKE_CLIENT = new HandshakeClient<>(
@@ -31,6 +36,23 @@ public class DoABarrelRollClient {
     public static final SmoothUtil ROLL_SMOOTHER = new SmoothUtil();
     public static final RollGroup FALL_FLYING_GROUP = RollGroup.of(DoABarrelRoll.id("fall_flying"));
     public static double throttle = 0;
+
+    @Nullable
+    private static final Method isRealmsMethod;
+
+    static {
+        Method method;
+        var resolver = FabricLoader.getInstance().getMappingResolver();
+        var className = resolver.mapClassName("intermediary", "class_8599");
+        var methodName = resolver.mapMethodName("intermediary", className, "method_52811", "()Z");
+
+        try {
+            method = ServerInfo.class.getMethod(methodName);
+        } catch (NoSuchMethodException e) {
+            method = null;
+        }
+        isRealmsMethod = method;
+    }
 
     public static void init() {
         FALL_FLYING_GROUP.trueIf(DoABarrelRollClient::isFallFlying);
@@ -113,5 +135,20 @@ public class DoABarrelRollClient {
             return false;
         }
         return player.isFallFlying();
+    }
+
+    public static boolean isConnectedToRealms() {
+        if (isRealmsMethod == null) return false;
+
+        var serverInfo = MinecraftClient.getInstance().getCurrentServerEntry();
+        if (serverInfo == null) return false;
+
+        // We don't have to care about supporting 1.20 for realms, as realms servers are always on the latest version.
+        // But I also want to keep the project on 1.20 as a base for now, therefore the reflection jank.
+        try {
+            return (boolean) isRealmsMethod.invoke(serverInfo);
+        } catch (ReflectiveOperationException | NullPointerException | ClassCastException f) {
+            return false;
+        }
     }
 }

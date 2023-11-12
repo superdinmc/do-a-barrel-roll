@@ -8,6 +8,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -31,9 +32,12 @@ import java.util.function.Consumer;
 public class YACLImplementation {
     public static Screen generateConfigScreen(Screen parent) {
         var inWorld = MinecraftClient.getInstance().world != null;
+        ClientPlayerEntity player;
+        var onRealms = DoABarrelRollClient.isConnectedToRealms() &&
+                (player = MinecraftClient.getInstance().player) != null && player.hasPermissionLevel(2);
         var serverConfig = DoABarrelRollClient.HANDSHAKE_CLIENT.getConfig();
 
-        var thrustingAllowed = new Dependable(serverConfig.map(LimitedModConfigServer::allowThrusting).orElse(!inWorld));
+        var thrustingAllowed = new Dependable(serverConfig.map(LimitedModConfigServer::allowThrusting).orElse(!inWorld || onRealms));
         var allowDisabled = new Dependable(!serverConfig.map(LimitedModConfigServer::forceEnabled).orElse(false));
 
         var builder = YetAnotherConfigLib.createBuilder()

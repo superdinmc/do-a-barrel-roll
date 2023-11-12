@@ -4,6 +4,8 @@ package nl.enjarai.doabarrelroll.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
@@ -161,8 +163,19 @@ public class ModConfig {
     }// = false;
 
     public boolean getEnableThrust() {
-        return general.thrust.enable_thrust && DoABarrelRollClient.HANDSHAKE_CLIENT
-                .getConfig().map(LimitedModConfigServer::allowThrusting).orElse(false);
+        if (general.thrust.enable_thrust) {
+            ClientPlayerEntity player;
+            if (DoABarrelRollClient.isConnectedToRealms() &&
+                    (player = MinecraftClient.getInstance().player) != null && player.hasPermissionLevel(2)) {
+                return true;
+            }
+
+            return DoABarrelRollClient.HANDSHAKE_CLIENT.getConfig()
+                    .map(LimitedModConfigServer::allowThrusting)
+                    .orElse(false);
+        }
+
+        return false;
     }
 
     public boolean getEnableThrustClient() {
