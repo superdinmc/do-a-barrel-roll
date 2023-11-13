@@ -115,6 +115,6 @@ public class DoABarrelRollClient {
     }
 
     public static boolean isConnectedToRealms() {
-        return false;
+        return false; // We are not connected to realms.
     }
 }
