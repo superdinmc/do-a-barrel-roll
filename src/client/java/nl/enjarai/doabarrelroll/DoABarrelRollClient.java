@@ -37,23 +37,6 @@ public class DoABarrelRollClient {
     public static final RollGroup FALL_FLYING_GROUP = RollGroup.of(DoABarrelRoll.id("fall_flying"));
     public static double throttle = 0;
 
-    @Nullable
-    private static final Method isRealmsMethod;
-
-    static {
-        Method method;
-        var resolver = FabricLoader.getInstance().getMappingResolver();
-        var className = resolver.mapClassName("intermediary", "class_8599");
-        var methodName = resolver.mapMethodName("intermediary", className, "method_52811", "()Z");
-
-        try {
-            method = ServerInfo.class.getMethod(methodName);
-        } catch (NoSuchMethodException e) {
-            method = null;
-        }
-        isRealmsMethod = method;
-    }
-
     public static void init() {
         FALL_FLYING_GROUP.trueIf(DoABarrelRollClient::isFallFlying);
 
@@ -138,17 +121,6 @@ public class DoABarrelRollClient {
     }
 
     public static boolean isConnectedToRealms() {
-        if (isRealmsMethod == null) return false;
-
-        var serverInfo = MinecraftClient.getInstance().getCurrentServerEntry();
-        if (serverInfo == null) return false;
-
-        // We don't have to care about supporting 1.20 for realms, as realms servers are always on the latest version.
-        // But I also want to keep the project on 1.20 as a base for now, therefore the reflection jank.
-        try {
-            return (boolean) isRealmsMethod.invoke(serverInfo);
-        } catch (ReflectiveOperationException | NullPointerException | ClassCastException f) {
-            return false;
-        }
+        return false; // We are not connected to realms.
     }
 }
