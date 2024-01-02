@@ -1,0 +1,49 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'maven-publish'
+    id 'dev.architectury.loom'
+}
+
+base {
+    archivesName = "${mod_name}-common-${minecraft_version}"
+}
+
+loom {
+    splitEnvironmentSourceSets()
+
+    mods {
+        "do_a_barrel_roll" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings "net.fabricmc:yarn:${yarn_version}:v2"
+
+    modCompileOnly "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    modCompileOnly "net.fabricmc:fabric-loader:${fabric_loader_version}"
+
+    modImplementation("dev.isxander.yacl:yet-another-config-lib-common:${project.yacl_version}") {
+        exclude group: "net.fabricmc"
+    }
+
+    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:${project.mixin_squared_version}"))
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId base.archivesName.get()
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "file://" + System.getenv("local_maven")
+        }
+    }
+}

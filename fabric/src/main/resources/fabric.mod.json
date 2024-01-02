@@ -1,0 +1,73 @@
+{
+    "schemaVersion": 1,
+    "id": "${mod_id}",
+    "version": "${mod_version}",
+    "name": "${mod_name}",
+    "description": "${mod_description}",
+    "authors": [
+        "${mod_author}"
+    ],
+    "contributors": [
+        "${mod_credits}"
+    ],
+    "contact": {
+        "homepage": "${mod_url}",
+        "sources": "${mod_sources_url}",
+        "issues": "${mod_issue_tracker_url}"
+    },
+    "license": "${mod_license}",
+    "icon": "assets/${mod_id}/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "client": [
+            "nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
+        ],
+        "main": [
+            "nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabric"
+        ],
+        "modmenu": [
+            "nl.enjarai.doabarrelroll.compat.modmenu.ModMenuIntegration"
+        ],
+        "cicada": [
+            "nl.enjarai.doabarrelroll.DoABarrelRoll"
+        ],
+        "controlify": [
+            "nl.enjarai.doabarrelroll.compat.controlify.ControlifyCompat"
+        ],
+        "mixinsquared": [
+            "nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabric"
+        ]
+    },
+    "mixins": [
+        "${mod_id}.mixins.json",
+        "${mod_id}.fabric.mixins.json"
+    ],
+    "accessWidener": "${mod_id}.accesswidener",
+
+    "suggests": {
+        "yet_another_config_lib_v3": ">=3.1.0"
+    },
+    "depends": {
+        "fabricloader": ">=0.15",
+        "fabric": "*",
+        "minecraft": "${fabric_minecraft_version_range}",
+        "java": ">=17",
+        "cicada": "*"
+    },
+    "breaks": {
+        "optifabric": "*"
+    },
+
+    "custom": {
+        "modmenu": {
+            "links": {
+                "modmenu.discord": "https://discord.gg/WcYsDDQtyR"
+            }
+        },
+        "projects": {
+            "modrinth": "6FtRfnLg",
+            "curseforge": 663658
+        }
+    }
+}
+  
