@@ -56,11 +56,10 @@ dependencies {
 
     compileOnly project(":common")
 
-    modImplementation("dev.isxander.yacl:yet-another-config-lib-forge:${project.yacl_version}") {
-        exclude group: "net.fabricmc"
-    }
+    modImplementation("dev.isxander.yacl:yet-another-config-lib-forge:${project.yacl_version}")
 
-    implementation(include("com.github.bawnorton.mixinsquared:mixinsquared-forge:${project.mixin_squared_version}"))
+    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${project.mixin_extras_version}"))
+    implementation(include("io.github.llamalad7:mixinextras-forge:${project.mixin_extras_version}"))
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -72,6 +71,9 @@ tasks.withType(Javadoc).configureEach {
 tasks.named("sourcesJar", Jar) {
     from(project(":common").sourceSets.main.allSource)
 }
+
+// Prevent forge from shouting at me for not having javadocs everywhere
+javadoc.enabled = false
 
 processResources {
     from project(":common").sourceSets.main.resources

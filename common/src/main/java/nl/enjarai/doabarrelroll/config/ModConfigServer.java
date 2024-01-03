@@ -2,12 +2,12 @@ package nl.enjarai.doabarrelroll.config;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.net.SyncableConfig;
 import nl.enjarai.doabarrelroll.net.ValidatableConfig;
+import nl.enjarai.doabarrelroll.platform.Services;
 
 public record ModConfigServer(boolean allowThrusting,
                               boolean forceEnabled,
@@ -37,11 +37,12 @@ public record ModConfigServer(boolean allowThrusting,
 
     @Override
     public LimitedModConfigServer getLimited(ServerPlayNetworkHandler handler) {
-        return Permissions.check(handler.getPlayer(), DoABarrelRoll.MODID + ".ignore_config", 2) ? LimitedModConfigServer.OPERATOR : this;
+        return Services.PLATFORM.checkPermission(handler, DoABarrelRoll.MODID + ".ignore_config", 2)
+                ? LimitedModConfigServer.OPERATOR : this;
     }
 
     public static boolean canModify(ServerPlayNetworkHandler net) {
-        return Permissions.check(net.getPlayer(), DoABarrelRoll.MODID + ".configure", 3);
+        return Services.PLATFORM.checkPermission(net, DoABarrelRoll.MODID + ".configure", 3);
     }
 
     @Override

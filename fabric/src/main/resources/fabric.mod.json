@@ -29,18 +29,20 @@
             "nl.enjarai.doabarrelroll.compat.modmenu.ModMenuIntegration"
         ],
         "cicada": [
-            "nl.enjarai.doabarrelroll.DoABarrelRoll"
+            "nl.enjarai.doabarrelroll.CicadaInitializer"
         ],
         "controlify": [
             "nl.enjarai.doabarrelroll.compat.controlify.ControlifyCompat"
         ],
         "mixinsquared": [
-            "nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabric"
+            "nl.enjarai.doabarrelroll.DABRMixinCanceller"
         ]
     },
     "mixins": [
         "${mod_id}.mixins.json",
-        "${mod_id}.fabric.mixins.json"
+        "${mod_id}.fabric.mixins.json",
+        "${mod_id}.compat.cameraoverhaul.mixins.json",
+        "${mod_id}.compat.controlify.mixins.json"
     ],
     "accessWidener": "${mod_id}.accesswidener",
 
