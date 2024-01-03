@@ -37,7 +37,7 @@ public class DoABarrelRoll implements CicadaEntrypoint {
     @Override
     public void registerConversations(ConversationManager conversationManager) {
         conversationManager.registerSource(
-                JsonSource.fromUrl("https://raw.githubusercontent.com/enjarai/do-a-barrel-roll/1.20.2/dev/src/main/resources/cicada/do-a-barrel-roll/conversations.json")
+                JsonSource.fromUrl("https://raw.githubusercontent.com/enjarai/do-a-barrel-roll/1.20.4/dev/src/main/resources/cicada/do-a-barrel-roll/conversations.json")
                         .or(JsonSource.fromResource("cicada/do-a-barrel-roll/conversations.json")),
                 LOGGER::info
         );

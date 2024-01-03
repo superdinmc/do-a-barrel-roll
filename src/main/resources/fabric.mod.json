@@ -62,7 +62,8 @@
 	"depends": {
 		"minecraft": ">=1.20.3- <=1.20.4",
 		"fabric-api": "*",
-		"cicada": "*"
+		"cicada": "*",
+		"fabricloader": ">=0.15"
 	},
 	"breaks": {
 		"optifabric": "*"
