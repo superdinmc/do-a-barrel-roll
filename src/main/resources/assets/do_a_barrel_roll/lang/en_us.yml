@@ -105,7 +105,7 @@ config.do_a_barrel_roll:
     roll: Roll
   controller:
     .: Controller Sensitivity
-    description: Only applicable when Controlify is installed.
+    description: Only applicable when Controlify or MidnightControls is installed.
     pitch: Pitch
     yaw: Yaw
     roll: Roll
