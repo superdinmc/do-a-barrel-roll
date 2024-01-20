@@ -52,6 +52,10 @@
 		{
 			"config": "do-a-barrel-roll.compat.controlify.mixins.json",
 			"environment": "client"
+		},
+		{
+			"config": "do-a-barrel-roll.compat.midnightcontrols.mixins.json",
+			"environment": "client"
 		}
 	],
 	"accessWidener": "do-a-barrel-roll.accesswidener",
