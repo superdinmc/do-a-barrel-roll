@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 public abstract class DebugHudMixin {
     @Shadow @Final private MinecraftClient client;
 
-    @ModifyArgs(
+    @ModifyArgs( // TODO froge
             method = "getLeftText",
             at = @At(
                     value = "INVOKE",

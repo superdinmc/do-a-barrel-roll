@@ -24,7 +24,7 @@ displayName = "${mod_name}" #mandatory
 # A URL for the "homepage" for this mod, displayed in the mod UI
 #displayURL="${mod_url}" #optional (displayed in the mod UI)
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile = "multiloader.png" #optional
+logoFile = "assets/do_a_barrel_roll/icon.png" #optional
 # A text field displayed in the mod UI
 credits = "${mod_credits}" #optional
 # A text field displayed in the mod UI

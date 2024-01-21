@@ -6,7 +6,7 @@ plugins {
 }
 
 base {
-    archivesName = "${mod_name}-forge-${minecraft_version}"
+    archivesName = "${mod_id}-forge"
 }
 
 loom {
@@ -56,7 +56,7 @@ dependencies {
 
     compileOnly project(":common")
 
-    modImplementation("dev.isxander.yacl:yet-another-config-lib-forge:${project.yacl_version}")
+    modCompileOnly("dev.isxander.yacl:yet-another-config-lib-forge:${project.yacl_version}")
 
     implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${project.mixin_extras_version}"))
     implementation(include("io.github.llamalad7:mixinextras-forge:${project.mixin_extras_version}"))
