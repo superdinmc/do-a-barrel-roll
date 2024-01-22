@@ -9,9 +9,5 @@ public class DoABarrelRollFabric implements ModInitializer {
     public void onInitialize() {
         // Init server and client common code.
         DoABarrelRoll.init();
-
-        // Register server-side listeners for config syncing, this is done on
-        // both client and server to ensure everything works in LAN worlds as well.
-        HandshakeServerFabric.init();
     }
 }

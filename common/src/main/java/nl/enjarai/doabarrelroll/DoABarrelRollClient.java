@@ -1,6 +1,7 @@
 package nl.enjarai.doabarrelroll;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -15,11 +16,13 @@ import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
 import nl.enjarai.doabarrelroll.config.LimitedModConfigServer;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.ModConfigServer;
+import nl.enjarai.doabarrelroll.fabric.net.HandshakeClientFabric;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.net.HandshakeClient;
 import nl.enjarai.doabarrelroll.render.HorizonLineWidget;
 import nl.enjarai.doabarrelroll.render.MomentumCrosshairWidget;
 import nl.enjarai.doabarrelroll.util.MixinHooks;
+import nl.enjarai.doabarrelroll.util.StarFoxUtil;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2d;
 
@@ -68,6 +71,21 @@ public class DoABarrelRollClient {
         });
 
         ClientEvents.SERVER_CONFIG_UPDATE.register(ModConfig.INSTANCE::notifyPlayerOfServerConfig);
+
+        ModConfig.touch();
+        HandshakeClientFabric.init();
+
+        // Register keybindings on fabric
+        ModKeybindings.FABRIC.forEach(KeyBindingHelper::registerKeyBinding);
+
+        // Init barrel rollery.
+        StarFoxUtil.register();
+
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            ModKeybindings.clientTick(client);
+
+            StarFoxUtil.clientTick(client);
+        });
     }
 
     public static void onRenderCrosshair(DrawContext context, float tickDelta, int scaledWidth, int scaledHeight) {

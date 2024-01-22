@@ -92,3 +92,56 @@ publishing {
         }
     }
 }
+
+publishMods {
+    file = remapJar.archiveFile
+    displayName = "${property('mod_version')} for Forge ${property('minecraft_version')}"
+    version = "${project.version}-forge"
+    changelog = getRootProject().file("CHANGELOG.md").text
+    type = STABLE
+    modLoaders.add("forge")
+    modLoaders.add("neoforge")
+
+    def min = property('publish_target_min')
+    def max = property('publish_target_max')
+
+    modrinth {
+        projectId = property('mod_modrinth')
+        accessToken = providers.gradleProperty('enjaraiModrinthToken').get()
+
+        if (min == max) {
+            minecraftVersions.add(min)
+        } else {
+            minecraftVersionRange {
+                start = min
+                end = max
+            }
+        }
+
+        requires { slug = "forgified-fabric-api" }
+    }
+
+    curseforge {
+        projectId = property('mod_curseforge')
+        accessToken = providers.gradleProperty('enjaraiCurseforgeToken').get()
+
+        if (min == max) {
+            minecraftVersions.add(min)
+        } else {
+            minecraftVersionRange {
+                start = min
+                end = max
+            }
+        }
+
+        requires { slug = "forgified-fabric-api" }
+    }
+
+    github {
+        repository = property('mod_github')
+        accessToken = providers.gradleProperty('enjaraiGithubToken').get()
+
+        commitish = "1.20/oh-boy" // TODO
+        tagName = "${project.version}-forge"
+    }
+}

@@ -31,7 +31,7 @@ public class StarFoxUtil {
     private static int barrelRollTimer = 0;
 
     public static void register() {
-        Registry.register(Registries.SOUND_EVENT, barrelRollSoundId, barrelRollSound);
+//        Registry.register(Registries.SOUND_EVENT, barrelRollSoundId, barrelRollSound);
 
         StarFox64Events.DOES_A_BARREL_ROLL.register(StarFoxUtil::playBarrelRollSound);
         StarFox64Events.DOES_A_BARREL_ROLL.register(player -> barrelRollTimer = 30);

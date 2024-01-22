@@ -31,7 +31,7 @@ public class ModPermissions {
                 PermissionAPI.getPermission(player, node, DEFAULT_PERMISSION_LEVEL_CONTEXT.createContext(defaultPermissionLevel));
             }
         }
-        return false;
+        return player.hasPermissionLevel(defaultPermissionLevel);
     }
 
     private static boolean defaultResolve(@Nullable ServerPlayerEntity player, UUID playerUUID, PermissionDynamicContext<?>... context) {
@@ -44,4 +44,13 @@ public class ModPermissions {
         }
         return false;
     }
+
+//    private static PermissionNode.PermissionResolver<Boolean> defaultResolve(int defaultPermissionLevel) {
+//        return (player, playerUUID, context) -> {
+//            if (player != null) {
+//                return player.hasPermissionLevel(defaultPermissionLevel);
+//            }
+//            return false;
+//        };
+//    }
 }

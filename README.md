@@ -7,7 +7,7 @@
 [![Modrinth](https://img.shields.io/modrinth/dt/do-a-barrel-roll)](https://modrinth.com/mod/do-a-barrel-roll)
 [![CurseForge](https://cf.way2muchnoise.eu/full_663658_downloads.svg)](https://curseforge.com/minecraft/mc-mods/do-a-barrel-roll)
 
-Do a Barrel Roll is a lightweight, fully clientside mod for Fabric that changes 
+Do a Barrel Roll is a lightweight, fully clientside mod that changes 
 elytra flight to be more fun and semi-realistic.
 It achieves this by redesigning movement with a 
 completely unlocked camera orientation in mind, 
@@ -51,10 +51,6 @@ All the following configurations are valid:
 ![](img/do-a-barrel-roll.gif)
 
 ## Disclaimers
-
-The Forge version of this mod will no longer receive any updates.
-This has to do with my personal preferences and lack of knowledge about Forge,
-due to which, maintaining a port was severely limiting what I could do with the mod.
 
 This mod does not actually modify the flight physics themselves, 
 so in most cases it shouldn't trigger anticheat. 

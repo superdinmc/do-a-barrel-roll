@@ -46,7 +46,8 @@ public abstract class InGameHudMixin {
             method = "render",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F"
+                    target = "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F",
+                    ordinal = 0
             )
     )
     private void doABarrelRoll$renderPeppy(DrawContext context, float tickDelta, CallbackInfo ci) {

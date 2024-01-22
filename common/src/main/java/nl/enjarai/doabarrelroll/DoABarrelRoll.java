@@ -4,6 +4,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import nl.enjarai.doabarrelroll.api.event.ServerEvents;
 import nl.enjarai.doabarrelroll.config.ModConfigServer;
+import nl.enjarai.doabarrelroll.fabric.net.HandshakeServerFabric;
 import nl.enjarai.doabarrelroll.net.HandshakeServer;
 import nl.enjarai.doabarrelroll.net.ServerConfigHolder;
 import nl.enjarai.doabarrelroll.platform.Services;
@@ -29,5 +30,9 @@ public class DoABarrelRoll {
         CONFIG_HOLDER = new ServerConfigHolder<>(configFile,
                 ModConfigServer.CODEC, ModConfigServer.DEFAULT, ServerEvents::updateServerConfig);
         HANDSHAKE_SERVER = new HandshakeServer(CONFIG_HOLDER, player -> !ModConfigServer.canModify(player));
+
+        // Register server-side listeners for config syncing, this is done on
+        // both client and server to ensure everything works in LAN worlds as well.
+        HandshakeServerFabric.init();
     }
 }
