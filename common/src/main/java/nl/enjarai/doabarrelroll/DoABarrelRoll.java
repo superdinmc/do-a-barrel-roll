@@ -1,14 +1,21 @@
 package nl.enjarai.doabarrelroll;
 
-import net.fabricmc.loader.api.FabricLoader;
+import io.netty.buffer.Unpooled;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 import nl.enjarai.doabarrelroll.api.event.ServerEvents;
 import nl.enjarai.doabarrelroll.config.ModConfigServer;
-import nl.enjarai.doabarrelroll.fabric.net.HandshakeServerFabric;
 import nl.enjarai.doabarrelroll.net.HandshakeServer;
+import nl.enjarai.doabarrelroll.net.RollSyncServer;
 import nl.enjarai.doabarrelroll.net.ServerConfigHolder;
+import nl.enjarai.doabarrelroll.net.register.HandshakeServerRegister;
+import nl.enjarai.doabarrelroll.net.register.ServerConfigUpdaterRegister;
 import nl.enjarai.doabarrelroll.platform.Services;
 import org.slf4j.Logger;
+
+import java.nio.file.Path;
 
 public class DoABarrelRoll {
     public static final String MODID = "do_a_barrel_roll";
@@ -25,7 +32,9 @@ public class DoABarrelRoll {
     }
 
     public static void init() {
-        var configFile = FabricLoader.getInstance().getConfigDir().resolve(DoABarrelRoll.MODID + "-server.json");
+        var configFile = Path.of("config").resolve(DoABarrelRoll.MODID + "-server.json");
+
+        Services.PLATFORM.registerNetworkChannels(HANDSHAKE_CHANNEL, SERVER_CONFIG_UPDATE_CHANNEL, ROLL_CHANNEL);
 
         CONFIG_HOLDER = new ServerConfigHolder<>(configFile,
                 ModConfigServer.CODEC, ModConfigServer.DEFAULT, ServerEvents::updateServerConfig);
@@ -33,6 +42,20 @@ public class DoABarrelRoll {
 
         // Register server-side listeners for config syncing, this is done on
         // both client and server to ensure everything works in LAN worlds as well.
-        HandshakeServerFabric.init();
+        RollSyncServer.init();
+        HandshakeServerRegister.init();
+        ServerConfigUpdaterRegister.init();
+    }
+
+    public static void serverTick(MinecraftServer server) {
+        HANDSHAKE_SERVER.tick(server);
+    }
+
+    public static void playerDisconnected(ServerPlayNetworkHandler handler) {
+        HANDSHAKE_SERVER.playerDisconnected(handler);
+    }
+
+    public static PacketByteBuf createBuf() {
+        return new PacketByteBuf(Unpooled.buffer());
     }
 }

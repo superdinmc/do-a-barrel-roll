@@ -1,7 +1,8 @@
 package nl.enjarai.doabarrelroll.platform;
 
-import nl.enjarai.doabarrelroll.DoABarrelRoll;
+import nl.enjarai.doabarrelroll.platform.services.ClientNetworkUtils;
 import nl.enjarai.doabarrelroll.platform.services.PlatformHelper;
+import nl.enjarai.doabarrelroll.platform.services.ServerNetworkUtils;
 
 import java.util.ServiceLoader;
 
@@ -13,6 +14,8 @@ public class Services {
     // For example this can be used to check if the code is running on Forge vs Fabric, or to ask the modloader if another
     // mod is loaded.
     public static final PlatformHelper PLATFORM = load(PlatformHelper.class);
+    public static final ServerNetworkUtils SERVER_NET = load(ServerNetworkUtils.class);
+    public static final ClientNetworkUtils CLIENT_NET = load(ClientNetworkUtils.class);
 
     // This code is used to load a service for the current environment. Your implementation of the service must be defined
     // manually by including a text file in META-INF/services named with the fully qualified class name of the service.

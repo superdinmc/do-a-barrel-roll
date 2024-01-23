@@ -1,27 +1,15 @@
 package nl.enjarai.doabarrelroll.compat;
 
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
+import nl.enjarai.doabarrelroll.platform.Services;
 
 public class Compat {
-    public static final Version YACL_MIN_VERSION;
-
-    static {
-        try {
-            YACL_MIN_VERSION = Version.parse("3.1.0");
-        } catch (VersionParsingException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    public static final String YACL_MIN_VERSION = "3.1.0";
 
     public static boolean isYACLLoaded() {
-         return FabricLoader.getInstance().isModLoaded("yet_another_config_lib_v3");
+         return Services.PLATFORM.checkModLoaded("yet_another_config_lib_v3");
     }
 
     public static boolean isYACLUpToDate() {
-        return FabricLoader.getInstance().getModContainer("yet_another_config_lib_v3")
-                .filter(modContainer -> modContainer.getMetadata().getVersion().compareTo(YACL_MIN_VERSION) >= 0)
-                .isPresent();
+        return Services.PLATFORM.isModVersionAtLeast("yet_another_config_lib_v3", YACL_MIN_VERSION);
     }
 }

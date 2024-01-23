@@ -82,7 +82,7 @@ public class ModKeybindings {
             "category.do_a_barrel_roll.do_a_barrel_roll.movement"
     );
 
-    public static final List<KeyBinding> FABRIC = List.of(
+    public static final List<KeyBinding> ALL = List.of(
             TOGGLE_ENABLED,
             TOGGLE_THRUST,
             OPEN_CONFIG,

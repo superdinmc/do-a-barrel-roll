@@ -52,8 +52,6 @@ dependencies {
     forge "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     mappings "net.fabricmc:yarn:${yarn_version}:v2"
 
-    modImplementation "dev.su5ed.sinytra.fabric-api:fabric-api:${forge_fabric_version}"
-
     compileOnly project(":common")
 
     modCompileOnly("dev.isxander.yacl:yet-another-config-lib-forge:${project.yacl_version}")

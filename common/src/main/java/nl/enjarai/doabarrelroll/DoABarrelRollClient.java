@@ -1,11 +1,7 @@
 package nl.enjarai.doabarrelroll;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.util.SmoothUtil;
 import nl.enjarai.doabarrelroll.api.RollEntity;
 import nl.enjarai.doabarrelroll.api.RollMouse;
@@ -16,17 +12,15 @@ import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
 import nl.enjarai.doabarrelroll.config.LimitedModConfigServer;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.ModConfigServer;
-import nl.enjarai.doabarrelroll.fabric.net.HandshakeClientFabric;
+import nl.enjarai.doabarrelroll.net.register.HandshakeClientRegister;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
+import nl.enjarai.doabarrelroll.impl.key.InputContextImpl;
 import nl.enjarai.doabarrelroll.net.HandshakeClient;
 import nl.enjarai.doabarrelroll.render.HorizonLineWidget;
 import nl.enjarai.doabarrelroll.render.MomentumCrosshairWidget;
 import nl.enjarai.doabarrelroll.util.MixinHooks;
 import nl.enjarai.doabarrelroll.util.StarFoxUtil;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2d;
-
-import java.lang.reflect.Method;
 
 public class DoABarrelRollClient {
     public static final HandshakeClient<LimitedModConfigServer, ModConfigServer> HANDSHAKE_CLIENT = new HandshakeClient<>(
@@ -64,28 +58,29 @@ public class DoABarrelRollClient {
                 .useModifier(RotationModifiers::banking, ModConfig.INSTANCE::getEnableBanking),
                 1000, FALL_FLYING_GROUP);
 
-        ClientTickEvents.END_CLIENT_TICK.register((client) -> {
-            if (!isFallFlying()) {
-                clearValues();
-            }
-        });
-
         ClientEvents.SERVER_CONFIG_UPDATE.register(ModConfig.INSTANCE::notifyPlayerOfServerConfig);
 
         ModConfig.touch();
-        HandshakeClientFabric.init();
-
-        // Register keybindings on fabric
-        ModKeybindings.FABRIC.forEach(KeyBindingHelper::registerKeyBinding);
+        HandshakeClientRegister.init();
 
         // Init barrel rollery.
         StarFoxUtil.register();
+    }
 
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            ModKeybindings.clientTick(client);
+    public static void clientTick(MinecraftClient client) {
+        InputContextImpl.getContexts().forEach(InputContextImpl::tick);
 
-            StarFoxUtil.clientTick(client);
-        });
+        if (!isFallFlying()) {
+            clearValues();
+        }
+
+        ModKeybindings.clientTick(client);
+
+        StarFoxUtil.clientTick(client);
+    }
+
+    public static void clientDisconnect() {
+        DoABarrelRollClient.HANDSHAKE_CLIENT.reset();
     }
 
     public static void onRenderCrosshair(DrawContext context, float tickDelta, int scaledWidth, int scaledHeight) {

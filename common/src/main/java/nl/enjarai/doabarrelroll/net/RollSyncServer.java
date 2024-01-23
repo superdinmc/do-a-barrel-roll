@@ -1,18 +1,15 @@
 package nl.enjarai.doabarrelroll.net;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.api.RollEntity;
+import nl.enjarai.doabarrelroll.platform.Services;
 
 public class RollSyncServer {
-    public static void startListening(ServerPlayNetworkHandler handler) {
-        ServerPlayNetworking.registerReceiver(handler, DoABarrelRoll.ROLL_CHANNEL, (server, player, handler1, buf, responseSender) -> {
-            var rollPlayer = (RollEntity) player;
+    public static void init() {
+        Services.SERVER_NET.registerListener(DoABarrelRoll.ROLL_CHANNEL, (handler, buf, responseSender) -> {
+            var rollPlayer = (RollEntity) handler.getPlayer();
 
             var isRolling = buf.readBoolean();
             var roll = buf.readFloat();
@@ -27,14 +24,15 @@ public class RollSyncServer {
         var isRolling = rollEntity.doABarrelRoll$isRolling();
         var roll = rollEntity.doABarrelRoll$getRoll();
 
-        var buf = PacketByteBufs.create();
+        var buf = DoABarrelRoll.createBuf();
         buf.writeInt(entity.getId());
         buf.writeBoolean(isRolling);
         buf.writeFloat(roll);
 
-        PlayerLookup.tracking(entity).stream()
-                .filter(player -> DoABarrelRoll.HANDSHAKE_SERVER.getHandshakeState(player).state == HandshakeServer.HandshakeState.ACCEPTED)
-                .filter(player -> player != entity)
-                .forEach(player -> ServerPlayNetworking.send(player, DoABarrelRoll.ROLL_CHANNEL, buf));
+        Services.SERVER_NET.sendPacketsToTracking(
+                entity,
+                player -> DoABarrelRoll.HANDSHAKE_SERVER.getHandshakeState(player).state == HandshakeServer.HandshakeState.ACCEPTED,
+                DoABarrelRoll.ROLL_CHANNEL, buf
+        );
     }
 }

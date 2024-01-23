@@ -1,10 +1,10 @@
 package nl.enjarai.doabarrelroll.compat.yacl;
 
 import dev.isxander.yacl3.api.*;
-import dev.isxander.yacl3.api.controller.*;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.loader.api.FabricLoader;
+import dev.isxander.yacl3.api.controller.DoubleSliderControllerBuilder;
+import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
+import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
+import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -21,6 +21,7 @@ import nl.enjarai.doabarrelroll.api.event.ClientEvents;
 import nl.enjarai.doabarrelroll.config.*;
 import nl.enjarai.doabarrelroll.math.ExpressionParser;
 import nl.enjarai.doabarrelroll.net.ServerConfigUpdateClient;
+import nl.enjarai.doabarrelroll.platform.Services;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class YACLImplementation {
                         .option(allowDisabled.add(getBooleanOption("general", "mod_enabled", false, false)
                                 .description(OptionDescription.createBuilder()
                                         .text(Text.translatable("config.do_a_barrel_roll.general.mod_enabled.description",
-                                                KeyBindingHelper.getBoundKeyOf(ModKeybindings.TOGGLE_ENABLED).getLocalizedText()))
+                                                ModKeybindings.TOGGLE_ENABLED.getBoundKeyLocalizedText()))
                                         .build())
                                 .binding(true, () -> ModConfig.INSTANCE.getModEnabled(), value -> ModConfig.INSTANCE.setModEnabled(value))))
                         .group(OptionGroup.createBuilder()
@@ -155,7 +156,7 @@ public class YACLImplementation {
                                 .build())
                         .group(OptionGroup.createBuilder()
                                 .name(getText("controller"))
-                                .collapsed(!(FabricLoader.getInstance().isModLoaded("controlify") || FabricLoader.getInstance().isModLoaded("midnightcontrols")))
+                                .collapsed(!(Services.PLATFORM.checkModLoaded("controlify") || Services.PLATFORM.checkModLoaded("midnightcontrols")))
                                 .description(OptionDescription.createBuilder()
                                         .text(getText("controller.description"))
                                         .build())
@@ -301,7 +302,7 @@ public class YACLImplementation {
                     // Add a listener for this screen to update elements when the server config changes.
                     ClientEvents.ServerConfigUpdateEvent listener = configListener::accept;
                     ClientEvents.SERVER_CONFIG_UPDATE.register(listener);
-                    ScreenEvents.remove(screen).register(screen1 -> ClientEvents.SERVER_CONFIG_UPDATE.unregister(listener));
+                    Services.PLATFORM.notMyProblem(screen, () -> ClientEvents.SERVER_CONFIG_UPDATE.unregister(listener));
                 })
                 .build()
                 .generateScreen(parent);

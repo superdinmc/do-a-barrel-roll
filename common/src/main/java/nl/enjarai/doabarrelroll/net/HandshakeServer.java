@@ -154,11 +154,12 @@ public class HandshakeServer {
                     info.state = HandshakeState.FAILED;
                 }
                 info.protocolVersion = protocolVersion;
-            } catch (IndexOutOfBoundsException e) {
+            } catch (Exception e) {
                 DoABarrelRoll.LOGGER.warn(
                         "Client of {} sent invalid config reply.",
                         player.getName().getString()
                 );
+                DoABarrelRoll.LOGGER.warn("Error parsing config reply:", e);
                 info.state = HandshakeState.FAILED;
             }
         }

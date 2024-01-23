@@ -1,11 +1,11 @@
 package nl.enjarai.doabarrelroll.net;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
 import nl.enjarai.doabarrelroll.api.RollEntity;
+import nl.enjarai.doabarrelroll.platform.Services;
 
 public class RollSyncClient {
     public static void sendUpdate(RollEntity entity) {
@@ -13,16 +13,17 @@ public class RollSyncClient {
             boolean rolling = entity.doABarrelRoll$isRolling();
             float roll = entity.doABarrelRoll$getRoll();
 
-            var buf = PacketByteBufs.create();
+            var buf = DoABarrelRoll.createBuf();
             buf.writeBoolean(rolling);
             buf.writeFloat(roll);
 
-            ClientPlayNetworking.send(DoABarrelRoll.ROLL_CHANNEL, buf);
+            Services.CLIENT_NET.sendPacket(DoABarrelRoll.ROLL_CHANNEL, buf);
         }
     }
 
     public static void startListening() {
-        ClientPlayNetworking.registerReceiver(DoABarrelRoll.ROLL_CHANNEL, (client, handler1, buf, responseSender) -> {
+        Services.CLIENT_NET.registerListener(DoABarrelRoll.ROLL_CHANNEL, (buf, responseSender) -> {
+            var client = MinecraftClient.getInstance();
             if (client.world == null) {
                 return;
             }

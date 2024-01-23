@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -118,7 +117,7 @@ public class ServerConfigHolder<T extends ValidatableConfig> {
                 data = codec.encodeStart(JsonOps.INSTANCE, newConfig)
                         .getOrThrow(false, DoABarrelRoll.LOGGER::error).toString();
 
-                var res = PacketByteBufs.create();
+                var res = DoABarrelRoll.createBuf();
                 res.writeInt(1);
                 res.writeBoolean(true);
                 res.writeString(data);
@@ -148,7 +147,7 @@ public class ServerConfigHolder<T extends ValidatableConfig> {
     }
 
     private PacketByteBuf getFailureBuf() {
-        var res = PacketByteBufs.create();
+        var res = DoABarrelRoll.createBuf();
         res.writeInt(1);
         res.writeBoolean(false);
         return res;

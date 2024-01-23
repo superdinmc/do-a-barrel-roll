@@ -3,7 +3,6 @@ package nl.enjarai.doabarrelroll.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
@@ -24,8 +23,7 @@ public class ModConfig {
             .setPrettyPrinting()
             .create();
     public static final ModConfig DEFAULT = new ModConfig();
-    public static final Path CONFIG_FILE = FabricLoader.getInstance()
-            .getConfigDir().resolve("do_a_barrel_roll-client.json");
+    public static final Path CONFIG_FILE = Path.of("config").resolve("do_a_barrel_roll-client.json");
     public static ModConfig INSTANCE = loadConfigFile(CONFIG_FILE.toFile());
 
     public static void touch() {

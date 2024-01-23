@@ -1,18 +1,17 @@
 package nl.enjarai.doabarrelroll.net;
 
 import com.mojang.serialization.JsonOps;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.network.PacketByteBuf;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.config.ModConfigServer;
+import nl.enjarai.doabarrelroll.platform.Services;
 import nl.enjarai.doabarrelroll.util.ToastUtil;
 
 public class ServerConfigUpdateClient {
     private static boolean waitingForAck = false;
 
     public static void sendUpdate(ModConfigServer config) {
-        var buf = PacketByteBufs.create();
+        var buf = DoABarrelRoll.createBuf();
 
         // Protocol version
         buf.writeInt(1);
@@ -26,7 +25,7 @@ public class ServerConfigUpdateClient {
             DoABarrelRoll.LOGGER.warn("Failed to send server config update to server: ", e);
         }
 
-        ClientPlayNetworking.send(DoABarrelRoll.SERVER_CONFIG_UPDATE_CHANNEL, buf);
+        Services.CLIENT_NET.sendPacket(DoABarrelRoll.SERVER_CONFIG_UPDATE_CHANNEL, buf);
         waitingForAck = true;
     }
 

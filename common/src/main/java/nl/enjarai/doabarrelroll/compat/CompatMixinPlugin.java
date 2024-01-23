@@ -1,6 +1,6 @@
 package nl.enjarai.doabarrelroll.compat;
 
-import net.fabricmc.loader.api.FabricLoader;
+import nl.enjarai.doabarrelroll.platform.Services;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -27,7 +27,7 @@ public interface CompatMixinPlugin extends IMixinConfigPlugin {
     @Override
     default boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         return getRequiredMods().stream()
-                .allMatch((modId) -> FabricLoader.getInstance().isModLoaded(modId));
+                .allMatch(Services.PLATFORM::checkModLoaded);
     }
 
     @Override

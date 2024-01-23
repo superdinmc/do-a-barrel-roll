@@ -20,10 +20,10 @@
     "environment": "*",
     "entrypoints": {
         "client": [
-            "nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabricClient"
+          "nl.enjarai.doabarrelroll.DoABarrelRollFabricClient"
         ],
         "main": [
-            "nl.enjarai.doabarrelroll.fabric.DoABarrelRollFabric"
+          "nl.enjarai.doabarrelroll.DoABarrelRollFabric"
         ],
         "modmenu": [
             "nl.enjarai.doabarrelroll.compat.modmenu.ModMenuIntegration"

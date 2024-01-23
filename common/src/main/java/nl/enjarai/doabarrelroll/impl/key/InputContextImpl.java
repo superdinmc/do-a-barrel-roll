@@ -1,7 +1,6 @@
 package nl.enjarai.doabarrelroll.impl.key;
 
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
@@ -15,9 +14,9 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public final class InputContextImpl implements InputContext {
-    private static final List<InputContext> CONTEXTS = new ReferenceArrayList<>();
+    private static final List<InputContextImpl> CONTEXTS = new ReferenceArrayList<>();
 
-    public static List<InputContext> getContexts() {
+    public static List<InputContextImpl> getContexts() {
         return CONTEXTS;
     }
 
@@ -41,7 +40,6 @@ public final class InputContextImpl implements InputContext {
         this.id = id;
         this.activeCondition = activeCondition;
         CONTEXTS.add(this);
-        ClientTickEvents.START_CLIENT_TICK.register(client -> tick());
     }
 
     public void tick() {

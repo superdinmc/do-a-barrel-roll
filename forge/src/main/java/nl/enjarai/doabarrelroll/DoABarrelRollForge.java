@@ -1,19 +1,24 @@
 package nl.enjarai.doabarrelroll;
 
+import net.minecraft.util.Identifier;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.event.EventNetworkChannel;
+import net.minecraftforge.network.simple.SimpleChannel;
 import nl.enjarai.doabarrelroll.config.ModConfigScreen;
-import nl.enjarai.doabarrelroll.fabric.net.ServerConfigUpdaterFabric;
-import nl.enjarai.doabarrelroll.net.HandshakeServer;
-import nl.enjarai.doabarrelroll.net.RollSyncServer;
+import nl.enjarai.doabarrelroll.platform.services.ClientNetworkUtils;
+import nl.enjarai.doabarrelroll.platform.services.ServerNetworkUtils;
+
+import java.util.HashMap;
+import java.util.List;
 
 @Mod(DoABarrelRoll.MODID)
 public class DoABarrelRollForge {
+    public static final HashMap<Identifier, SimpleChannel> NETWORK_CHANNELS = new HashMap<>();
+    public static final HashMap<Identifier, List<ClientNetworkUtils.PacketListener>> CLIENT_LISTENERS = new HashMap<>();
+    public static final HashMap<Identifier, List<ServerNetworkUtils.PacketListener>> SERVER_LISTENERS = new HashMap<>();
+
 //    public static final EventNetworkChannel HANDSHAKE_CHANNEL = NetworkRegistry.newEventChannel(DoABarrelRoll.HANDSHAKE_CHANNEL, () -> "", s -> true, s -> true);
 //    public static final EventNetworkChannel ROLL_CHANNEL = NetworkRegistry.newEventChannel(DoABarrelRoll.ROLL_CHANNEL, () -> "", s -> true, s -> true);
 
@@ -40,7 +45,7 @@ public class DoABarrelRollForge {
 //        var reply = DoABarrelRoll.HANDSHAKE_SERVER.clientReplied(event.getSource().get().getSender().networkHandler, buf);
 //        if (reply == HandshakeServer.HandshakeState.ACCEPTED) {
 //            RollSyncServer.startListening(handler1);
-//            ServerConfigUpdaterFabric.startListening(handler1);
+//            ServerConfigUpdaterRegister.startListening(handler1);
 //        } else if (reply == HandshakeServer.HandshakeState.RESEND) {
 //            // Resending can happen when the client has a different protocol version than expected.
 //            sendHandshake(player);
