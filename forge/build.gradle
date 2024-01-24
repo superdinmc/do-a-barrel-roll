@@ -107,8 +107,6 @@ publishMods {
                 end = max
             }
         }
-
-        requires { slug = "forgified-fabric-api" }
     }
 
     curseforge {
@@ -123,8 +121,6 @@ publishMods {
                 end = max
             }
         }
-
-        requires { slug = "forgified-fabric-api" }
     }
 
     github {
