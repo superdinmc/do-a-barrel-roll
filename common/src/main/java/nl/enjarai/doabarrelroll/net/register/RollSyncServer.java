@@ -1,9 +1,10 @@
-package nl.enjarai.doabarrelroll.net;
+package nl.enjarai.doabarrelroll.net.register;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.api.RollEntity;
+import nl.enjarai.doabarrelroll.net.HandshakeServer;
 import nl.enjarai.doabarrelroll.platform.Services;
 
 public class RollSyncServer {

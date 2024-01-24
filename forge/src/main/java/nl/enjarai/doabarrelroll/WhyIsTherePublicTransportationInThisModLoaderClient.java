@@ -12,12 +12,12 @@ public class WhyIsTherePublicTransportationInThisModLoaderClient {
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            DoABarrelRollClient.clientTick(MinecraftClient.getInstance());
+            EventCallbacksClient.clientTick(MinecraftClient.getInstance());
         }
     }
 
     @SubscribeEvent
     public static void loggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
-        DoABarrelRollClient.clientDisconnect();
+        EventCallbacksClient.clientDisconnect();
     }
 }

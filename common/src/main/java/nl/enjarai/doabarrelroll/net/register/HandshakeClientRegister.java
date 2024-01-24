@@ -2,7 +2,6 @@ package nl.enjarai.doabarrelroll.net.register;
 
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.DoABarrelRollClient;
-import nl.enjarai.doabarrelroll.net.RollSyncClient;
 import nl.enjarai.doabarrelroll.platform.Services;
 
 public class HandshakeClientRegister {
@@ -12,7 +11,7 @@ public class HandshakeClientRegister {
             responseSender.accept(returnBuf);
 
             if (DoABarrelRollClient.HANDSHAKE_CLIENT.hasConnected()) {
-                RollSyncClient.startListening();
+                RollSyncClient.init();
                 ServerConfigUpdateClientRegister.startListening();
             }
         });

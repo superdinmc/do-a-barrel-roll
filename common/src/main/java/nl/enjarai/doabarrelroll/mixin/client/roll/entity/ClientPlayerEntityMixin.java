@@ -7,7 +7,7 @@ import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.math.MagicNumbers;
-import nl.enjarai.doabarrelroll.net.RollSyncClient;
+import nl.enjarai.doabarrelroll.net.register.RollSyncClient;
 import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

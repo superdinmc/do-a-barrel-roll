@@ -1,1 +1,1 @@
-- Added support for Forge & NeoForge 1.20.1.
+- Removed dependency on Forgified Fabric API.

@@ -18,14 +18,14 @@ public class WhyIsTherePublicTransportationInThisModLoader {
     @SubscribeEvent
     public static void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.getEntity() instanceof ServerPlayerEntity serverPlayer) {
-            DoABarrelRoll.playerDisconnected(serverPlayer.networkHandler);
+            EventCallbacks.playerDisconnected(serverPlayer.networkHandler);
         }
     }
 
     @SubscribeEvent
     public static void serverTick(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            DoABarrelRoll.serverTick(event.getServer());
+            EventCallbacks.serverTick(event.getServer());
         }
     }
 }

@@ -11,8 +11,8 @@ public class DoABarrelRollFabric implements ModInitializer {
         DoABarrelRoll.init();
 
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            DoABarrelRoll.playerDisconnected(handler);
+            EventCallbacks.playerDisconnected(handler);
         });
-        ServerTickEvents.END_SERVER_TICK.register(DoABarrelRoll::serverTick);
+        ServerTickEvents.END_SERVER_TICK.register(EventCallbacks::serverTick);
     }
 }

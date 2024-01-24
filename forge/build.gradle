@@ -39,14 +39,6 @@ loom {
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
-repositories {
-    maven {
-        name = "Sinytra"
-        url = "https://maven.su5ed.dev/releases"
-    }
-    mavenLocal()
-}
-
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     forge "net.minecraftforge:forge:${minecraft_version}-${forge_version}"

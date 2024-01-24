@@ -3,7 +3,7 @@ package nl.enjarai.doabarrelroll.mixin.roll;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.EntityTrackerEntry;
 import nl.enjarai.doabarrelroll.api.RollEntity;
-import nl.enjarai.doabarrelroll.net.RollSyncServer;
+import nl.enjarai.doabarrelroll.net.register.RollSyncServer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

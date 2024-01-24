@@ -2,13 +2,11 @@ package nl.enjarai.doabarrelroll;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 import nl.enjarai.doabarrelroll.api.event.ServerEvents;
 import nl.enjarai.doabarrelroll.config.ModConfigServer;
 import nl.enjarai.doabarrelroll.net.HandshakeServer;
-import nl.enjarai.doabarrelroll.net.RollSyncServer;
+import nl.enjarai.doabarrelroll.net.register.RollSyncServer;
 import nl.enjarai.doabarrelroll.net.ServerConfigHolder;
 import nl.enjarai.doabarrelroll.net.register.HandshakeServerRegister;
 import nl.enjarai.doabarrelroll.net.register.ServerConfigUpdaterRegister;
@@ -45,14 +43,6 @@ public class DoABarrelRoll {
         RollSyncServer.init();
         HandshakeServerRegister.init();
         ServerConfigUpdaterRegister.init();
-    }
-
-    public static void serverTick(MinecraftServer server) {
-        HANDSHAKE_SERVER.tick(server);
-    }
-
-    public static void playerDisconnected(ServerPlayNetworkHandler handler) {
-        HANDSHAKE_SERVER.playerDisconnected(handler);
     }
 
     public static PacketByteBuf createBuf() {
