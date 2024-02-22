@@ -1,6 +1,6 @@
 package nl.enjarai.doabarrelroll.compat.cameraoverhaul;
 
-import nl.enjarai.doabarrelroll.compat.CompatMixinPlugin;
+import nl.enjarai.cicada.api.compat.CompatMixinPlugin;
 
 import java.util.Set;
 

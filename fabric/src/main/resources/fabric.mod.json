@@ -42,7 +42,8 @@
         "${mod_id}.mixins.json",
         "${mod_id}.fabric.mixins.json",
         "${mod_id}.compat.cameraoverhaul.mixins.json",
-        "${mod_id}.compat.controlify.mixins.json"
+        "${mod_id}.compat.controlify.mixins.json",
+        "${mod_id}.compat.modmenu.mixins.json"
     ],
     "accessWidener": "${mod_id}.accesswidener",
 
