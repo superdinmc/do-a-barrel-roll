@@ -39,8 +39,7 @@ public abstract class ModsScreenMixin extends Screen {
 
     @Inject(
             method = "render",
-            at = @At("HEAD"),
-            remap = false
+            at = @At("HEAD")
     )
     private void onRender(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         double time = GlfwUtil.getTime();
