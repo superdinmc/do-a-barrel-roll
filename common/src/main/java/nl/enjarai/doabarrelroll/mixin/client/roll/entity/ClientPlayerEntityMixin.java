@@ -115,8 +115,8 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 		changeLookDirection(deltaX / 0.15, deltaY / 0.15);
 
 		// Apply roll
-		this.roll += deltaRoll;
-		this.prevRoll += deltaRoll;
+		this.roll += (float) deltaRoll;
+		this.prevRoll += (float) deltaRoll;
 
 		// fix hand spasm when wrapping yaw value
 		if (getYaw() < -90 && renderYaw > 90) {

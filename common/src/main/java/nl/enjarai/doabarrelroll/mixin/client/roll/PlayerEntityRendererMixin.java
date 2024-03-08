@@ -1,5 +1,6 @@
 package nl.enjarai.doabarrelroll.mixin.client.roll;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -14,18 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerEntityRenderer.class)
 public abstract class PlayerEntityRendererMixin {
-    private AbstractClientPlayerEntity player;
-    private float tickDelta;
-
-    @Inject(
-            method = "setupTransforms(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/client/util/math/MatrixStack;FFF)V",
-            at = @At("HEAD")
-    )
-    private void doABarrelRoll$captureOtherPlayer(AbstractClientPlayerEntity abstractClientPlayerEntity, MatrixStack matrixStack, float f, float g, float h, CallbackInfo ci) {
-        player = abstractClientPlayerEntity;
-        tickDelta = h;
-    }
-
     @ModifyArg(
             method = "setupTransforms(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/client/util/math/MatrixStack;FFF)V",
             at = @At(
@@ -35,7 +24,9 @@ public abstract class PlayerEntityRendererMixin {
             ),
             index = 0
     )
-    private Quaternionf doABarrelRoll$modifyRoll(Quaternionf original) {
+    private Quaternionf doABarrelRoll$modifyRoll(Quaternionf original,
+                                                 @Local(argsOnly = true) AbstractClientPlayerEntity player,
+                                                 @Local(argsOnly = true, ordinal = 2) float tickDelta) {
         var rollEntity = (RollEntity) player;
 
         if (rollEntity.doABarrelRoll$isRolling()) {

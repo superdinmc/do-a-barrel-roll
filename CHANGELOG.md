@@ -1,2 +1,3 @@
-- Its a secret.
-- I sure hope this works on fabric tho.
+- Reworked some old mixins using newly gained skill.
+  - This should generally improve compatibility.
+  - In fact, this already fixes a crash with the Real Camera mod.

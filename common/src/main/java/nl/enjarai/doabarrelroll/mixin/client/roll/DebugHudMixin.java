@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public abstract class DebugHudMixin {
     @Shadow @Final private MinecraftClient client;
 
+    // Not using ModifyArg**s** here to be compatible with Forge
     @ModifyArg(
             method = "getLeftText",
             at = @At(
@@ -20,7 +21,8 @@ public abstract class DebugHudMixin {
                     target = "Ljava/lang/String;format(Ljava/util/Locale;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;",
                     ordinal = 6
             ),
-            index = 1
+            index = 1,
+            require = 0
     )
     private String doABarrelRoll$modifyDebugHudText(String format) {
         var cameraEntity = client.getCameraEntity();
@@ -39,7 +41,8 @@ public abstract class DebugHudMixin {
                     target = "Ljava/lang/String;format(Ljava/util/Locale;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;",
                     ordinal = 6
             ),
-            index = 2
+            index = 2,
+            require = 0
     )
     private Object[] doABarrelRoll$modifyDebugHudText2(Object[] args) {
         var cameraEntity = client.getCameraEntity();

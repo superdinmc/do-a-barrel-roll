@@ -1,7 +1,5 @@
 package nl.enjarai.doabarrelroll.mixin.client;
 
-import com.llamalad7.mixinextras.sugar.Share;
-import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import nl.enjarai.doabarrelroll.EventCallbacksClient;
@@ -19,26 +17,24 @@ public abstract class InGameHudMixin {
 
     @Inject(
             method = "render",
-            at = @At("HEAD")
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/hud/InGameHud;renderCrosshair(Lnet/minecraft/client/gui/DrawContext;)V"
+            )
     )
-    private void doABarrelRoll$captureTickDelta(DrawContext context, float tickDelta, CallbackInfo ci, @Share("tickDelta") LocalFloatRef tickDeltaRef) {
-        tickDeltaRef.set(tickDelta);
-    }
-
-    @Inject(
-            method = "renderCrosshair",
-            at = @At(value = "HEAD")
-    )
-    private void doABarrelRoll$renderCrosshairHead(DrawContext context, CallbackInfo ci, @Share("tickDelta") LocalFloatRef tickDeltaRef) {
+    private void doABarrelRoll$captureTickDelta(DrawContext context, float tickDelta, CallbackInfo ci) {
         context.getMatrices().push();
-        EventCallbacksClient.onRenderCrosshair(context, tickDeltaRef.get(), scaledWidth, scaledHeight);
+        EventCallbacksClient.onRenderCrosshair(context, tickDelta, scaledWidth, scaledHeight);
     }
 
     @Inject(
-            method = "renderCrosshair",
-            at = @At(value = "RETURN")
+            method = "render",
+            at = @At(
+                    value = "CONSTANT",
+                    args = "stringValue=bossHealth"
+            )
     )
-    private void doABarrelRoll$renderCrosshairReturn(DrawContext context, CallbackInfo ci) {
+    private void doABarrelRoll$renderCrosshairReturn(DrawContext context, float tickDelta, CallbackInfo ci) {
         context.getMatrices().pop();
     }
 
