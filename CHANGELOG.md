@@ -1,3 +1,3 @@
-- Reworked some old mixins using newly gained skill.
-  - This should generally improve compatibility.
-  - In fact, this already fixes a crash with the Real Camera mod.
+- Unembedded a dependency on my shared library.
+  - This reduces disk space required when using more than one of my mods.
+  - It also makes it easier for me to push fixes to that library without creating updates for every single mod that uses it.

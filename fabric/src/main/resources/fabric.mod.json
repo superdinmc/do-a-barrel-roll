@@ -55,7 +55,7 @@
         "fabric": "*",
         "minecraft": "${fabric_minecraft_version_range}",
         "java": ">=17",
-        "cicada": "*"
+        "cicada": ">=0.6.0 <1.0.0"
     },
     "breaks": {
         "optifabric": "*"
