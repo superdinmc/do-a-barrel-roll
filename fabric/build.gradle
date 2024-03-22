@@ -120,7 +120,7 @@ publishMods {
             embeds {
                 slug = "cardinal-components-api"
             }
-            embeds {
+            requires {
                 slug = "cicada"
             }
         }
@@ -146,7 +146,7 @@ publishMods {
             embeds {
                 slug = "cardinal-components-api"
             }
-            embeds {
+            requires {
                 slug = "cicada"
             }
         }
