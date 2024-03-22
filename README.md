@@ -1,8 +1,12 @@
 <img style="text-align:center" src="img/banner.png">
 
-![Mod Loader](https://img.shields.io/badge/mod%20loader-fabric%2c%20forge-a64581?style=flat)
-![Enviroment](https://img.shields.io/badge/environment-client%2c%20opt%20server-536a9e?style=flat)
-[![Discord](https://img.shields.io/discord/1016206797389975612?style=flat&color=blue&logo=discord&label=Discord)](https://discord.gg/WcYsDDQtyR)
+[<img alt="discord-plural" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg">](https://discord.gg/WcYsDDQtyR)
+[<img alt="kofi-singular" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/kofi-singular_vector.svg">](https://ko-fi.com/enjarai)
+
+**On Fabric:**
+
+[<img alt="fabric-api" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/requires/fabric-api_vector.svg">](https://modrinth.com/mod/fabric-api)
+[<img alt="fabric-api" height="56" src="https://enjarai.dev/static/requires_cicada_cozy.svg">](https://modrinth.com/mod/cicada)
 
 [![Modrinth](https://img.shields.io/modrinth/dt/do-a-barrel-roll)](https://modrinth.com/mod/do-a-barrel-roll)
 [![CurseForge](https://cf.way2muchnoise.eu/full_663658_downloads.svg)](https://curseforge.com/minecraft/mc-mods/do-a-barrel-roll)
