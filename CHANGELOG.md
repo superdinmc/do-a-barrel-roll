@@ -1,3 +1,1 @@
-- Unembedded a dependency on my shared library.
-  - This reduces disk space required when using more than one of my mods.
-  - It also makes it easier for me to push fixes to that library without creating updates for every single mod that uses it.
+- Fixed an issue with hud rendering on Forge introduced in a recent update. (#127)
