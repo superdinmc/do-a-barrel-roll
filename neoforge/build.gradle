@@ -1,18 +1,11 @@
-plugins {
-    id 'java'
-    id 'idea'
-    id 'maven-publish'
-    id 'dev.architectury.loom'
-}
-
 base {
-    archivesName = "${mod_id}-forge"
+    archivesName = "${mod_id}-neoforge"
 }
 
 loom {
     forge {
         mixinConfig "${mod_id}.mixins.json"
-        mixinConfig "${mod_id}.forge.mixins.json"
+        mixinConfig "${mod_id}.neoforge.mixins.json"
 
         convertAccessWideners = true
     }
@@ -24,13 +17,13 @@ loom {
     runs {
         client {
             client()
-            setConfigName("Forge Client")
+            setConfigName("NeoForge Client")
             ideConfigGenerated(true)
             runDir("run")
         }
         server {
             server()
-            setConfigName("Forge Server")
+            setConfigName("NeoForge Server")
             ideConfigGenerated(true)
             runDir("run")
         }
@@ -41,12 +34,12 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    forge "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    forge "net.neoforged:neoforge:${forge_version}"
     mappings "net.fabricmc:yarn:${yarn_version}:v2"
 
     compileOnly project(":common")
 
-    modCompileOnly("dev.isxander.yacl:yet-another-config-lib-forge:${project.yacl_version}")
+    modCompileOnly("dev.isxander.yacl:yet-another-config-lib-neoforge:${project.yacl_version}")
 
     implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${project.mixin_extras_version}"))
     implementation(include("io.github.llamalad7:mixinextras-forge:${project.mixin_extras_version}"))
