@@ -22,7 +22,7 @@ subprojects {
         maven { url "https://maven.enjarai.dev/releases" }
 
         // NeoForge
-        maven { url = 'https://maven.neoforged.net/releases/' }
+        maven { url 'https://maven.neoforged.net/releases/' }
 
         // Mod Menu.
         maven { url 'https://maven.terraformersmc.com' }

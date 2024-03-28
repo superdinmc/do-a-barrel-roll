@@ -3,16 +3,13 @@ base {
 }
 
 loom {
-    forge {
-        mixinConfig "${mod_id}.mixins.json"
-        mixinConfig "${mod_id}.neoforge.mixins.json"
-
-        convertAccessWideners = true
+    neoForge {
+        accessTransformer {file('src/main/resources/META-INF/accesstransformer.cfg')}
     }
 
-    mixin {
-        defaultRefmapName.set("${mod_id}.refmap.json")
-    }
+//    mixin {
+//        defaultRefmapName.set("${mod_id}.refmap.json")
+//    }
 
     runs {
         client {
@@ -34,15 +31,15 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    forge "net.neoforged:neoforge:${forge_version}"
+    neoForge "net.neoforged:neoforge:${forge_version}"
     mappings "net.fabricmc:yarn:${yarn_version}:v2"
 
     compileOnly project(":common")
 
     modCompileOnly("dev.isxander.yacl:yet-another-config-lib-neoforge:${project.yacl_version}")
 
-    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${project.mixin_extras_version}"))
-    implementation(include("io.github.llamalad7:mixinextras-forge:${project.mixin_extras_version}"))
+//    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${project.mixin_extras_version}"))
+//    implementation(include("io.github.llamalad7:mixinextras-forge:${project.mixin_extras_version}"))
 }
 
 tasks.withType(JavaCompile).configureEach {
