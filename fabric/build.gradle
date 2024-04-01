@@ -17,7 +17,7 @@ dependencies {
         exclude group: "net.fabricmc"
     }
 
-    modCompileOnly("dev.isxander:controlify:${project.controlify_version}") {
+    modImplementation("dev.isxander:controlify:${project.controlify_version}") {
         exclude group: "net.fabricmc"
         exclude group: "maven.modrinth"
         exclude group: "com.github.CaffeineMC"

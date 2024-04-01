@@ -51,7 +51,7 @@ description='''${mod_description}'''
     # the modid of the dependency
     modId = "forge" #mandatory
     # Does this dependency have to exist - if not, ordering below must be specified
-    mandatory = true #mandatory
+    type = "required" #mandatory
     # The version range of the dependency
     versionRange = "${forge_version_range}" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the dependency is not mandatory
@@ -62,7 +62,7 @@ description='''${mod_description}'''
     side = "BOTH" # Side this dependency is applied on - 'BOTH', 'CLIENT' or 'SERVER'
 [[dependencies.'${mod_id}']]
     modId = "minecraft"
-    mandatory = true
+    type = "required"
     # This version range declares a minimum of the current minecraft version up to but not including the next major version
     versionRange = "${forge_minecraft_version_range}"
     ordering = "NONE"

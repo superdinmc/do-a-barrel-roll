@@ -1,11 +1,10 @@
 package nl.enjarai.doabarrelroll;
 
 import net.minecraft.util.Identifier;
-import net.minecraftforge.client.ConfigScreenHandler;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.client.ConfigScreenHandler;
 import nl.enjarai.doabarrelroll.config.ModConfigScreen;
 import nl.enjarai.doabarrelroll.platform.services.ClientNetworkUtils;
 import nl.enjarai.doabarrelroll.platform.services.ServerNetworkUtils;
@@ -15,7 +14,6 @@ import java.util.List;
 
 @Mod(DoABarrelRoll.MODID)
 public class DoABarrelRollForge {
-    public static final HashMap<Identifier, SimpleChannel> NETWORK_CHANNELS = new HashMap<>();
     public static final HashMap<Identifier, List<ClientNetworkUtils.PacketListener>> CLIENT_LISTENERS = new HashMap<>();
     public static final HashMap<Identifier, List<ServerNetworkUtils.PacketListener>> SERVER_LISTENERS = new HashMap<>();
 
