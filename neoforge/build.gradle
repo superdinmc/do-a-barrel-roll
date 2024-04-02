@@ -75,11 +75,10 @@ publishing {
 
 publishMods {
     file = remapJar.archiveFile
-    displayName = "${property('mod_version')} for Forge ${property('minecraft_version')}"
-    version = "${project.version}-forge"
+    displayName = "${property('mod_version')} for NeoForge ${property('minecraft_version')}"
+    version = "${project.version}-neoforge"
     changelog = getRootProject().file("CHANGELOG.md").text
     type = STABLE
-    modLoaders.add("forge")
     modLoaders.add("neoforge")
 
     def min = property('publish_target_min')
@@ -123,7 +122,7 @@ publishMods {
             accessToken = providers.gradleProperty('enjaraiGithubToken').get()
 
             commitish = property('git_branch')
-            tagName = "${project.version}-forge"
+            tagName = "${project.version}-neoforge"
         }
     }
 }

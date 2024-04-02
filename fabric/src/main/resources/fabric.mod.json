@@ -58,7 +58,8 @@
         "cicada": ">=0.6.0 <1.0.0"
     },
     "breaks": {
-        "optifabric": "*"
+        "optifabric": "*",
+        "controlify": "<2.0.0-"
     },
 
     "custom": {

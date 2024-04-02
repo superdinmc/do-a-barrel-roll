@@ -17,6 +17,7 @@
     "client.InGameHudMixin",
     "client.LivingEntityMixin",
     "client.PlayerEntityMixin",
+    "client.key.KeyBindingAccessor",
     "client.key.KeyBindingEntryMixin",
     "client.key.KeyBindingMixin",
     "client.roll.CameraMixin",

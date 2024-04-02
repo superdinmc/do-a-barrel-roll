@@ -5,6 +5,7 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
 import nl.enjarai.doabarrelroll.api.key.InputContext;
+import nl.enjarai.doabarrelroll.mixin.client.key.KeyBindingAccessor;
 import nl.enjarai.doabarrelroll.util.key.ContextualKeyBinding;
 
 import java.util.HashMap;
@@ -81,7 +82,7 @@ public final class InputContextImpl implements InputContext {
     public void updateKeysByCode() {
         bindingsByKey.clear();
         for (KeyBinding keyBinding : keyBindings) {
-            bindingsByKey.put(keyBinding.boundKey, keyBinding);
+            bindingsByKey.put(((KeyBindingAccessor) keyBinding).getBoundKey(), keyBinding);
         }
     }
 }

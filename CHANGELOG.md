@@ -1,1 +1,3 @@
-- Fixed an issue with hud rendering on Forge introduced in a recent update. (#127)
+- Fixed Controlify 2.0 compatibility.
+- Updated Forge version to NeoForge 1.20.4.
+  - LexForge will not be supported from now on.
