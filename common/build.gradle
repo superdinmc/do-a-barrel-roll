@@ -25,15 +25,24 @@ dependencies {
 }
 
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId base.archivesName.get()
-            from components.java
-        }
-    }
     repositories {
         maven {
-            url "file://" + System.getenv("local_maven")
+            name = "enjaraiMaven"
+            url = "https://maven.enjarai.dev/releases"
+            credentials(PasswordCredentials)
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
+    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = rootProject.property('group')
+            artifactId = "do-a-barrel-roll"
+            version = "${project.version}-common"
+
+            from components.java
         }
     }
 }
