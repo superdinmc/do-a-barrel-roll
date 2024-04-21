@@ -1,1 +1,1 @@
-- Fixed an issue with hud rendering on Forge introduced in a recent update. (#127)
+- Fixed compatibility with controlify 2.0.

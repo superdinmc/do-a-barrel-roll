@@ -4,7 +4,7 @@ import dev.isxander.controlify.api.ControlifyApi;
 import dev.isxander.controlify.api.bind.BindingSupplier;
 import dev.isxander.controlify.api.bind.ControlifyBindingsApi;
 import dev.isxander.controlify.api.entrypoint.ControlifyEntrypoint;
-import dev.isxander.controlify.bindings.GamepadBinds;
+import dev.isxander.controlify.controller.input.GamepadInputs;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
@@ -14,6 +14,8 @@ import nl.enjarai.doabarrelroll.api.event.RollEvents;
 import nl.enjarai.doabarrelroll.api.event.ThrustEvents;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 import nl.enjarai.doabarrelroll.config.ModConfig;
+
+import static dev.isxander.controlify.controller.input.GamepadInputs.*;
 
 public class ControlifyCompat implements ControlifyEntrypoint {
     public static BindingSupplier PITCH_UP;
@@ -26,22 +28,27 @@ public class ControlifyCompat implements ControlifyEntrypoint {
     public static BindingSupplier THRUST_BACKWARD;
 
     private RotationInstant applyToRotation(RotationInstant rotationDelta, RollContext context) {
-        var controller = ControlifyApi.get().currentController();
-        var sensitivity = ModConfig.INSTANCE.getControllerSensitivity();
+        var perhapsController = ControlifyApi.get().getCurrentController();
+        if (perhapsController.isPresent()) {
+            var controller = perhapsController.get();
+            var sensitivity = ModConfig.INSTANCE.getControllerSensitivity();
 
-        if (PITCH_UP.onController(controller) == null) return rotationDelta;
+            if (PITCH_UP.onController(controller) == null) return rotationDelta;
 
-        double multiplier = context.getRenderDelta() * 1200;
+            double multiplier = context.getRenderDelta() * 1200;
 
-        float pitchAxis = PITCH_DOWN.onController(controller).state() - PITCH_UP.onController(controller).state();
-        float yawAxis = YAW_RIGHT.onController(controller).state() - YAW_LEFT.onController(controller).state();
-        float rollAxis = ROLL_RIGHT.onController(controller).state() - ROLL_LEFT.onController(controller).state();
+            double pitchAxis = PITCH_DOWN.onController(controller).state() - PITCH_UP.onController(controller).state();
+            double yawAxis = YAW_RIGHT.onController(controller).state() - YAW_LEFT.onController(controller).state();
+            double rollAxis = ROLL_RIGHT.onController(controller).state() - ROLL_LEFT.onController(controller).state();
 
-        pitchAxis *= multiplier * sensitivity.pitch;
-        yawAxis *= multiplier * sensitivity.yaw;
-        rollAxis *= multiplier * sensitivity.roll;
+            pitchAxis *= multiplier * sensitivity.pitch;
+            yawAxis *= multiplier * sensitivity.yaw;
+            rollAxis *= multiplier * sensitivity.roll;
 
-        return rotationDelta.add(pitchAxis, yawAxis, rollAxis);
+            return rotationDelta.add(pitchAxis, yawAxis, rollAxis);
+        }
+
+        return rotationDelta;
     }
 
     public static double getThrustModifier() {
@@ -68,42 +75,42 @@ public class ControlifyCompat implements ControlifyEntrypoint {
     public void onControlifyPreInit(ControlifyApi controlifyApi) {
         var bindings = ControlifyBindingsApi.get();
         PITCH_UP = bindings.registerBind(DoABarrelRoll.id("pitch_up"), builder -> builder
-                .defaultBind(GamepadBinds.RIGHT_STICK_FORWARD)
+                .defaultBind(getBind(RIGHT_STICK_AXIS_UP))
                 .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
                 .name(Text.translatable("controlify.bind.do_a_barrel_roll.pitch_up"))
         );
         PITCH_DOWN = bindings.registerBind(DoABarrelRoll.id("pitch_down"), builder -> builder
-                .defaultBind(GamepadBinds.RIGHT_STICK_BACKWARD)
+                .defaultBind(getBind(RIGHT_STICK_AXIS_DOWN))
                 .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
                 .name(Text.translatable("controlify.bind.do_a_barrel_roll.pitch_down"))
         );
         ROLL_LEFT = bindings.registerBind(DoABarrelRoll.id("roll_left"), builder -> builder
-                .defaultBind(GamepadBinds.RIGHT_STICK_LEFT)
+                .defaultBind(getBind(RIGHT_STICK_AXIS_LEFT))
                 .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
                 .name(Text.translatable("controlify.bind.do_a_barrel_roll.roll_left"))
         );
         ROLL_RIGHT = bindings.registerBind(DoABarrelRoll.id("roll_right"), builder -> builder
-                .defaultBind(GamepadBinds.RIGHT_STICK_RIGHT)
+                .defaultBind(getBind(RIGHT_STICK_AXIS_RIGHT))
                 .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
                 .name(Text.translatable("controlify.bind.do_a_barrel_roll.roll_right"))
         );
         YAW_LEFT = bindings.registerBind(DoABarrelRoll.id("yaw_left"), builder -> builder
-                .defaultBind(GamepadBinds.LEFT_STICK_LEFT)
+                .defaultBind(getBind(LEFT_STICK_AXIS_LEFT))
                 .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
                 .name(Text.translatable("controlify.bind.do_a_barrel_roll.yaw_left"))
         );
         YAW_RIGHT = bindings.registerBind(DoABarrelRoll.id("yaw_right"), builder -> builder
-                .defaultBind(GamepadBinds.LEFT_STICK_RIGHT)
+                .defaultBind(getBind(LEFT_STICK_AXIS_RIGHT))
                 .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
                 .name(Text.translatable("controlify.bind.do_a_barrel_roll.yaw_right"))
         );
         THRUST_FORWARD = bindings.registerBind(DoABarrelRoll.id("thrust_forward"), builder -> builder
-                .defaultBind(GamepadBinds.LEFT_STICK_FORWARD)
+                .defaultBind(getBind(LEFT_STICK_AXIS_UP))
                 .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
                 .name(Text.translatable("controlify.bind.do_a_barrel_roll.thrust_forward"))
         );
         THRUST_BACKWARD = bindings.registerBind(DoABarrelRoll.id("thrust_backward"), builder -> builder
-                .defaultBind(GamepadBinds.LEFT_STICK_BACKWARD)
+                .defaultBind(getBind(LEFT_STICK_AXIS_DOWN))
                 .category(Text.translatable("controlify.category.do_a_barrel_roll.do_a_barrel_roll"))
                 .name(Text.translatable("controlify.bind.do_a_barrel_roll.thrust_backward"))
         );
