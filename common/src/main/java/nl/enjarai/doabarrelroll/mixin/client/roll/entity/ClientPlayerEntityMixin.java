@@ -7,6 +7,7 @@ import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 import nl.enjarai.doabarrelroll.config.Sensitivity;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.math.MagicNumbers;
+import nl.enjarai.doabarrelroll.mixin.roll.entity.PlayerEntityMixin;
 import nl.enjarai.doabarrelroll.net.register.RollSyncClient;
 import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayerEntity.class)
-public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntityMixin {
+public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
 	@Shadow public float renderYaw;
 	@Shadow public float lastRenderYaw;
 
@@ -42,11 +43,10 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	}
 
 	@Override
-	protected void doABarrelRoll$baseTickTail(CallbackInfo ci) {
+	@Unique
+	protected void doABarrelRoll$baseTickTail2() {
 		// Update rolling status
 		doABarrelRoll$setRolling(RollEvents.shouldRoll());
-
-		super.doABarrelRoll$baseTickTail(ci);
 	}
 
 	@Override

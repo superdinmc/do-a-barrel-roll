@@ -18,11 +18,17 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin {
 
     @Override
     protected void doABarrelRoll$baseTickTail(CallbackInfo ci) {
+        doABarrelRoll$baseTickTail2();
+
         prevRoll = doABarrelRoll$getRoll();
 
         if (!doABarrelRoll$isRolling()) {
             doABarrelRoll$setRoll(0.0f);
         }
+    }
+
+    @Unique
+    protected void doABarrelRoll$baseTickTail2() {
     }
 
     @Override
