@@ -1,3 +1,1 @@
-- Fixed Controlify 2.0 compatibility.
-- Updated Forge version to NeoForge 1.20.4.
-  - LexForge will not be supported from now on.
+- Fixed a very elusive bug causing the mod to sometimes just not work.
