@@ -2,6 +2,10 @@ package nl.enjarai.doabarrelroll.config;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.text.Text;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
@@ -24,6 +28,14 @@ public record ModConfigServer(boolean allowThrusting,
             Codec.INT.optionalFieldOf("installedTimeout", DEFAULT.installedTimeout()).forGetter(ModConfigServer::installedTimeout),
             KineticDamage.CODEC.optionalFieldOf("kineticDamage", DEFAULT.kineticDamage()).forGetter(ModConfigServer::kineticDamage)
     ).apply(instance, ModConfigServer::new));
+    public static final PacketCodec<ByteBuf, ModConfigServer> PACKET_CODEC = PacketCodec.tuple(
+            PacketCodecs.BOOL, ModConfigServer::allowThrusting,
+            PacketCodecs.BOOL, ModConfigServer::forceEnabled,
+            PacketCodecs.BOOL, ModConfigServer::forceInstalled,
+            PacketCodecs.INTEGER, ModConfigServer::installedTimeout,
+            KineticDamage.PACKET_CODEC, ModConfigServer::kineticDamage,
+            ModConfigServer::new
+    );
 
     @Override
     public Integer getSyncTimeout() {

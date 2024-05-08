@@ -12,21 +12,18 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.config.LimitedModConfigServer;
 import nl.enjarai.doabarrelroll.config.ModConfigServer;
+import nl.enjarai.doabarrelroll.net.packet.ConfigSyncS2CPacket;
 import nl.enjarai.doabarrelroll.util.DelayedRunnable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Function;
 
-public class HandshakeServer {
-    // Protocol version 1:
-    // | Protocol version (int) | Config data (string) |
-    // Protocol version 2:
-    // | Protocol version (int) | Limited/full config data (string) | Is limited (boolean) |
-    // Protocol version 3:
-    // | Protocol version (int) | Limited config data (string) | Is limited (boolean) | [Full config data (string)] (only if not limited) |
-    public static final int PROTOCOL_VERSION = 3;
+public class HandshakeServer<P extends ConfigSyncS2CPacket> {
+    public static final int PROTOCOL_VERSION = 4;
 
+    private final PacketConstructor<P> packetConstructor;
     private final ServerConfigHolder<ModConfigServer> configHolder;
     private final Map<ServerPlayNetworkHandler, ClientInfo> syncStates = new WeakHashMap<>();
     private final Map<ServerPlayNetworkHandler, DelayedRunnable> scheduledKicks = new WeakHashMap<>();
@@ -34,7 +31,8 @@ public class HandshakeServer {
     private final Codec<ModConfigServer> transferCodec = ModConfigServer.CODEC;
     private final Codec<LimitedModConfigServer> limitedTransferCodec = LimitedModConfigServer.getCodec();
 
-    public HandshakeServer(ServerConfigHolder<ModConfigServer> configHolder, Function<ServerPlayNetworkHandler, Boolean> getsLimitedCheck) {
+    public HandshakeServer(PacketConstructor<P> packetConstructor, ServerConfigHolder<ModConfigServer> configHolder, Function<ServerPlayNetworkHandler, Boolean> getsLimitedCheck) {
+        this.packetConstructor = packetConstructor;
         this.configHolder = configHolder;
         this.getsLimitedCheck = getsLimitedCheck;
     }
@@ -59,53 +57,12 @@ public class HandshakeServer {
         return syncStates.computeIfAbsent(handler, key -> new ClientInfo(HandshakeState.NOT_SENT, PROTOCOL_VERSION, true));
     }
 
-    public PacketByteBuf getConfigSyncBuf(ServerPlayNetworkHandler handler) {
-        return getConfigSyncBuf(handler, getHandshakeState(handler).protocolVersion);
-    }
-
-    @SuppressWarnings("NonStrictComparisonCanBeEquality")
-    public PacketByteBuf getConfigSyncBuf(ServerPlayNetworkHandler handler, int protocolVersion) {
-        protocolVersion = Math.min(protocolVersion, PROTOCOL_VERSION);
-        var buf = new PacketByteBuf(Unpooled.buffer());
-
-        // Protocol version
-        buf.writeInt(protocolVersion);
-
-        // Config data
+    public P initiateConfigSync(ServerPlayNetworkHandler handler) {
         var isLimited = getsLimitedCheck.apply(handler);
         getHandshakeState(handler).isLimited = isLimited;
         var config = configHolder.instance;
-        DataResult<JsonElement> data;
-        if (protocolVersion == 2) {
-            Codec<? super ModConfigServer> codec = isLimited ? limitedTransferCodec : transferCodec;
-            data = codec.encodeStart(JsonOps.INSTANCE, config);
-        } else {
-            data = limitedTransferCodec.encodeStart(JsonOps.INSTANCE, config.getLimited(handler));
-        }
-        try {
-            buf.writeString(data.getOrThrow(false, DoABarrelRoll.LOGGER::error).toString());
-        } catch (RuntimeException e) {
-            DoABarrelRoll.LOGGER.error("Failed to encode config", e);
-            buf.writeString("{}");
-        }
 
-        if (protocolVersion >= 2) {
-            // Limited status
-            buf.writeBoolean(isLimited);
-        }
-
-        if (protocolVersion >= 3 && !isLimited) {
-            // Operator modifiable config
-            var data2 = transferCodec.encodeStart(JsonOps.INSTANCE, config);
-            try {
-                buf.writeString(data2.getOrThrow(false, DoABarrelRoll.LOGGER::error).toString());
-            } catch (RuntimeException e) {
-                DoABarrelRoll.LOGGER.error("Failed to encode config", e);
-                buf.writeString("{}");
-            }
-        }
-
-        return buf;
+        return packetConstructor.construct(PROTOCOL_VERSION, config, isLimited ? null : config);
     }
 
     public void configSentToClient(ServerPlayNetworkHandler handler) {
@@ -181,6 +138,10 @@ public class HandshakeServer {
             this.protocolVersion = protocolVersion;
             this.isLimited = isLimited;
         }
+    }
+
+    public interface PacketConstructor<P extends ConfigSyncS2CPacket> {
+        P construct(int protocolVersion, LimitedModConfigServer applicableConfig, @Nullable ModConfigServer fullConfig);
     }
 
     public enum HandshakeState {

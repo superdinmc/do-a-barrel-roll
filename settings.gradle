@@ -35,4 +35,4 @@ plugins {
 rootProject.name = 'do-a-barrel-roll'
 include("common")
 include("fabric")
-include("neoforge")
+//include("neoforge")

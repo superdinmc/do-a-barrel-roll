@@ -1,28 +1,24 @@
 package nl.enjarai.doabarrelroll.net;
 
-import com.google.gson.JsonParser;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
-import io.netty.buffer.Unpooled;
-import net.minecraft.network.PacketByteBuf;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
+import nl.enjarai.doabarrelroll.config.LimitedModConfigServer;
+import nl.enjarai.doabarrelroll.config.ModConfigServer;
+import nl.enjarai.doabarrelroll.net.packet.ConfigResponseC2SPacket;
+import nl.enjarai.doabarrelroll.net.packet.ConfigSyncS2CPacket;
 
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-public class HandshakeClient<L, F extends L> {
-    public static final int PROTOCOL_VERSION = 3;
-
-    private final Codec<F> transferCodec;
-    private final Codec<L> limitedTransferCodec;
-    private final Consumer<L> updateCallback;
-    private L serverConfig = null;
-    private F fullServerConfig = null;
+public class HandshakeClient<R extends ConfigResponseC2SPacket> {
+    private final BiFunction<Integer, Boolean, R> responseConstructor;
+    private final Consumer<LimitedModConfigServer> updateCallback;
+    private LimitedModConfigServer serverConfig = null;
+    private ModConfigServer fullServerConfig = null;
     private boolean hasConnected = false;
 
-    public HandshakeClient(Codec<F> transferCodec, Codec<L> limitedTransferCodec, Consumer<L> updateCallback) {
-        this.transferCodec = transferCodec;
-        this.limitedTransferCodec = limitedTransferCodec;
+    public HandshakeClient(BiFunction<Integer, Boolean, R> responseConstructor, Consumer<LimitedModConfigServer> updateCallback) {
+        this.responseConstructor = responseConstructor;
         this.updateCallback = updateCallback;
     }
 
@@ -30,11 +26,11 @@ public class HandshakeClient<L, F extends L> {
      * Returns the server config if the client has received one for this server,
      * returns an empty optional in any other case.
      */
-    public Optional<L> getConfig() {
+    public Optional<LimitedModConfigServer> getConfig() {
         return Optional.ofNullable(serverConfig);
     }
 
-    public Optional<F> getFullConfig() {
+    public Optional<ModConfigServer> getFullConfig() {
         return Optional.ofNullable(fullServerConfig);
     }
 
@@ -48,55 +44,28 @@ public class HandshakeClient<L, F extends L> {
         return hasConnected;
     }
 
-    public PacketByteBuf handleConfigSync(PacketByteBuf buf) {
+    public R handleConfigSync(ConfigSyncS2CPacket packet) {
         serverConfig = null;
         fullServerConfig = null;
 
-        try {
-            var protocolVersion = buf.readInt();
-            if (protocolVersion < 1 || protocolVersion > PROTOCOL_VERSION) {
-                DoABarrelRoll.LOGGER.warn("Received config with unknown protocol version: {}, will attempt to load anyway", protocolVersion);
-            }
-
-            var data = buf.readString();
-            var isLimited = true;
-
-            if (protocolVersion >= 2) {
-                isLimited = buf.readBoolean();
-            }
-
-            if (protocolVersion == 2) {
-                var codec = isLimited ? limitedTransferCodec : transferCodec;
-                serverConfig = codec.parse(JsonOps.INSTANCE, JsonParser.parseString(data))
-                        .getOrThrow(false, DoABarrelRoll.LOGGER::error);
-                if (!isLimited) {
-                    //noinspection unchecked
-                    fullServerConfig = (F) serverConfig;
-                }
-            } else {
-                serverConfig = limitedTransferCodec.parse(JsonOps.INSTANCE, JsonParser.parseString(data))
-                        .getOrThrow(false, DoABarrelRoll.LOGGER::error);
-                if (!isLimited) {
-                    var data2 = buf.readString();
-
-                    fullServerConfig = transferCodec.parse(JsonOps.INSTANCE, JsonParser.parseString(data2))
-                            .getOrThrow(false, DoABarrelRoll.LOGGER::error);
-                }
-            }
-        } catch (RuntimeException e) {
-            DoABarrelRoll.LOGGER.error("Failed to parse config from server", e);
+        var protocolVersion = packet.protocolVersion();
+        if (protocolVersion < 4) {
+            DoABarrelRoll.LOGGER.error("Received config with old protocol version: {}, this version is no longer supported!", protocolVersion);
+            return responseConstructor.apply(protocolVersion, false);
+        } else if (protocolVersion > HandshakeServer.PROTOCOL_VERSION) {
+            DoABarrelRoll.LOGGER.warn("Received config with unknown protocol version: {}, will attempt to load anyway", protocolVersion);
         }
 
-        if (serverConfig != null) {
-            updateCallback.accept(serverConfig);
-            hasConnected = true;
-            DoABarrelRoll.LOGGER.info("Received config from server");
+        serverConfig = packet.applicableConfig();
+        if (!packet.isLimited()) {
+            fullServerConfig = packet.fullConfig();
         }
 
-        var returnBuf = new PacketByteBuf(Unpooled.buffer());
-        returnBuf.writeInt(PROTOCOL_VERSION);
-        returnBuf.writeBoolean(serverConfig != null);
-        return returnBuf;
+        updateCallback.accept(serverConfig);
+        hasConnected = true;
+        DoABarrelRoll.LOGGER.info("Received config from server");
+
+        return responseConstructor.apply(protocolVersion, true);
     }
 
     public void reset() {

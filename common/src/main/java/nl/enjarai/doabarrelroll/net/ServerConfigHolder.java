@@ -20,26 +20,24 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.function.BiConsumer;
 
-public class ServerConfigHolder<T extends ValidatableConfig> {
+public class ServerConfigHolder {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public final Path configFile;
-    public final Codec<T> codec;
-    public final T defaultConfig;
-    private BiConsumer<MinecraftServer, T> updateCallback;
-    public T instance;
+    public final Codec<ModConfigServer> codec;
+    private BiConsumer<MinecraftServer, ModConfigServer> updateCallback;
+    public ModConfigServer instance;
 
-    public ServerConfigHolder(Path configFile, Codec<T> codec, T defaultConfig, BiConsumer<MinecraftServer, T> updateCallback) {
+    public ServerConfigHolder(Path configFile, Codec<ModConfigServer> codec, BiConsumer<MinecraftServer, ModConfigServer> updateCallback) {
         this.configFile = configFile;
         this.codec = codec;
-        this.defaultConfig = defaultConfig;
         this.updateCallback = updateCallback;
 
         load();
     }
 
     public void load() {
-        T config = null;
+        ModConfigServer config = null;
 
         if (Files.exists(configFile)) {
             // An existing config is present, we should use its values
@@ -48,7 +46,7 @@ public class ServerConfigHolder<T extends ValidatableConfig> {
             )) {
                 // Parses the config file and puts the values into config object
                 config = codec.decode(JsonOps.INSTANCE, JsonParser.parseReader(fileReader))
-                        .getOrThrow(false, e -> {
+                        .getOrThrow(e -> {
                             throw new RuntimeException(e);
                         })
                         .getFirst();
@@ -58,7 +56,7 @@ public class ServerConfigHolder<T extends ValidatableConfig> {
         }
         // config will be null if the file doesn't exist or if it failed to parse
         if (config == null || !config.isValid()) {
-            config = defaultConfig;
+            config = ModConfigServer.DEFAULT;
         }
 
         instance = config;
@@ -72,7 +70,7 @@ public class ServerConfigHolder<T extends ValidatableConfig> {
             Files.createDirectories(configFile.getParent());
             // Writes the config to the file
             Files.writeString(configFile, GSON.toJson(codec.encodeStart(JsonOps.INSTANCE, instance)
-                    .getOrThrow(false, e -> {
+                    .getOrThrow(e -> {
                         throw new RuntimeException(e);
                     })), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException | RuntimeException e) {
@@ -106,7 +104,7 @@ public class ServerConfigHolder<T extends ValidatableConfig> {
 
             var data = buf.readString();
             var newConfig = codec.parse(JsonOps.INSTANCE, JsonParser.parseString(data))
-                    .getOrThrow(false, DoABarrelRoll.LOGGER::error);
+                    .getOrThrow(DoABarrelRoll.LOGGER::error);
 
             if (!newConfig.isValid()) {
                 throw new RuntimeException("Config arrived, but contains invalid values");

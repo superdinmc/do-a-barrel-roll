@@ -36,7 +36,9 @@ dependencies {
 
     compileOnly project(":common")
 
-    modCompileOnly("dev.isxander.yacl:yet-another-config-lib-neoforge:${project.yacl_version}")
+    modCompileOnly("dev.isxander:yet-another-config-lib:${project.yacl_version}-neoforge") {
+        exclude group: "thedarkcolour"
+    }
 
 //    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${project.mixin_extras_version}"))
 //    implementation(include("io.github.llamalad7:mixinextras-forge:${project.mixin_extras_version}"))
