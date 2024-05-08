@@ -136,3 +136,9 @@ subprojects {
         inputDir = "assets/${mod_id}/lang"
     }
 }
+
+tasks.register('publishAll') {
+    group 'publishing'
+    dependsOn 'publish'
+    dependsOn 'publishMods'
+}
