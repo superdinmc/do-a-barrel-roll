@@ -24,7 +24,6 @@
     "client.roll.GameRendererMixin",
     "client.roll.MouseMixin",
     "client.roll.PlayerEntityRendererMixin",
-    "client.roll.entity.AbstractClientPlayerEntityMixin",
     "client.roll.entity.ClientPlayerEntityMixin"
   ],
   "server": [

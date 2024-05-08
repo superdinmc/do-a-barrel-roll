@@ -1,1 +1,1 @@
-- Fixed compatibility with controlify 2.0.
+- Fixed a very elusive bug causing the mod to sometimes just not work.
