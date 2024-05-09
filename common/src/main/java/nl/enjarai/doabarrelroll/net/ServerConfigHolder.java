@@ -10,6 +10,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.config.ModConfigServer;
+import nl.enjarai.doabarrelroll.net.packet.ConfigUpdateAckS2CPacket;
+import nl.enjarai.doabarrelroll.net.packet.ConfigUpdateC2SPacket;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,12 +27,15 @@ public class ServerConfigHolder {
 
     public final Path configFile;
     public final Codec<ModConfigServer> codec;
+    private final PacketConstructor packetConstructor;
     private BiConsumer<MinecraftServer, ModConfigServer> updateCallback;
+    private HandshakeServer handshakeServer;
     public ModConfigServer instance;
 
-    public ServerConfigHolder(Path configFile, Codec<ModConfigServer> codec, BiConsumer<MinecraftServer, ModConfigServer> updateCallback) {
+    public ServerConfigHolder(Path configFile, Codec<ModConfigServer> codec, PacketConstructor packetConstructor, BiConsumer<MinecraftServer, ModConfigServer> updateCallback) {
         this.configFile = configFile;
         this.codec = codec;
+        this.packetConstructor = packetConstructor;
         this.updateCallback = updateCallback;
 
         load();
@@ -78,8 +83,8 @@ public class ServerConfigHolder {
         }
     }
 
-    public PacketByteBuf clientSendsUpdate(ServerPlayerEntity player, PacketByteBuf buf) {
-        var info = DoABarrelRoll.HANDSHAKE_SERVER.getHandshakeState(player);
+    public ConfigUpdateAckS2CPacket clientSendsUpdate(ServerPlayerEntity player, ConfigUpdateC2SPacket packet) {
+        var info = handshakeServer.getHandshakeState(player);
         var accepted = info.state == HandshakeServer.HandshakeState.ACCEPTED;
         var hasPermission = ModConfigServer.canModify(player.networkHandler);
 
@@ -89,11 +94,11 @@ public class ServerConfigHolder {
                     "Client of {} tried to update the server config, but is not allowed to. Rejecting.",
                     player.getName().getString()
             );
-            return getFailureBuf();
+            return packetConstructor.construct(HandshakeServer.PROTOCOL_VERSION, false);
         }
 
         try {
-            var protocolVersion = buf.readInt();
+            var protocolVersion = packet.protocolVersion();
             if (protocolVersion != 1) {
                 DoABarrelRoll.LOGGER.warn(
                         "Client of {} sent unknown protocol version for server config update, expected 1, got {}. Will attempt to proceed anyway.",
@@ -102,52 +107,37 @@ public class ServerConfigHolder {
                 );
             }
 
-            var data = buf.readString();
-            var newConfig = codec.parse(JsonOps.INSTANCE, JsonParser.parseString(data))
-                    .getOrThrow(DoABarrelRoll.LOGGER::error);
+            var newConfig = packet.config();
 
             if (!newConfig.isValid()) {
                 throw new RuntimeException("Config arrived, but contains invalid values");
             }
 
-            // We send our response in another try block to make errors make sense
-            try {
-                data = codec.encodeStart(JsonOps.INSTANCE, newConfig)
-                        .getOrThrow(false, DoABarrelRoll.LOGGER::error).toString();
+            DoABarrelRoll.LOGGER.info(
+                    "{} updated the server config.",
+                    player.getName().getString()
+            );
 
-                var res = DoABarrelRoll.createBuf();
-                res.writeInt(1);
-                res.writeBoolean(true);
-                res.writeString(data);
-
-                DoABarrelRoll.LOGGER.info(
-                        "{} updated the server config.",
-                        player.getName().getString()
-                );
-
-                // Only set our instance if everything else succeeds
-                instance = newConfig;
-                updateCallback.accept(player.getServer(), instance);
-                save();
-                return res;
-            } catch (RuntimeException e) {
-                DoABarrelRoll.LOGGER.error("Failed to encode config", e);
-                return getFailureBuf();
-            }
+            // Only set our instance if everything else succeeds
+            instance = newConfig;
+            updateCallback.accept(player.getServer(), instance);
+            save();
+            return packetConstructor.construct(HandshakeServer.PROTOCOL_VERSION, true);
         } catch (RuntimeException e) {
             DoABarrelRoll.LOGGER.warn(
                     "Client of {} sent invalid server config update, rejecting.",
                     player.getName().getString(),
                     e
             );
-            return getFailureBuf();
+            return packetConstructor.construct(HandshakeServer.PROTOCOL_VERSION, false);
         }
     }
 
-    private PacketByteBuf getFailureBuf() {
-        var res = DoABarrelRoll.createBuf();
-        res.writeInt(1);
-        res.writeBoolean(false);
-        return res;
+    public void setHandshakeServer(HandshakeServer handshakeServer) {
+        this.handshakeServer = handshakeServer;
+    }
+
+    public interface PacketConstructor {
+        ConfigUpdateAckS2CPacket construct(int protocolVersion, boolean success);
     }
 }

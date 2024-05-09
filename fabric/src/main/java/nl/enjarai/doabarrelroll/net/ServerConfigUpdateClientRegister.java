@@ -1,4 +1,4 @@
-package nl.enjarai.doabarrelroll.net.register;
+package nl.enjarai.doabarrelroll.net;
 
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.net.ServerConfigUpdateClient;

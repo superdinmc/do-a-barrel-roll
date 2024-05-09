@@ -19,8 +19,6 @@ public class DoABarrelRoll {
     public static final String MODID = "do_a_barrel_roll";
     public static final Logger LOGGER = Services.PLATFORM.getLogger();
 
-    public static ServerConfigHolder<ModConfigServer> CONFIG_HOLDER;
-    public static HandshakeServer HANDSHAKE_SERVER;
     public static final Identifier HANDSHAKE_CHANNEL = id("handshake");
     public static final Identifier SERVER_CONFIG_UPDATE_CHANNEL = id("server_config_update");
     public static final Identifier ROLL_CHANNEL = id("player_roll");
@@ -30,7 +28,7 @@ public class DoABarrelRoll {
     }
 
     public static void init() {
-        var configFile = Path.of("config").resolve(DoABarrelRoll.MODID + "-server.json");
+        var configFile = Path.of("config");
 
         Services.PLATFORM.registerNetworkChannels(HANDSHAKE_CHANNEL, SERVER_CONFIG_UPDATE_CHANNEL, ROLL_CHANNEL);
 

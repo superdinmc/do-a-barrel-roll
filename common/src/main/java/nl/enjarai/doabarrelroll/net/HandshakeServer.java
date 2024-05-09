@@ -1,10 +1,6 @@
 package nl.enjarai.doabarrelroll.net;
 
-import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.JsonOps;
-import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -12,6 +8,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.config.LimitedModConfigServer;
 import nl.enjarai.doabarrelroll.config.ModConfigServer;
+import nl.enjarai.doabarrelroll.net.packet.ConfigResponseC2SPacket;
 import nl.enjarai.doabarrelroll.net.packet.ConfigSyncS2CPacket;
 import nl.enjarai.doabarrelroll.util.DelayedRunnable;
 import org.jetbrains.annotations.Nullable;
@@ -20,18 +17,18 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Function;
 
-public class HandshakeServer<P extends ConfigSyncS2CPacket> {
+public class HandshakeServer {
     public static final int PROTOCOL_VERSION = 4;
 
-    private final PacketConstructor<P> packetConstructor;
-    private final ServerConfigHolder<ModConfigServer> configHolder;
+    private final PacketConstructor packetConstructor;
+    private final ServerConfigHolder configHolder;
     private final Map<ServerPlayNetworkHandler, ClientInfo> syncStates = new WeakHashMap<>();
     private final Map<ServerPlayNetworkHandler, DelayedRunnable> scheduledKicks = new WeakHashMap<>();
     private final Function<ServerPlayNetworkHandler, Boolean> getsLimitedCheck;
     private final Codec<ModConfigServer> transferCodec = ModConfigServer.CODEC;
     private final Codec<LimitedModConfigServer> limitedTransferCodec = LimitedModConfigServer.getCodec();
 
-    public HandshakeServer(PacketConstructor<P> packetConstructor, ServerConfigHolder<ModConfigServer> configHolder, Function<ServerPlayNetworkHandler, Boolean> getsLimitedCheck) {
+    public HandshakeServer(PacketConstructor packetConstructor, ServerConfigHolder configHolder, Function<ServerPlayNetworkHandler, Boolean> getsLimitedCheck) {
         this.packetConstructor = packetConstructor;
         this.configHolder = configHolder;
         this.getsLimitedCheck = getsLimitedCheck;
@@ -57,12 +54,12 @@ public class HandshakeServer<P extends ConfigSyncS2CPacket> {
         return syncStates.computeIfAbsent(handler, key -> new ClientInfo(HandshakeState.NOT_SENT, PROTOCOL_VERSION, true));
     }
 
-    public P initiateConfigSync(ServerPlayNetworkHandler handler) {
+    public ConfigSyncS2CPacket initiateConfigSync(ServerPlayNetworkHandler handler) {
         var isLimited = getsLimitedCheck.apply(handler);
         getHandshakeState(handler).isLimited = isLimited;
         var config = configHolder.instance;
 
-        return packetConstructor.construct(PROTOCOL_VERSION, config, isLimited ? null : config);
+        return packetConstructor.construct(PROTOCOL_VERSION, config, isLimited, isLimited ? ModConfigServer.DEFAULT : config);
     }
 
     public void configSentToClient(ServerPlayNetworkHandler handler) {
@@ -82,43 +79,34 @@ public class HandshakeServer<P extends ConfigSyncS2CPacket> {
         }
     }
 
-    public HandshakeState clientReplied(ServerPlayNetworkHandler handler, PacketByteBuf buf) {
+    public HandshakeState clientReplied(ServerPlayNetworkHandler handler, ConfigResponseC2SPacket packet) {
         var info = getHandshakeState(handler);
         var player = handler.getPlayer();
 
         if (info.state == HandshakeState.SENT) {
-            try {
-                var protocolVersion = buf.readInt();
-                if (protocolVersion < 1 || protocolVersion > PROTOCOL_VERSION) {
-                    DoABarrelRoll.LOGGER.warn(
-                            "Client of {} sent unknown protocol version, expected range 1-{}, got {}. Will attempt to proceed anyway.",
-                            player.getName().getString(),
-                            PROTOCOL_VERSION,
-                            protocolVersion
-                    );
-                }
-
-                if (protocolVersion == 2 && info.protocolVersion != 2) {
-                    DoABarrelRoll.LOGGER.info("Client of {} is using an older protocol version, resending.", player.getName().getString());
-                    info.state = HandshakeState.RESEND;
-                } else if (buf.readBoolean()) {
-                    DoABarrelRoll.LOGGER.info("Client of {} accepted server config.", player.getName().getString());
-                    info.state = HandshakeState.ACCEPTED;
-                } else {
-                    DoABarrelRoll.LOGGER.warn(
-                            "Client of {} failed to process server config, check client logs find what went wrong.",
-                            player.getName().getString());
-                    info.state = HandshakeState.FAILED;
-                }
-                info.protocolVersion = protocolVersion;
-            } catch (Exception e) {
+            var protocolVersion = packet.protocolVersion();
+            if (protocolVersion < 1 || protocolVersion > PROTOCOL_VERSION) {
                 DoABarrelRoll.LOGGER.warn(
-                        "Client of {} sent invalid config reply.",
-                        player.getName().getString()
+                        "Client of {} sent unknown protocol version, expected range 1-{}, got {}. Will attempt to proceed anyway.",
+                        player.getName().getString(),
+                        PROTOCOL_VERSION,
+                        protocolVersion
                 );
-                DoABarrelRoll.LOGGER.warn("Error parsing config reply:", e);
+            }
+
+            if (protocolVersion == 2 && info.protocolVersion != 2) {
+                DoABarrelRoll.LOGGER.info("Client of {} is using an older protocol version, resending.", player.getName().getString());
+                info.state = HandshakeState.RESEND;
+            } else if (packet.success()) {
+                DoABarrelRoll.LOGGER.info("Client of {} accepted server config.", player.getName().getString());
+                info.state = HandshakeState.ACCEPTED;
+            } else {
+                DoABarrelRoll.LOGGER.warn(
+                        "Client of {} failed to process server config, check client logs find what went wrong.",
+                        player.getName().getString());
                 info.state = HandshakeState.FAILED;
             }
+            info.protocolVersion = protocolVersion;
         }
 
         return info.state;
@@ -140,8 +128,8 @@ public class HandshakeServer<P extends ConfigSyncS2CPacket> {
         }
     }
 
-    public interface PacketConstructor<P extends ConfigSyncS2CPacket> {
-        P construct(int protocolVersion, LimitedModConfigServer applicableConfig, @Nullable ModConfigServer fullConfig);
+    public interface PacketConstructor {
+        ConfigSyncS2CPacket construct(int protocolVersion, LimitedModConfigServer applicableConfig, boolean isLimited, ModConfigServer fullConfig);
     }
 
     public enum HandshakeState {

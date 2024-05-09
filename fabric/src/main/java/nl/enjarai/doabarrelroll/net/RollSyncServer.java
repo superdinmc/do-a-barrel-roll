@@ -1,4 +1,4 @@
-package nl.enjarai.doabarrelroll.net.register;
+package nl.enjarai.doabarrelroll.net;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;

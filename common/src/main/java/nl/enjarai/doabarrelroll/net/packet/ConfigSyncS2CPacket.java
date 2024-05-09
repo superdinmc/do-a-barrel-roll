@@ -11,6 +11,5 @@ public interface ConfigSyncS2CPacket {
 
     boolean isLimited();
 
-    @Nullable
     ModConfigServer fullConfig();
 }

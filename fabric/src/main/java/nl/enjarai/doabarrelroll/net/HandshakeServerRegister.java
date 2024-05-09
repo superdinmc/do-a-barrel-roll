@@ -1,4 +1,4 @@
-package nl.enjarai.doabarrelroll.net.register;
+package nl.enjarai.doabarrelroll.net;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;

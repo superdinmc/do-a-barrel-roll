@@ -291,7 +291,7 @@ public class YACLImplementation {
                             if (original.isPresent()){
                                 var imut = mut.toImmutable();
                                 if (!imut.equals(original.get())) {
-                                    ServerConfigUpdateClient.sendUpdate(imut);
+                                    ServerConfigUpdateClient.prepUpdatePacket(imut);
                                     configListener.accept(imut);
                                 }
                             }

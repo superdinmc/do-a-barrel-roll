@@ -16,11 +16,6 @@ import nl.enjarai.doabarrelroll.util.MixinHooks;
 import nl.enjarai.doabarrelroll.util.StarFoxUtil;
 
 public class DoABarrelRollClient {
-    public static final HandshakeClient<LimitedModConfigServer, ModConfigServer> HANDSHAKE_CLIENT = new HandshakeClient<>(
-            ModConfigServer.CODEC,
-            LimitedModConfigServer.getCodec(),
-            ClientEvents::updateServerConfig
-    );
     public static final SmoothUtil PITCH_SMOOTHER = new SmoothUtil();
     public static final SmoothUtil YAW_SMOOTHER = new SmoothUtil();
     public static final SmoothUtil ROLL_SMOOTHER = new SmoothUtil();
