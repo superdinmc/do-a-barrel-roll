@@ -15,6 +15,22 @@
           },
           "order": 22,
           "text": "It's just a figure of speech, I'm not actually about to start intensely vibrating."
+        },
+        {
+          "condition": {
+            "type": "cicada:mod_participates",
+            "mod_id": "rolling_down_in_the_deep"
+          },
+          "order": 26,
+          "text": "Oh hey, that's pretty good. Why have I never thought of that?"
+        },
+        {
+          "condition": {
+            "type": "cicada:mod_participates",
+            "mod_id": "rolling_down_in_the_deep"
+          },
+          "order": 28,
+          "text": "Yea of course I do, it's perfect!"
         }
       ]
     },
@@ -46,6 +62,25 @@
         {
           "order": 0,
           "text": "One day I'll finish the swimming version of this mod. One day."
+        },
+        {
+          "condition": {
+            "type": "cicada:not",
+            "condition": {
+              "type": "cicada:mod_participates",
+              "mod_id": "rolling_down_in_the_deep"
+            }
+          },
+          "order": 10,
+          "text": "Though that day may come sooner than expected..."
+        },
+        {
+          "condition": {
+            "type": "cicada:mod_participates",
+            "mod_id": "rolling_down_in_the_deep"
+          },
+          "order": 20,
+          "text": "Oh hey! There you are! We're gonna have so much fun together!"
         }
       ]
     },
@@ -61,6 +96,22 @@
         {
           "order": 10,
           "text": "Also Curseforge, but yknow..."
+        },
+        {
+          "condition": {
+            "type": "cicada:mod_participates",
+            "mod_id": "rolling_down_in_the_deep"
+          },
+          "order": 30,
+          "text": "Oh no no, don't worry, it's not *that* bad."
+        },
+        {
+          "condition": {
+            "type": "cicada:mod_participates",
+            "mod_id": "rolling_down_in_the_deep"
+          },
+          "order": 40,
+          "text": "It's just generally... lacking some polish. Let's keep it at that."
         }
       ]
     },
