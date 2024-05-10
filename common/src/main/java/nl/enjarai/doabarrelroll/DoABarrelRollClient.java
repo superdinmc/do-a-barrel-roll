@@ -8,10 +8,8 @@ import nl.enjarai.doabarrelroll.api.event.RollGroup;
 import nl.enjarai.doabarrelroll.config.ActivationBehaviour;
 import nl.enjarai.doabarrelroll.config.LimitedModConfigServer;
 import nl.enjarai.doabarrelroll.config.ModConfig;
-import nl.enjarai.doabarrelroll.config.ModConfigServer;
-import nl.enjarai.doabarrelroll.net.register.HandshakeClientRegister;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
-import nl.enjarai.doabarrelroll.net.HandshakeClient;
+import nl.enjarai.doabarrelroll.platform.Services;
 import nl.enjarai.doabarrelroll.util.MixinHooks;
 import nl.enjarai.doabarrelroll.util.StarFoxUtil;
 
@@ -49,7 +47,6 @@ public class DoABarrelRollClient {
         ClientEvents.SERVER_CONFIG_UPDATE.register(ModConfig.INSTANCE::notifyPlayerOfServerConfig);
 
         ModConfig.touch();
-        HandshakeClientRegister.init();
 
         // Init barrel rollery.
         StarFoxUtil.register();
@@ -63,7 +60,7 @@ public class DoABarrelRollClient {
     }
 
     public static boolean isFallFlying() {
-        if (!HANDSHAKE_CLIENT.getConfig().map(LimitedModConfigServer::forceEnabled).orElse(false)) {
+        if (!Services.CLIENT_NET.getHandshakeClient().getConfig().map(LimitedModConfigServer::forceEnabled).orElse(false)) {
             var hybrid = ModConfig.INSTANCE.getActivationBehaviour() == ActivationBehaviour.HYBRID ||
                     ModConfig.INSTANCE.getActivationBehaviour() == ActivationBehaviour.HYBRID_TOGGLE;
             if (hybrid && !MixinHooks.thirdJump) {

@@ -5,18 +5,13 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
+import nl.enjarai.doabarrelroll.net.ServerConfigHolder;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public interface ServerNetworkUtils {
-    void sendPacket(ServerPlayNetworkHandler handler, Identifier channel, PacketByteBuf buf);
+    void sendRollUpdates(Entity entity);
 
-    void sendPacketsToTracking(Entity entity, Predicate<ServerPlayerEntity> predicate, Identifier channel, PacketByteBuf buf);
-
-    void registerListener(Identifier channel, PacketListener listener);
-
-    interface PacketListener {
-        void accept(ServerPlayNetworkHandler source, PacketByteBuf buf, Consumer<PacketByteBuf> responseSender);
-    }
+    ServerConfigHolder<?> getServerConfigHolder();
 }

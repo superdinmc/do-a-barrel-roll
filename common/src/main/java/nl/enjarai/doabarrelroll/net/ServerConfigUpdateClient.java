@@ -1,21 +1,20 @@
 package nl.enjarai.doabarrelroll.net;
 
-import net.minecraft.network.PacketByteBuf;
 import nl.enjarai.doabarrelroll.DoABarrelRoll;
 import nl.enjarai.doabarrelroll.config.ModConfigServer;
 import nl.enjarai.doabarrelroll.net.packet.ConfigUpdateAckS2CPacket;
 import nl.enjarai.doabarrelroll.net.packet.ConfigUpdateC2SPacket;
 import nl.enjarai.doabarrelroll.util.ToastUtil;
 
-public class ServerConfigUpdateClient {
-    private final PacketConstructor packetConstructor;
+public class ServerConfigUpdateClient<P extends ConfigUpdateC2SPacket> {
+    private final PacketConstructor<P> packetConstructor;
     private boolean waitingForAck = false;
 
-    public ServerConfigUpdateClient(PacketConstructor packetConstructor) {
+    public ServerConfigUpdateClient(PacketConstructor<P> packetConstructor) {
         this.packetConstructor = packetConstructor;
     }
 
-    public ConfigUpdateC2SPacket prepUpdatePacket(ModConfigServer config) {
+    public P prepUpdatePacket(ModConfigServer config) {
         waitingForAck = true;
         return packetConstructor.construct(HandshakeServer.PROTOCOL_VERSION, config);
     }
@@ -43,7 +42,7 @@ public class ServerConfigUpdateClient {
         }
     }
 
-    public interface PacketConstructor {
-        ConfigUpdateC2SPacket construct(int protocolVersion, ModConfigServer config);
+    public interface PacketConstructor<P extends ConfigUpdateC2SPacket> {
+        P construct(int protocolVersion, ModConfigServer config);
     }
 }

@@ -36,7 +36,7 @@ public class YACLImplementation {
         ClientPlayerEntity player;
         var onRealms = DoABarrelRollClient.isConnectedToRealms() &&
                 (player = MinecraftClient.getInstance().player) != null && player.hasPermissionLevel(2);
-        var serverConfig = DoABarrelRollClient.HANDSHAKE_CLIENT.getConfig();
+        var serverConfig = Services.CLIENT_NET.getHandshakeClient().getConfig();
 
         var thrustingAllowed = new Dependable(serverConfig.map(LimitedModConfigServer::allowThrusting).orElse(!inWorld || onRealms));
         var allowDisabled = new Dependable(!serverConfig.map(LimitedModConfigServer::forceEnabled).orElse(false));
@@ -234,8 +234,8 @@ public class YACLImplementation {
 
         // If we're in a world, use the synced config, otherwise, grab our local one.
         var fullServerConfig = inWorld
-                ? DoABarrelRollClient.HANDSHAKE_CLIENT.getFullConfig()
-                : Optional.of(DoABarrelRoll.CONFIG_HOLDER.instance);
+                ? Services.CLIENT_NET.getHandshakeClient().getFullConfig()
+                : Optional.of(Services.SERVER_NET.getServerConfigHolder().instance);
         MutableConfigServer mut;
         if (fullServerConfig.isPresent()) {
             mut = new MutableConfigServer(fullServerConfig.get());
@@ -285,13 +285,13 @@ public class YACLImplementation {
 
                     if (mut != null) {
                         if (MinecraftClient.getInstance().world == null) {
-                            DoABarrelRoll.CONFIG_HOLDER.instance = mut.toImmutable();
+                            Services.SERVER_NET.getServerConfigHolder().instance = mut.toImmutable();
                         } else {
-                            var original = DoABarrelRollClient.HANDSHAKE_CLIENT.getConfig();
+                            var original = Services.CLIENT_NET.getHandshakeClient().getConfig();
                             if (original.isPresent()){
                                 var imut = mut.toImmutable();
                                 if (!imut.equals(original.get())) {
-                                    ServerConfigUpdateClient.prepUpdatePacket(imut);
+                                    Services.CLIENT_NET.sendConfigUpdatePacket(imut);
                                     configListener.accept(imut);
                                 }
                             }

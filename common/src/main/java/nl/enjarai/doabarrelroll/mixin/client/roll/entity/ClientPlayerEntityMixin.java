@@ -8,7 +8,7 @@ import nl.enjarai.doabarrelroll.config.Sensitivity;
 import nl.enjarai.doabarrelroll.flight.RotationModifiers;
 import nl.enjarai.doabarrelroll.math.MagicNumbers;
 import nl.enjarai.doabarrelroll.mixin.roll.entity.PlayerEntityMixin;
-import nl.enjarai.doabarrelroll.net.register.RollSyncClient;
+import nl.enjarai.doabarrelroll.platform.Services;
 import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,7 +35,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntityMixin {
 		var isRolling = doABarrelRoll$isRolling();
 		var rollDiff = doABarrelRoll$getRoll() - lastSentRoll;
 		if (isRolling != lastSentIsRolling || rollDiff != 0.0f) {
-			RollSyncClient.sendUpdate(this);
+			Services.CLIENT_NET.sendRollUpdate(this);
 
 			lastSentIsRolling = isRolling;
 			lastSentRoll = doABarrelRoll$getRoll();

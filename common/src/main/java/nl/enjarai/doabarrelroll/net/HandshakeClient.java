@@ -10,14 +10,14 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-public class HandshakeClient {
-    private final BiFunction<Integer, Boolean, ConfigResponseC2SPacket> responseConstructor;
+public class HandshakeClient<P extends ConfigResponseC2SPacket> {
+    private final BiFunction<Integer, Boolean, P> responseConstructor;
     private final Consumer<LimitedModConfigServer> updateCallback;
     private LimitedModConfigServer serverConfig = null;
     private ModConfigServer fullServerConfig = null;
     private boolean hasConnected = false;
 
-    public HandshakeClient(BiFunction<Integer, Boolean, ConfigResponseC2SPacket> responseConstructor, Consumer<LimitedModConfigServer> updateCallback) {
+    public HandshakeClient(BiFunction<Integer, Boolean, P> responseConstructor, Consumer<LimitedModConfigServer> updateCallback) {
         this.responseConstructor = responseConstructor;
         this.updateCallback = updateCallback;
     }
@@ -44,7 +44,7 @@ public class HandshakeClient {
         return hasConnected;
     }
 
-    public ConfigResponseC2SPacket handleConfigSync(ConfigSyncS2CPacket packet) {
+    public P handleConfigSync(ConfigSyncS2CPacket packet) {
         serverConfig = null;
         fullServerConfig = null;
 

@@ -22,17 +22,17 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.function.BiConsumer;
 
-public class ServerConfigHolder {
+public class ServerConfigHolder<P extends ConfigUpdateAckS2CPacket> {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public final Path configFile;
     public final Codec<ModConfigServer> codec;
-    private final PacketConstructor packetConstructor;
-    private BiConsumer<MinecraftServer, ModConfigServer> updateCallback;
-    private HandshakeServer handshakeServer;
+    private final PacketConstructor<P> packetConstructor;
+    private final BiConsumer<MinecraftServer, ModConfigServer> updateCallback;
+    private HandshakeServer<?> handshakeServer;
     public ModConfigServer instance;
 
-    public ServerConfigHolder(Path configFile, Codec<ModConfigServer> codec, PacketConstructor packetConstructor, BiConsumer<MinecraftServer, ModConfigServer> updateCallback) {
+    public ServerConfigHolder(Path configFile, Codec<ModConfigServer> codec, PacketConstructor<P> packetConstructor, BiConsumer<MinecraftServer, ModConfigServer> updateCallback) {
         this.configFile = configFile;
         this.codec = codec;
         this.packetConstructor = packetConstructor;
@@ -83,7 +83,7 @@ public class ServerConfigHolder {
         }
     }
 
-    public ConfigUpdateAckS2CPacket clientSendsUpdate(ServerPlayerEntity player, ConfigUpdateC2SPacket packet) {
+    public P clientSendsUpdate(ServerPlayerEntity player, ConfigUpdateC2SPacket packet) {
         var info = handshakeServer.getHandshakeState(player);
         var accepted = info.state == HandshakeServer.HandshakeState.ACCEPTED;
         var hasPermission = ModConfigServer.canModify(player.networkHandler);
@@ -133,11 +133,11 @@ public class ServerConfigHolder {
         }
     }
 
-    public void setHandshakeServer(HandshakeServer handshakeServer) {
+    public void setHandshakeServer(HandshakeServer<?> handshakeServer) {
         this.handshakeServer = handshakeServer;
     }
 
-    public interface PacketConstructor {
-        ConfigUpdateAckS2CPacket construct(int protocolVersion, boolean success);
+    public interface PacketConstructor<P extends ConfigUpdateAckS2CPacket> {
+        P construct(int protocolVersion, boolean success);
     }
 }

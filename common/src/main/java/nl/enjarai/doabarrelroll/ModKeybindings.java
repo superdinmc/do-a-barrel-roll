@@ -8,6 +8,7 @@ import nl.enjarai.doabarrelroll.api.key.InputContext;
 import nl.enjarai.doabarrelroll.config.LimitedModConfigServer;
 import nl.enjarai.doabarrelroll.config.ModConfig;
 import nl.enjarai.doabarrelroll.config.ModConfigScreen;
+import nl.enjarai.doabarrelroll.platform.Services;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -114,7 +115,7 @@ public class ModKeybindings {
 
     public static void clientTick(MinecraftClient client) {
         while (TOGGLE_ENABLED.wasPressed()) {
-            if (!DoABarrelRollClient.HANDSHAKE_CLIENT.getConfig().map(LimitedModConfigServer::forceEnabled).orElse(false)) {
+            if (!Services.CLIENT_NET.getHandshakeClient().getConfig().map(LimitedModConfigServer::forceEnabled).orElse(false)) {
                 ModConfig.INSTANCE.setModEnabled(!ModConfig.INSTANCE.getModEnabled());
                 ModConfig.INSTANCE.save();
 
@@ -137,7 +138,7 @@ public class ModKeybindings {
             }
         }
         while (TOGGLE_THRUST.wasPressed()) {
-            if (DoABarrelRollClient.HANDSHAKE_CLIENT.getConfig().map(LimitedModConfigServer::allowThrusting).orElse(false)) {
+            if (Services.CLIENT_NET.getHandshakeClient().getConfig().map(LimitedModConfigServer::allowThrusting).orElse(false)) {
                 ModConfig.INSTANCE.setEnableThrust(!ModConfig.INSTANCE.getEnableThrust());
                 ModConfig.INSTANCE.save();
 

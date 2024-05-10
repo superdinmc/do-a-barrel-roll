@@ -10,6 +10,7 @@ import nl.enjarai.doabarrelroll.api.event.RollContext;
 import nl.enjarai.doabarrelroll.api.rotation.RotationInstant;
 import nl.enjarai.doabarrelroll.config.serialization.ExpressionParserTypeAdapter;
 import nl.enjarai.doabarrelroll.math.ExpressionParser;
+import nl.enjarai.doabarrelroll.platform.Services;
 import nl.enjarai.doabarrelroll.util.ToastUtil;
 
 import java.io.*;
@@ -168,7 +169,7 @@ public class ModConfig {
                 return true;
             }
 
-            return DoABarrelRollClient.HANDSHAKE_CLIENT.getConfig()
+            return Services.CLIENT_NET.getHandshakeClient().getConfig()
                     .map(LimitedModConfigServer::allowThrusting)
                     .orElse(false);
         }

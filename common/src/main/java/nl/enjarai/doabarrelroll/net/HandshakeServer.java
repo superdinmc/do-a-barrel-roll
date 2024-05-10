@@ -17,10 +17,10 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Function;
 
-public class HandshakeServer {
+public class HandshakeServer<P extends ConfigSyncS2CPacket> {
     public static final int PROTOCOL_VERSION = 4;
 
-    private final PacketConstructor packetConstructor;
+    private final PacketConstructor<P> packetConstructor;
     private final ServerConfigHolder configHolder;
     private final Map<ServerPlayNetworkHandler, ClientInfo> syncStates = new WeakHashMap<>();
     private final Map<ServerPlayNetworkHandler, DelayedRunnable> scheduledKicks = new WeakHashMap<>();
@@ -28,7 +28,7 @@ public class HandshakeServer {
     private final Codec<ModConfigServer> transferCodec = ModConfigServer.CODEC;
     private final Codec<LimitedModConfigServer> limitedTransferCodec = LimitedModConfigServer.getCodec();
 
-    public HandshakeServer(PacketConstructor packetConstructor, ServerConfigHolder configHolder, Function<ServerPlayNetworkHandler, Boolean> getsLimitedCheck) {
+    public HandshakeServer(PacketConstructor<P> packetConstructor, ServerConfigHolder configHolder, Function<ServerPlayNetworkHandler, Boolean> getsLimitedCheck) {
         this.packetConstructor = packetConstructor;
         this.configHolder = configHolder;
         this.getsLimitedCheck = getsLimitedCheck;
@@ -54,7 +54,7 @@ public class HandshakeServer {
         return syncStates.computeIfAbsent(handler, key -> new ClientInfo(HandshakeState.NOT_SENT, PROTOCOL_VERSION, true));
     }
 
-    public ConfigSyncS2CPacket initiateConfigSync(ServerPlayNetworkHandler handler) {
+    public P initiateConfigSync(ServerPlayNetworkHandler handler) {
         var isLimited = getsLimitedCheck.apply(handler);
         getHandshakeState(handler).isLimited = isLimited;
         var config = configHolder.instance;
@@ -128,8 +128,8 @@ public class HandshakeServer {
         }
     }
 
-    public interface PacketConstructor {
-        ConfigSyncS2CPacket construct(int protocolVersion, LimitedModConfigServer applicableConfig, boolean isLimited, ModConfigServer fullConfig);
+    public interface PacketConstructor<P extends ConfigSyncS2CPacket> {
+        P construct(int protocolVersion, LimitedModConfigServer applicableConfig, boolean isLimited, ModConfigServer fullConfig);
     }
 
     public enum HandshakeState {

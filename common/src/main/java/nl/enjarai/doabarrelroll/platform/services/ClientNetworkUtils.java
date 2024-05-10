@@ -1,16 +1,13 @@
 package nl.enjarai.doabarrelroll.platform.services;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
-
-import java.util.function.Consumer;
+import nl.enjarai.doabarrelroll.api.RollEntity;
+import nl.enjarai.doabarrelroll.config.ModConfigServer;
+import nl.enjarai.doabarrelroll.net.HandshakeClient;
 
 public interface ClientNetworkUtils {
-    void sendPacket(Identifier channel, PacketByteBuf buf);
+    void sendRollUpdate(RollEntity entity);
 
-    void registerListener(Identifier channel, PacketListener listener);
+    void sendConfigUpdatePacket(ModConfigServer config);
 
-    interface PacketListener {
-        void accept(PacketByteBuf buf, Consumer<PacketByteBuf> responseSender);
-    }
+    HandshakeClient<?> getHandshakeClient();
 }

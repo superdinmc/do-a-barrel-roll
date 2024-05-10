@@ -24,10 +24,6 @@ public class EventCallbacksClient {
         StarFoxUtil.clientTick(client);
     }
 
-    public static void clientDisconnect() {
-        DoABarrelRollClient.HANDSHAKE_CLIENT.reset();
-    }
-
     public static void onRenderCrosshair(DrawContext context, float tickDelta, int scaledWidth, int scaledHeight) {
         if (!DoABarrelRollClient.isFallFlying()) return;
 
