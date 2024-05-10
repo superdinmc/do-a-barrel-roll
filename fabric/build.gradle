@@ -7,7 +7,7 @@ dependencies {
     mappings "net.fabricmc:yarn:${yarn_version}:v2"
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-    implementation project(":common")
+    implementation project(path: ":common", configuration: "namedElements")
 
     modImplementation("nl.enjarai:cicada-lib:${project.cicada_version}") {
         exclude group: "net.fabricmc.fabric-api"
