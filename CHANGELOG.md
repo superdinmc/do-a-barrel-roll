@@ -1,1 +1,2 @@
-- Updated to 1.20.6.
+- Fixed rotation not continuing to drift with a ui open.
+- Fixed some networking elements using the wrong protocol version, creating log warnings.

@@ -99,10 +99,11 @@ public class ServerConfigHolder<P extends ConfigUpdateAckS2CPacket> {
 
         try {
             var protocolVersion = packet.protocolVersion();
-            if (protocolVersion != 1) {
+            if (protocolVersion != HandshakeServer.PROTOCOL_VERSION) {
                 DoABarrelRoll.LOGGER.warn(
-                        "Client of {} sent unknown protocol version for server config update, expected 1, got {}. Will attempt to proceed anyway.",
+                        "Client of {} sent unknown protocol version for server config update, expected {}, got {}. Will attempt to proceed anyway.",
                         player.getName().getString(),
+                        HandshakeServer.PROTOCOL_VERSION,
                         protocolVersion
                 );
             }

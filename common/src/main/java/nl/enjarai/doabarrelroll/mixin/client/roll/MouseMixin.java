@@ -20,21 +20,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Mouse.class)
 public abstract class MouseMixin implements RollMouse {
     @Shadow @Final private MinecraftClient client;
-    @Shadow private double lastTickTime;
 
     @Unique
     private final Vector2d mouseTurnVec = new Vector2d();
 
     @Inject(
-            method = "updateMouse",
+            method = "tick",
             at = @At(
-                    value = "RETURN",
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/Mouse;isCursorLocked()Z",
                     ordinal = 0
             )
     )
-    private void doABarrelRoll$maintainMouseMomentum(double timeDelta, CallbackInfo ci) {
+    private void doABarrelRoll$maintainMouseMomentum(CallbackInfo ci, @Local(ordinal = 1) double e) {
         if (client.player != null && !client.isPaused()) {
-            doABarrelRoll$updateMouse(client.player, 0, 0, timeDelta);
+            doABarrelRoll$updateMouse(client.player, 0, 0, e);
         }
     }
 

@@ -24,7 +24,7 @@ public class ServerConfigUpdateClient<P extends ConfigUpdateC2SPacket> {
             waitingForAck = false;
 
             var protocolVersion = packet.protocolVersion();
-            if (protocolVersion != 1) {
+            if (protocolVersion != HandshakeServer.PROTOCOL_VERSION) {
                 DoABarrelRoll.LOGGER.warn("Received config update ack with unknown protocol version: {}, will attempt to read anyway", protocolVersion);
             }
 
