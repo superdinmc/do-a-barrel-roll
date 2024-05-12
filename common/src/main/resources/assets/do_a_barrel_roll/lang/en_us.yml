@@ -74,18 +74,18 @@ config.do_a_barrel_roll:
     .: Thrusting Options
     enable_thrust: Enable Thrusting
     enable_thrust.description: >
-      Enables you to use the forward and back keys (W and S by default) 
-      to infinitely accelerate and decelerate respectively.
+      Enables you to use the %1$s key
+      to infinitely accelerate while flying with an Elytra.
       
       §4This feature is disabled on any server that does not explicitly allow it.
     max_thrust: Max Thrusting Speed
     max_thrust.description: >
-      The maximum speed that can be reached by thrusting. 
+      The maximum speed that can be reached by thrusting in blocks per tick. 
       Setting this to anything above 2-3 might cause
       problems with chunks not loading fast enough.
     thrust_acceleration: Thrusting Acceleration
     thrust_acceleration.description: >
-      The acceleration of thrusting. 
+      The acceleration of thrusting in blocks per tick squared. 
       Higher values will make it easier to reach max speed.
     thrust_particles: Show Thrusting Particles
   misc:
