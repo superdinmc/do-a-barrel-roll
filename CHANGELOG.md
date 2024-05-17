@@ -1,2 +1,1 @@
-- Fixed rotation not continuing to drift with a ui open.
-- Fixed some networking elements using the wrong protocol version, creating log warnings.
+- Fixed Iris compatibility. (in theory)
