@@ -42,7 +42,6 @@
         "${mod_id}.mixins.json",
         "${mod_id}.fabric.mixins.json",
         "${mod_id}.compat.cameraoverhaul.mixins.json",
-        "${mod_id}.compat.controlify.mixins.json",
         "${mod_id}.compat.modmenu.mixins.json"
     ],
     "accessWidener": "${mod_id}.accesswidener",
@@ -59,7 +58,7 @@
     },
     "breaks": {
         "optifabric": "*",
-        "controlify": "<2.0.0-"
+        "controlify": "<2.0.0-beta.9"
     },
 
     "custom": {

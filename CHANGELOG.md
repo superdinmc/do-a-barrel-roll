@@ -1,1 +1,1 @@
-- Fixed Iris compatibility. (for real this time)
+- Fixed compatibility with Controlify 2.0 beta 9.

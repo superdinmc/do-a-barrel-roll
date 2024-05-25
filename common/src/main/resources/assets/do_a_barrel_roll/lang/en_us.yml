@@ -302,7 +302,7 @@ toast.do_a_barrel_roll:
 
 
 controlify:
-  category.do_a_barrel_roll.do_a_barrel_roll: Do a Barrel Roll
+  category.do_a_barrel_roll.do_a_barrel_roll: Do a Barrel Roll Movement
   bind.do_a_barrel_roll:
     pitch_up: Pitch Up
     pitch_down: Pitch Down
