@@ -104,7 +104,10 @@ public class YACLImplementation {
                         .group(OptionGroup.createBuilder()
                                 .name(getText("thrust"))
                                 .collapsed(true)
-                                .option(thrustingAllowed.add(getBooleanOption("thrust", "enable_thrust", true, false)
+                                .option(thrustingAllowed.add(getBooleanOption("thrust", "enable_thrust", false, false)
+                                        .description(OptionDescription.of(Text.translatable(
+                                                "config.do_a_barrel_roll.thrust.enable_thrust.description",
+                                                ModKeybindings.THRUST_FORWARD.getBoundKeyLocalizedText())))
                                         .binding(false, () -> ModConfig.INSTANCE.getEnableThrustClient(), value -> ModConfig.INSTANCE.setEnableThrust(value))))
                                 .option(thrustingAllowed.add(getOption(Double.class, "thrust", "max_thrust", true, false)
                                         .controller(option -> getDoubleSlider(option, 0.1, 10.0, 0.1))
