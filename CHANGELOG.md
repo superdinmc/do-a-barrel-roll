@@ -1,1 +1,2 @@
 - Added an automatic righting option in the config.
+- Fixed compatibility with Controlify 2.0 beta 9.
