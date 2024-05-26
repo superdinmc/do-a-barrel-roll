@@ -1,1 +1,1 @@
-- Fixed a very elusive bug causing the mod to sometimes just not work.
+- Added an automatic righting option in the config.
