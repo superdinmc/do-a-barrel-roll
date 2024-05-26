@@ -70,22 +70,28 @@ config.do_a_barrel_roll:
     simulate_control_surface_efficacy.description: >
       Makes... an attempt to simulate the variable authority of different control surfaces based on your current angle of attack.
       This is experimental and subject to change in the future, but might improve your flight experience.
+    automatic_righting: Automatic Righting
+    automatic_righting.description: >
+      Applies an artificial roll input to reorient the camera to be right side up when it is rolled by 90 degrees or less in either direction.
+      Enabling this together with switching the roll and yaw axes will make flight more vanilla-like, while still allowing manual rolling and loop-de-loops.
+      You may also find this option helpful in reducing motion sickness.
+    righting_strength: Righting Strength
   thrust:
     .: Thrusting Options
     enable_thrust: Enable Thrusting
     enable_thrust.description: >
-      Enables you to use the forward and back keys (W and S by default) 
-      to infinitely accelerate and decelerate respectively.
+      Enables you to use the %1$s key
+      to infinitely accelerate while flying with an Elytra.
       
       §4This feature is disabled on any server that does not explicitly allow it.
     max_thrust: Max Thrusting Speed
     max_thrust.description: >
-      The maximum speed that can be reached by thrusting. 
+      The maximum speed that can be reached by thrusting in blocks per tick. 
       Setting this to anything above 2-3 might cause
       problems with chunks not loading fast enough.
     thrust_acceleration: Thrusting Acceleration
     thrust_acceleration.description: >
-      The acceleration of thrusting. 
+      The acceleration of thrusting in blocks per tick squared. 
       Higher values will make it easier to reach max speed.
     thrust_particles: Show Thrusting Particles
   misc:
@@ -302,7 +308,7 @@ toast.do_a_barrel_roll:
 
 
 controlify:
-  category.do_a_barrel_roll.do_a_barrel_roll: Do a Barrel Roll
+  category.do_a_barrel_roll.do_a_barrel_roll: Do a Barrel Roll Movement
   bind.do_a_barrel_roll:
     pitch_up: Pitch Up
     pitch_down: Pitch Down

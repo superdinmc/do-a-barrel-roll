@@ -1,15 +1,18 @@
 plugins {
     id 'dev.architectury.loom' version '1.6-SNAPSHOT' apply(false)
-    id 'me.fallenbreath.yamlang' version '1.2.1' apply(false)
-    id "me.modmuss50.mod-publish-plugin" version "0.4.4"
+    id 'me.fallenbreath.yamlang' version '1.3.1' apply(false)
+    id "me.modmuss50.mod-publish-plugin" version "0.4.4" apply(false)
+    id 'maven-publish'
 }
 
 version = "${mod_version}+${minecraft_version}"
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'dev.architectury.loom'
     apply plugin: 'me.fallenbreath.yamlang'
     apply plugin: "me.modmuss50.mod-publish-plugin"
+    apply plugin: 'maven-publish'
 
     version = "${mod_version}+${minecraft_version}"
 
@@ -17,6 +20,9 @@ subprojects {
         // Personal maven for cicada and backup mirrors of some dependencies.
         maven { url "https://maven.enjarai.dev/mirrors" }
         maven { url "https://maven.enjarai.dev/releases" }
+
+        // NeoForge
+        maven { url 'https://maven.neoforged.net/releases/' }
 
         // Mod Menu.
         maven { url 'https://maven.terraformersmc.com' }
@@ -100,8 +106,6 @@ subprojects {
 
                 fabric_version                : fabric_version,
                 fabric_loader_version         : fabric_loader_version,
-                forge_fabric_version          : forge_fabric_version,
-                forge_fabric_loader_version   : forge_fabric_loader_version,
 
                 mod_id                        : mod_id,
                 mod_name                      : mod_name,
