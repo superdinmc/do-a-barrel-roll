@@ -6,11 +6,14 @@ import net.minecraft.client.render.GameRenderer;
 import nl.enjarai.doabarrelroll.api.RollCamera;
 import nl.enjarai.doabarrelroll.math.MagicNumbers;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
+@Debug(export = true)
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
     @Shadow @Final private Camera camera;
@@ -19,14 +22,13 @@ public abstract class GameRendererMixin {
             method = "renderWorld",
             at = @At(
                     value = "INVOKE",
-                    target = "Lorg/joml/Matrix4f;rotationXYZ(FFF)Lorg/joml/Matrix4f;",
-                    ordinal = 0
+                    target = "Lorg/joml/Quaternionf;conjugate(Lorg/joml/Quaternionf;)Lorg/joml/Quaternionf;"
             )
     )
-    public Matrix4f doABarrelRoll$renderWorld(Matrix4f original) {
+    public Quaternionf doABarrelRoll$renderWorld(Quaternionf original) {
+        //TODO: RAI FIX MATH!!!!
         var roll = ((RollCamera) camera).doABarrelRoll$getRoll() * MagicNumbers.TORAD;
-        var newMatrix = new Matrix4f();
-        return newMatrix
+        return new Quaternionf()
                 .rotateZ((float) roll)
                 .mul(original);
     }
