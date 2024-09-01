@@ -181,7 +181,7 @@ public class ModConfig {
 
             return Services.CLIENT_NET.getHandshakeClient().getConfig()
                     .map(LimitedModConfigServer::allowThrusting)
-                    .orElse(false);
+                    .orElse(true);
         }
 
         return false;
